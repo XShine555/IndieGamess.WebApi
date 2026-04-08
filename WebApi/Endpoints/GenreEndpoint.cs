@@ -11,7 +11,7 @@ namespace WebApi.Endpoints
 {
     public class GenreEndpoint
     {
-        public static void Map(WebApplication webApplication)
+        public static void Map(this WebApplication webApplication)
         {
             var group = webApplication.MapGroup("/genres")
                 .WithTags("Genres");

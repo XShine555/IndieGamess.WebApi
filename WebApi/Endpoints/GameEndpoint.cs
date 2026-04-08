@@ -12,7 +12,7 @@ namespace WebApi.Endpoints
 {
     public class GameEndpoint
     {
-        public static void Map(WebApplication webApplication)
+        public static void Map(this WebApplication webApplication)
         {
             var group = webApplication.MapGroup("/games")
                 .WithTags("Games");
