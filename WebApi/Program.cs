@@ -2,10 +2,13 @@ using Scalar.AspNetCore;
 using WebApi.Authentication;
 using WebApi.Scalar;
 using WebApi.Services;
+using Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder();
 var services = builder.Services;
 var configuration = builder.Configuration;
+
+services.AddDatabase(configuration);
 
 services.AddOpenApi();
 services.AddMediator();
