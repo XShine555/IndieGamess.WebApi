@@ -10,9 +10,9 @@ using WebApi.Services;
 
 namespace WebApi.Endpoints
 {
-    public class GameEndpoint
+    public static class GameEndpoint
     {
-        public static void Map(this WebApplication webApplication)
+        public static void MapGameEndpoint(this WebApplication webApplication)
         {
             var group = webApplication.MapGroup("/games")
                 .WithTags("Games");

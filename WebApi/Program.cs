@@ -3,6 +3,7 @@ using WebApi.Authentication;
 using WebApi.Scalar;
 using WebApi.Services;
 using Infrastructure.Persistence;
+using WebApi.Endpoints;
 
 var builder = WebApplication.CreateBuilder();
 var services = builder.Services;
@@ -26,5 +27,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.MapGameEndpoint();
+app.MapGenreEndpoint();
 
 app.Run();

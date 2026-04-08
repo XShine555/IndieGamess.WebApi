@@ -9,9 +9,9 @@ using WebApi.Contracts.Genres;
 
 namespace WebApi.Endpoints
 {
-    public class GenreEndpoint
+    public static class GenreEndpoint
     {
-        public static void Map(this WebApplication webApplication)
+        public static void MapGenreEndpoint(this WebApplication webApplication)
         {
             var group = webApplication.MapGroup("/genres")
                 .WithTags("Genres");
