@@ -21,8 +21,7 @@ services.AddAuthorization();
 
 services.AddOpenApi();
 ServiceDependencyInjection.AddS3Service(services, configuration);
-services.AddApplicationConfiguration(configuration);
-services.AddMediator();
+services.AddApplicationMediator(configuration);
 
 services.AddHttpContextAccessor();
 services.AddScoped<IUser, User>();

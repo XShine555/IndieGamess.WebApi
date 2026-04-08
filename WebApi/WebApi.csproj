@@ -8,8 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="global-bundle.pem" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
-    <PackageReference Include="IndieGames.Application" Version="0.1.7" />
+    <PackageReference Include="IndieGames.Application" Version="0.1.8" />
     <PackageReference Include="IndieGames.Domain" Version="0.1.3" />
     <PackageReference Include="IndieGames.Infrastructure" Version="0.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
