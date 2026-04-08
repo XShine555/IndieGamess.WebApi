@@ -1,9 +1,11 @@
+using Application;
+using Infrastructure.Persistence;
+using Infrastructure.Services;
 using Scalar.AspNetCore;
 using WebApi.Authentication;
+using WebApi.Endpoints;
 using WebApi.Scalar;
 using WebApi.Services;
-using Infrastructure.Persistence;
-using WebApi.Endpoints;
 
 var builder = WebApplication.CreateBuilder();
 var services = builder.Services;
@@ -18,6 +20,8 @@ services.ConfigureAuthentication(configuration);
 services.AddAuthorization();
 
 services.AddOpenApi();
+ServiceDependencyInjection.AddS3Service(services, configuration);
+services.AddApplicationConfiguration(configuration);
 services.AddMediator();
 
 services.AddHttpContextAccessor();
