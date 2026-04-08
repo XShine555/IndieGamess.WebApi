@@ -11,9 +11,11 @@ var configuration = builder.Configuration;
 
 services.AddDatabase(configuration);
 
+services.ConfigureAuthentication(configuration);
+services.AddAuthorization();
+
 services.AddOpenApi();
 services.AddMediator();
-services.ConfigureAuthentication(configuration);
 
 services.AddHttpContextAccessor();
 services.AddScoped<IUser, User>();
@@ -21,6 +23,9 @@ services.AddScoped<IUser, User>();
 services.ConfigureScalar();
 
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {

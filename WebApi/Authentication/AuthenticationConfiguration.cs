@@ -23,5 +23,9 @@ namespace WebApi.Authentication
 
         [Required]
         public required string TokenEndpoint { get; set; }
+
+        public string? Audience { get; set; }
+
+        public bool ValidateAudience { get; set; }
     }
 }

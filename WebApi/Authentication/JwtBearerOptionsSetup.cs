@@ -16,6 +16,8 @@ namespace WebApi.Authentication
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidIssuer = authenticationConfiguration.Authority,
+                ValidAudience = authenticationConfiguration.Audience,
+                ValidateAudience = authenticationConfiguration.ValidateAudience,
                 RoleClaimType = ClaimTypes.Role,
             };
             options.EventsType = typeof(JwtBearerEventsHandler);

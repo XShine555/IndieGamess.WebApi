@@ -1,5 +1,4 @@
-﻿using Google.Protobuf.Reflection;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
 
 namespace WebApi.Scalar

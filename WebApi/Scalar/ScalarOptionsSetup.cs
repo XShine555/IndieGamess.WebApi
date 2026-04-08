@@ -17,7 +17,7 @@ namespace WebApi.Scalar
                 authorizationCodeFlow.AuthorizationUrl = authenticationConfiguration.AuthorizationEndpoint;
                 authorizationCodeFlow.TokenUrl = authenticationConfiguration.TokenEndpoint;
                 authorizationCodeFlow.Pkce = Pkce.Sha256;
-            });
+            } );
         }
     }
 }
