@@ -2,6 +2,7 @@
 using Application.Games.Queries;
 using Application.Games.Responses;
 using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
@@ -42,7 +43,8 @@ namespace WebApi.Endpoints
             group.MapGet("/{id:guid}",async (IMediator mediator, CancellationToken cancellationToken, Guid id) =>
             {
                 var queryResult = await mediator.Send(new GetGameByIdQuery(id), cancellationToken);
-                return queryResult.Map(GameResponse.FromApplicationResponse);
+                return queryResult.Map(GameResponse.FromApplicationResponse)
+                    .ToMinimalApiResult();
             } )
                 .WithSummary("Get Game By Id");
 
@@ -54,7 +56,8 @@ namespace WebApi.Endpoints
                     request.Title,
                     request.Description,
                     request.Genres), cancellationToken);
-                return commandResult.Map(r => Results.Created($"/games/{r.Id}", GameResponse.FromApplicationResponse(r)));
+                return commandResult.Map(r => Results.Created($"/games/{r.Id}", GameResponse.FromApplicationResponse(r)))
+                    .ToMinimalApiResult();
             } )
                 .WithSummary("Create Game")
                 .RequireAuthorization();
@@ -62,7 +65,7 @@ namespace WebApi.Endpoints
             group.MapDelete("/{id:guid}",async (IMediator mediator, IUser user, CancellationToken cancellationToken, Guid id) =>
             {
                 var commandResult = await mediator.Send(new RemoveGameCommand(id), cancellationToken);
-                return commandResult;
+                return commandResult.ToMinimalApiResult();
             } )
                 .WithSummary("Delete Game")
                 .RequireAuthorization();
@@ -76,7 +79,7 @@ namespace WebApi.Endpoints
                     request.Description,
                     request.OwnerId,
                     request.Genres), cancellationToken);
-                return commandResult;
+                return commandResult.ToMinimalApiResult();
              } )
                 .WithSummary("Update Game")
                 .RequireAuthorization();

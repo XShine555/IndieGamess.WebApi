@@ -2,6 +2,7 @@
 using Application.Genres.Queries;
 using Application.Genres.Responses;
 using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
@@ -37,7 +38,8 @@ namespace WebApi.Endpoints
             group.MapPost("/", async (IMediator mediator, CancellationToken cancellationToken, [FromBody] CreateGenreRequest request) =>
             {
                 var queryResult = await mediator.Send(new CreateGenreCommand(request.Name), cancellationToken);
-                return queryResult.Map(r => Results.Created($"/genres/{r.Id}", GenreResponse.FromApplicationResponse(r)));
+                return queryResult.Map(r => Results.Created($"/genres/{r.Id}", GenreResponse.FromApplicationResponse(r)))
+                    .ToMinimalApiResult();
             } )
                 .WithSummary("Create Genre")
                 .RequireAuthorization();
@@ -45,7 +47,8 @@ namespace WebApi.Endpoints
             group.MapDelete("/{id:guid}", async (IMediator mediator, CancellationToken cancellationToken, Guid id) =>
             {
                 var queryResult = await mediator.Send(new RemoveGenreCommand(id), cancellationToken);
-                return queryResult.Map(r => Results.NoContent());
+                return queryResult.Map(r => Results.NoContent())
+                    .ToMinimalApiResult();
             } )
                 .WithSummary("Delete Genre")
                 .RequireAuthorization();
@@ -53,7 +56,8 @@ namespace WebApi.Endpoints
             group.MapPut("/{id:guid}", async (IMediator mediator, CancellationToken cancellationToken, Guid id, [FromBody] UpdateGenreRequest request) =>
             {
                 var queryResult = await mediator.Send(new UpdateGenreCommand(id, request.Name), cancellationToken);
-                return queryResult.Map(r => Results.Ok(GenreResponse.FromApplicationResponse(r)));
+                return queryResult.Map(r => Results.Ok(GenreResponse.FromApplicationResponse(r)))
+                    .ToMinimalApiResult();
             } )
                 .WithSummary("Update Genre")
                 .RequireAuthorization();
