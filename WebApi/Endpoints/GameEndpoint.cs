@@ -19,26 +19,20 @@ namespace WebApi.Endpoints
                 .WithTags("Games");
 
             group.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken,
-                [FromQuery] string title, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10) =>
+                [AsParameters] GetGamesParameters parameters) =>
             {
-                var queryResult = await mediator.Send(new GetGamesByTitleQuery(title, pageNumber, pageSize), cancellationToken);
-                return Results.Ok(
-                    PaginatedResponse<ApplicationGame>.FromApplicationResponse(
-                        queryResult,
-                        GameResponse.FromApplicationResponse));
-            } )
-                .WithSummary("Get Games By Title");
+                var queryResult = await mediator.Send(new GetGamesQuery(
+                    parameters.Title,
+                    parameters.Genres,
+                    parameters.PageNumber,
+                    parameters.PageSize), cancellationToken);
 
-            group.MapGet("/genres",async (IMediator mediator, CancellationToken cancellationToken,
-                [FromQuery] Guid[] genreIds, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10) =>
-            {
-                var queryResult = await mediator.Send(new GetGamesByGenresQuery(genreIds, pageNumber, pageSize), cancellationToken);
                 return Results.Ok(
                     PaginatedResponse<ApplicationGame>.FromApplicationResponse(
                         queryResult,
                         GameResponse.FromApplicationResponse));
             } )
-                .WithSummary("Get Games By Genres");
+                .WithSummary("Get Games");
 
             group.MapGet("/{id}",async (IMediator mediator, CancellationToken cancellationToken, int id) =>
             {

@@ -18,9 +18,13 @@ namespace WebApi.Endpoints
                 .WithTags("Genres");
 
             group.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken,
-                [FromQuery] string name, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10) =>
+                [AsParameters] GetGenresParameters parameters) =>
             {
-                var queryResult = await mediator.Send(new GetGenresByNameQuery(name, pageNumber, pageSize), cancellationToken);
+                var queryResult = await mediator.Send(new GetGenresQuery(
+                    parameters.Name,
+                    parameters.PageNumber,
+                    parameters.PageSize), cancellationToken);
+
                 return Results.Ok(
                     PaginatedResponse<ApplicationGenre>.FromApplicationResponse(
                         queryResult,
