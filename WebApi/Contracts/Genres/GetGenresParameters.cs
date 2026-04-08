@@ -5,12 +5,12 @@ namespace WebApi.Contracts.Genres
     public record GetGenresParameters
     {
         [DefaultValue("")]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; init; } = string.Empty;
 
         [DefaultValue(1)]
-        public int PageNumber { get; set; } = 1;
+        public int PageNumber { get; init; } = 1;
 
         [DefaultValue(10)]
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; init; } = 10;
     }
 }

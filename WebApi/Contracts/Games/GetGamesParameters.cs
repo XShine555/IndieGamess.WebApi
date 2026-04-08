@@ -5,15 +5,15 @@ namespace WebApi.Contracts.Games
     public record GetGamesParameters
     {
         [DefaultValue("")]
-        public string Title { get; set; } = string.Empty;
+        public string Title { get; init; } = string.Empty;
 
         [DefaultValue(new int[0] )]
-        public int[] Genres { get; set; } = Array.Empty<int>();
+        public int[] Genres { get; init; } = Array.Empty<int>();
 
         [DefaultValue(1)]
-        public int PageNumber { get; set; } = 1;
+        public int PageNumber { get; init; } = 1;
 
         [DefaultValue(10)]
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; init; } = 10;
     }
 }
