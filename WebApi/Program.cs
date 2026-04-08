@@ -11,6 +11,8 @@ var configuration = builder.Configuration;
 
 services.AddDatabase(configuration);
 
+services.AddProblemDetails();
+
 services.ConfigureAuthentication(configuration);
 services.AddAuthorization();
 
