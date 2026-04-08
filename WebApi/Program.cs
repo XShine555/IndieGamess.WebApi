@@ -20,7 +20,7 @@ services.ConfigureAuthentication(configuration);
 services.AddAuthorization();
 
 services.AddOpenApi();
-ServiceDependencyInjection.AddS3Service(services, configuration);
+services.AddS3Service(configuration);
 services.AddApplicationMediator(configuration);
 
 services.AddHttpContextAccessor();
