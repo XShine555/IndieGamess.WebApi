@@ -40,7 +40,7 @@ namespace WebApi.Endpoints
             } )
                 .WithSummary("Get Games By Genres");
 
-            group.MapGet("/{id:guid}",async (IMediator mediator, CancellationToken cancellationToken, Guid id) =>
+            group.MapGet("/{id}",async (IMediator mediator, CancellationToken cancellationToken, int id) =>
             {
                 var queryResult = await mediator.Send(new GetGameByIdQuery(id), cancellationToken);
                 return queryResult.Map(GameResponse.FromApplicationResponse)
@@ -62,7 +62,7 @@ namespace WebApi.Endpoints
                 .WithSummary("Create Game")
                 .RequireAuthorization();
 
-            group.MapDelete("/{id:guid}",async (IMediator mediator, IUser user, CancellationToken cancellationToken, Guid id) =>
+            group.MapDelete("/{id}",async (IMediator mediator, IUser user, CancellationToken cancellationToken, int id) =>
             {
                 var commandResult = await mediator.Send(new RemoveGameCommand(id), cancellationToken);
                 return commandResult.ToMinimalApiResult();
@@ -70,7 +70,7 @@ namespace WebApi.Endpoints
                 .WithSummary("Delete Game")
                 .RequireAuthorization();
 
-            group.MapPut("/{id:guid}",async (IMediator mediator, IUser user, CancellationToken cancellationToken, Guid id,
+            group.MapPut("/{id}",async (IMediator mediator, IUser user, CancellationToken cancellationToken, int id,
                 [FromBody] UpdateGameRequest request) =>
             {
                 var commandResult = await mediator.Send(new UpdateGameCommand(

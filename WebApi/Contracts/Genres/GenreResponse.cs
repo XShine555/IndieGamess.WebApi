@@ -3,7 +3,7 @@
 namespace WebApi.Contracts.Genres
 {
     public record GenreResponse(
-        Guid Id,
+        int Id,
         string Name)
     {
         public static GenreResponse FromApplicationResponse(ApplicationGenre applicationGenre)

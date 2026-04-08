@@ -5,7 +5,7 @@ using WebApi.Contracts.Users;
 namespace WebApi.Contracts.Games
 {
     public record GameResponse(
-        Guid Id,
+        int Id,
         string Title,
         string Description,
         UserSummary Owner,

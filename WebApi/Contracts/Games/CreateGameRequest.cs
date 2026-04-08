@@ -3,5 +3,5 @@
     public record CreateGameRequest(
         string Title,
         string Description,
-        ICollection<Guid> Genres);
+        ICollection<int> Genres);
 }

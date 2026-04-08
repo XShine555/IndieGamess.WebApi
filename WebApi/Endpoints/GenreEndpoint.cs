@@ -28,7 +28,7 @@ namespace WebApi.Endpoints
             } )
                 .WithSummary("Get Genres By Name");
 
-            group.MapGet("/{id:guid}", async (IMediator mediator, CancellationToken cancellationToken, Guid id) =>
+            group.MapGet("/{id}", async (IMediator mediator, CancellationToken cancellationToken, int id) =>
             {
                 var queryResult = await mediator.Send(new GetGenreByIdQuery(id), cancellationToken);
                 return Results.Ok(GenreResponse.FromApplicationResponse(queryResult));
@@ -44,7 +44,7 @@ namespace WebApi.Endpoints
                 .WithSummary("Create Genre")
                 .RequireAuthorization();
 
-            group.MapDelete("/{id:guid}", async (IMediator mediator, CancellationToken cancellationToken, Guid id) =>
+            group.MapDelete("/{id}", async (IMediator mediator, CancellationToken cancellationToken, int id) =>
             {
                 var queryResult = await mediator.Send(new RemoveGenreCommand(id), cancellationToken);
                 return queryResult.Map(r => Results.NoContent())
@@ -53,7 +53,7 @@ namespace WebApi.Endpoints
                 .WithSummary("Delete Genre")
                 .RequireAuthorization();
 
-            group.MapPut("/{id:guid}", async (IMediator mediator, CancellationToken cancellationToken, Guid id, [FromBody] UpdateGenreRequest request) =>
+            group.MapPut("/{id}", async (IMediator mediator, CancellationToken cancellationToken, int id, [FromBody] UpdateGenreRequest request) =>
             {
                 var queryResult = await mediator.Send(new UpdateGenreCommand(id, request.Name), cancellationToken);
                 return queryResult.Map(r => Results.Ok(GenreResponse.FromApplicationResponse(r)))

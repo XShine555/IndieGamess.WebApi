@@ -4,5 +4,5 @@
         string? Title,
         string? Description,
         string? OwnerId,
-        ICollection<Guid> Genres);
+        ICollection<int> Genres);
 }
