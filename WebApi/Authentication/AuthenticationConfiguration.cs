@@ -14,5 +14,14 @@ namespace WebApi.Authentication
 
         [Required]
         public required string UserPoolId { get; set; }
+
+        [Required]
+        public required string ClientId { get; set; }
+
+        [Required]
+        public required string AuthorizationEndpoint { get; set; }
+
+        [Required]
+        public required string TokenEndpoint { get; set; }
     }
 }

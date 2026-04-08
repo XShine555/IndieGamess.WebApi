@@ -1,5 +1,6 @@
 using Scalar.AspNetCore;
 using WebApi.Authentication;
+using WebApi.Scalar;
 using WebApi.Services;
 
 var builder = WebApplication.CreateBuilder();
@@ -12,6 +13,8 @@ services.ConfigureAuthentication(configuration);
 
 services.AddHttpContextAccessor();
 services.AddScoped<IUser, User>();
+
+services.ConfigureScalar();
 
 var app = builder.Build();
 
