@@ -56,9 +56,29 @@ namespace WebApi.Endpoints
                 .WithSummary("Create Game")
                 .RequireAuthorization();
 
+            group.MapPost("/{id}/picture",async (IMediator mediator, IUser user, CancellationToken cancellationToken,
+                int id, [FromForm] IFormFile formFile) =>
+            {
+                var fileData = FileData.FromFormFile(formFile);
+                var commandResult = await mediator.Send(new AddStorePictureToGameCommand(user.IdentityId, id, fileData), cancellationToken);
+                return commandResult.ToMinimalApiResult();
+            } )
+                .WithSummary("Upload Game Picture")
+                .RequireAuthorization()
+                .DisableAntiforgery();
+
+            group.MapDelete("/{id}/picture",async (IMediator mediator, IUser user, CancellationToken cancellationToken, int id) =>
+            {
+                var commandResult = await mediator.Send(new RemoveStorePictureToGameCommand(user.IdentityId, id), cancellationToken);
+                return commandResult.ToMinimalApiResult();
+            } )
+                .WithSummary("Delete Game Picture")
+                .RequireAuthorization()
+                .DisableAntiforgery();
+
             group.MapDelete("/{id}",async (IMediator mediator, IUser user, CancellationToken cancellationToken, int id) =>
             {
-                var commandResult = await mediator.Send(new RemoveGameCommand(id), cancellationToken);
+                var commandResult = await mediator.Send(new RemoveGameCommand(user.IdentityId, id), cancellationToken);
                 return commandResult.ToMinimalApiResult();
             } )
                 .WithSummary("Delete Game")
@@ -68,6 +88,7 @@ namespace WebApi.Endpoints
                 [FromBody] UpdateGameRequest request) =>
             {
                 var commandResult = await mediator.Send(new UpdateGameCommand(
+                    user.IdentityId,
                     id,
                     request.Title,
                     request.Description,
