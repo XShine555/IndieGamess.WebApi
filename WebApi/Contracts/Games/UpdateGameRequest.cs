@@ -3,6 +3,6 @@
     public record UpdateGameRequest(
         string? Title,
         string? Description,
-        Guid? OwnerId,
+        string? OwnerId,
         ICollection<Guid> Genres);
 }

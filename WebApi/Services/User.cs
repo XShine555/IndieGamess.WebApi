@@ -7,7 +7,7 @@ namespace WebApi.Services
     {
         ClaimsPrincipal ClaimsPrincipal => httpContextAccessor.HttpContext!.User;
 
-        public Guid IdentityId => Guid.Parse(ClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        public string IdentityId => ClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
         public string UserName => ClaimsPrincipal.FindFirstValue(ClaimTypes.Name)!;
     }
