@@ -3,11 +3,12 @@
 namespace WebApi.Contracts.Users
 {
     public record UserSummary(
-        string Id)
+        string IdentityId,
+        string Username)
     {
-        public static UserSummary FromApplicationResponse(ApplicationUser user)
+        public static UserSummary FromApplicationSummaryResponse(ApplicationUserSummary user)
         {
-            return new UserSummary(user.IdentityId);
+            return new UserSummary(user.IdentityId, user.Username);
         }
     }
 }

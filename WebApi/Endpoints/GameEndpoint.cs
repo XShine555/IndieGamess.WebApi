@@ -1,6 +1,6 @@
 ﻿using Application.Games.Commands;
 using Application.Games.Queries;
-using Application.Games.Responses;
+using Application.Users.Queries;
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Mediator;
@@ -27,8 +27,7 @@ namespace WebApi.Endpoints
                     parameters.PageNumber,
                     parameters.PageSize), cancellationToken);
 
-                return Results.Ok(
-                    PaginatedResponse<ApplicationGame>.FromApplicationResponse(
+                return Results.Ok(PaginatedResponse<GameResponse>.FromApplicationResponse(
                         queryResult,
                         GameResponse.FromApplicationResponse));
             } )
@@ -37,8 +36,9 @@ namespace WebApi.Endpoints
             group.MapGet("/{id}",async (IMediator mediator, CancellationToken cancellationToken, int id) =>
             {
                 var queryResult = await mediator.Send(new GetGameByIdQuery(id), cancellationToken);
+
                 return queryResult.Map(GameResponse.FromApplicationResponse)
-                    .ToMinimalApiResult();
+                        .ToMinimalApiResult();
             } )
                 .WithSummary("Get Game By Id");
 
@@ -50,8 +50,9 @@ namespace WebApi.Endpoints
                     request.Title,
                     request.Description,
                     request.Genres), cancellationToken);
-                return commandResult.Map(r => Results.Created($"/games/{r.Id}", GameResponse.FromApplicationResponse(r)))
-                    .ToMinimalApiResult();
+
+                return commandResult.Map(r => Results.Created($"/games/{commandResult.Value.Id}", GameResponse.FromApplicationResponse(r)))
+                        .ToMinimalApiResult();
             } )
                 .WithSummary("Create Game")
                 .RequireAuthorization();

@@ -17,7 +17,7 @@ namespace WebApi.Contracts.Games
                 game.Id,
                 game.Title,
                 game.Description,
-                new UserSummary(game.OwnerId),
+                UserSummary.FromApplicationSummaryResponse(game.ApplicationUserSummary),
                 game.Genres.Select(GenreSummary.FromApplicationResponse).ToList());
         }
     }

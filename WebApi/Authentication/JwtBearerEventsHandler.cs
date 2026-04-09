@@ -11,7 +11,8 @@ namespace WebApi.Authentication
         public override async Task TokenValidated(TokenValidatedContext tokenValidatedContext)
         {
             var id = tokenValidatedContext.Principal!.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            await mediator.Send(new CreateUserCommand(id), tokenValidatedContext.HttpContext.RequestAborted);
+            var username = tokenValidatedContext.Principal!.FindFirstValue(ClaimTypes.Name)!;
+            await mediator.Send(new CreateUserCommand(id, username), tokenValidatedContext.HttpContext.RequestAborted);
         }
     }
 }
