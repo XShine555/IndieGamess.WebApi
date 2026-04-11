@@ -1,4 +1,5 @@
 using Application;
+using Infrastructure.MassTransit.DependencyInjection;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
 using Scalar.AspNetCore;
@@ -21,6 +22,7 @@ services.AddAuthorization();
 
 services.AddOpenApi();
 services.AddS3Service(configuration);
+services.AddMassTransitClient(configuration);
 services.AddApplicationMediator(configuration);
 
 services.AddHttpContextAccessor();

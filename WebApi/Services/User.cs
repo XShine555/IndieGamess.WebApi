@@ -8,7 +8,5 @@ namespace WebApi.Services
         ClaimsPrincipal ClaimsPrincipal => httpContextAccessor.HttpContext!.User;
 
         public string IdentityId => ClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier)!;
-
-        public string UserName => ClaimsPrincipal.FindFirstValue(ClaimTypes.Name)!;
     }
 }
