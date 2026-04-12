@@ -1,15 +1,16 @@
 using Application.Genres.Responses;
 
-namespace WebApi.Features.Genres;
-
-public record GenreResponse(
-    int Id,
-    string Name)
+namespace WebApi.Features.Genres
 {
-    public static GenreResponse FromApplicationResponse(ApplicationGenre applicationGenre)
+    public record GenreResponse(
+        int Id,
+        string Name)
     {
-        return new GenreResponse(
-            applicationGenre.Id,
-            applicationGenre.Name);
+        public static GenreResponse FromApplicationResponse(ApplicationGenre applicationGenre)
+        {
+            return new GenreResponse(
+                applicationGenre.Id,
+                applicationGenre.Name);
+        }
     }
 }

@@ -1,15 +1,16 @@
 using System.ComponentModel;
 
-namespace WebApi.Features.Genres;
-
-public record GetGenresParameters
+namespace WebApi.Features.Genres
 {
-    [DefaultValue("")]
-    public string Name { get; init; } = string.Empty;
+    public record GetGenresParameters
+    {
+        [DefaultValue("")]
+        public string Name { get; init; } = string.Empty;
 
-    [DefaultValue(1)]
-    public int PageNumber { get; init; } = 1;
+        [DefaultValue(1)]
+        public int PageNumber { get; init; } = 1;
 
-    [DefaultValue(10)]
-    public int PageSize { get; init; } = 10;
+        [DefaultValue(10)]
+        public int PageSize { get; init; } = 10;
+    }
 }

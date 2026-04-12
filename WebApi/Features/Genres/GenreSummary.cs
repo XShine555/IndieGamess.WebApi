@@ -1,15 +1,16 @@
 using Application.Genres.Responses;
 
-namespace WebApi.Features.Genres;
-
-public record GenreSummary(
-    int Id,
-    string Name)
+namespace WebApi.Features.Genres
 {
-    public static GenreSummary FromApplicationResponse(ApplicationGenre genre)
+    public record GenreSummary(
+        int Id,
+        string Name)
     {
-        return new GenreSummary(
-            genre.Id,
-            genre.Name);
+        public static GenreSummary FromApplicationResponse(ApplicationGenre genre)
+        {
+            return new GenreSummary(
+                genre.Id,
+                genre.Name);
+        }
     }
 }

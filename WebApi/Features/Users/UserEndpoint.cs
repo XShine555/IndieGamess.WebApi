@@ -6,79 +6,89 @@ using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
 
-namespace WebApi.Features.Users;
-
-public static class UserEndpoint
+namespace WebApi.Features.Users
 {
-    public static void MapUserEndpoint(this WebApplication webApplication)
+    public static class UserEndpoint
     {
-        var group = webApplication.MapGroup("/users")
-            .WithTags("Users");
-
-        group.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken,
-            [AsParameters] GetUsersParameters parameters) =>
+        public static void MapUserEndpoint(this WebApplication webApplication)
         {
-            var queryResult = await mediator.Send(new GetUserByDisplayUsernameQuery(parameters.Name), cancellationToken);
+            var group = webApplication.MapGroup("/users")
+                .WithTags("Users");
 
-            if (queryResult.IsSuccess)
+            group.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken,
+                [AsParameters] GetUsersParameters parameters) =>
             {
-                var summary = UserSummary.FromApplicationResponse(queryResult.Value);
-                return Results.Ok(new PaginatedResponse<UserSummary>(
-                    [summary],
-                    1,
-                    1,
-                    1,
-                    1,
-                    false,
-                    false));
-            }
+                var queryResult = await mediator.Send(new GetUserByDisplayUsernameQuery(parameters.Name), cancellationToken);
 
-            if (queryResult.Status == ResultStatus.NotFound)
+                if (queryResult.IsSuccess)
+                {
+                    var summary = UserSummary.FromApplicationResponse(queryResult.Value);
+                    return Results.Ok(new PaginatedResponse<UserSummary>(
+                        [summary],
+                        1,
+                        1,
+                        1,
+                        1,
+                        false,
+                        false));
+                }
+
+                if (queryResult.Status == ResultStatus.NotFound)
+                {
+                    return Results.Ok(new PaginatedResponse<UserSummary>(
+                        [],
+                        1,
+                        10,
+                        0,
+                        0,
+                        false,
+                        false));
+                }
+
+                return queryResult.ToMinimalApiResult();
+            })
+                .WithSummary("Get Users By Display Username");
+
+            group.MapGet("/{id}", async (IMediator mediator, UserResponseMapper mapper, CancellationToken cancellationToken, string id) =>
             {
-                return Results.Ok(new PaginatedResponse<UserSummary>(
-                    [],
-                    1,
-                    10,
-                    0,
-                    0,
-                    false,
-                    false));
-            }
+                var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(id), cancellationToken);
 
-            return queryResult.ToMinimalApiResult();
-        })
-            .WithSummary("Get Users By Display Username");
+                if (!queryResult.IsSuccess)
+                {
+                    return queryResult.ToMinimalApiResult();
+                }
 
-        group.MapGet("/{id}", async (IMediator mediator, CancellationToken cancellationToken, string id) =>
-        {
-            var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(id), cancellationToken);
+                var response = await mapper.FromApplicationResponseAsync(queryResult.Value, cancellationToken);
+                return Results.Ok(response);
+            })
+                .WithSummary("Get User By Id");
 
-            return queryResult.IsSuccess
-                ? Results.Ok(UserResponse.FromApplicationResponse(queryResult.Value))
-                : queryResult.ToMinimalApiResult();
-        })
-            .WithSummary("Get User By Id");
+            group.MapPost("/{id}/image", async (IMediator mediator, CancellationToken cancellationToken,
+                string id, [FromForm] IFormFile formFile) =>
+            {
+                var fileData = FileData.FromFormFile(formFile);
+                var commandResult = await mediator.Send(new UpdateUserProfilePictureCommand(id, fileData), cancellationToken);
+                return commandResult.ToMinimalApiResult();
+            })
+                .WithSummary("Upload User Profile Image")
+                .RequireAuthorization()
+                .DisableAntiforgery();
 
-        group.MapPost("/{id}/image", async (IMediator mediator, CancellationToken cancellationToken,
-            string id, [FromForm] IFormFile formFile) =>
-        {
-            var fileData = FileData.FromFormFile(formFile);
-            var commandResult = await mediator.Send(new UpdateUserProfilePictureCommand(id, fileData), cancellationToken);
-            return commandResult.ToMinimalApiResult();
-        })
-            .WithSummary("Upload User Profile Image")
-            .RequireAuthorization()
-            .DisableAntiforgery();
+            group.MapPut("/{id}", async (IMediator mediator, UserResponseMapper mapper, CancellationToken cancellationToken,
+                string id, [FromBody] UpdateUserRequest request) =>
+            {
+                var commandResult = await mediator.Send(new UpdateUserCommand(id, request.DisplayUsername), cancellationToken);
 
-        group.MapPut("/{id}", async (IMediator mediator, CancellationToken cancellationToken,
-            string id, [FromBody] UpdateUserRequest request) =>
-        {
-            var commandResult = await mediator.Send(new UpdateUserCommand(id, request.DisplayUsername), cancellationToken);
-            return commandResult.IsSuccess
-                ? Results.Ok(UserResponse.FromApplicationResponse(commandResult.Value))
-                : commandResult.ToMinimalApiResult();
-        })
-            .WithSummary("Update User")
-            .RequireAuthorization();
+                if (!commandResult.IsSuccess)
+                {
+                    return commandResult.ToMinimalApiResult();
+                }
+
+                var response = await mapper.FromApplicationResponseAsync(commandResult.Value, cancellationToken);
+                return Results.Ok(response);
+            })
+                .WithSummary("Update User")
+                .RequireAuthorization();
+        }
     }
 }

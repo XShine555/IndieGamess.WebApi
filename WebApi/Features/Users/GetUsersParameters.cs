@@ -1,9 +1,10 @@
 using System.ComponentModel;
 
-namespace WebApi.Features.Users;
-
-public record GetUsersParameters
+namespace WebApi.Features.Users
 {
-    [DefaultValue("")]
-    public string Name { get; init; } = string.Empty;
+    public record GetUsersParameters
+    {
+        [DefaultValue("")]
+        public string Name { get; init; } = string.Empty;
+    }
 }

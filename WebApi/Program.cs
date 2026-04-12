@@ -29,6 +29,8 @@ services.AddApplicationMediator(configuration);
 
 services.AddHttpContextAccessor();
 services.AddScoped<ICurrentUser, CurrentUser>();
+services.AddScoped<GameResponseMapper>();
+services.AddScoped<UserResponseMapper>();
 
 services.ConfigureScalar();
 

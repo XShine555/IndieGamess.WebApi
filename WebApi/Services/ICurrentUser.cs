@@ -1,6 +1,7 @@
-namespace WebApi.Services;
-
-public interface ICurrentUser
+namespace WebApi.Services
 {
-    string IdentityId { get; }
+    public interface ICurrentUser
+    {
+        string IdentityId { get; }
+    }
 }
