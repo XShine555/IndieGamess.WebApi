@@ -1,5 +1,5 @@
-using Application;
-using Infrastructure.MassTransit.DependencyInjection;
+using Application.Configuration;
+using Infrastructure.Messaging.Configuration;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
 using Scalar.AspNetCore;

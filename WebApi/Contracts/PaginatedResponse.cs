@@ -1,4 +1,4 @@
-﻿using Application.Contracts.Application;
+﻿using Application.Abstractions.Common;
 
 namespace WebApi.Contracts
 {
