@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace WebApi.Features.Users
+namespace WebApi.Features.Users.Parameters
 {
     public record GetUsersParameters
     {

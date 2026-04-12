@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApi.Features.Games
+namespace WebApi.Features.Games.Requests
 {
     public record CreateGameRequest(
         [Required] [MinLength(3)]

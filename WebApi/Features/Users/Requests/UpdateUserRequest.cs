@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApi.Features.Users
+namespace WebApi.Features.Users.Requests
 {
     public record UpdateUserRequest(
         [Required] [MinLength(3)]

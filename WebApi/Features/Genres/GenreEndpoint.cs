@@ -5,6 +5,9 @@ using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
+using WebApi.Features.Genres.Parameters;
+using WebApi.Features.Genres.Requests;
+using WebApi.Features.Genres.Responses;
 
 namespace WebApi.Features.Genres
 {

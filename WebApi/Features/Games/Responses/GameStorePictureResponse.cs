@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.Storage;
 using Application.Games.Responses;
 
-namespace WebApi.Features.Games
+namespace WebApi.Features.Games.Responses
 {
     public record GameStorePictureResponse(
         string SmallImageUrl,

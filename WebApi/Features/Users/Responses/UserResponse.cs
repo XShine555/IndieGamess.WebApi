@@ -1,6 +1,6 @@
 using Application.Users.Responses;
 
-namespace WebApi.Features.Users
+namespace WebApi.Features.Users.Responses
 {
     public record UserResponse(
         string IdentityId,

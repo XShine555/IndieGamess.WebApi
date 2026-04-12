@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace WebApi.Features.Games
+namespace WebApi.Features.Games.Parameters
 {
     public record GetGamesParameters
     {

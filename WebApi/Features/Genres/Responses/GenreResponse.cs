@@ -1,6 +1,6 @@
 using Application.Genres.Responses;
 
-namespace WebApi.Features.Genres
+namespace WebApi.Features.Genres.Responses
 {
     public record GenreResponse(
         int Id,

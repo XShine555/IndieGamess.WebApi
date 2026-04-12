@@ -1,8 +1,9 @@
 using Application.Abstractions.Storage;
 using Application.Games.Responses;
 using Domain.Entities;
-using WebApi.Features.Genres;
-using WebApi.Features.Users;
+using WebApi.Features.Games.Responses;
+using WebApi.Features.Genres.Responses;
+using WebApi.Features.Users.Responses;
 
 namespace WebApi.Features.Games
 {
@@ -19,8 +20,8 @@ namespace WebApi.Features.Games
                 game.Id,
                 game.Title,
                 game.Description,
-                UserSummary.FromApplicationSummaryResponse(game.ApplicationUserSummary),
-                game.Genres.Select(GenreSummary.FromApplicationResponse).ToArray(),
+                UserSummaryResponse.FromApplicationSummaryResponse(game.ApplicationUserSummary),
+                game.Genres.Select(GenreSummaryResponse.FromApplicationResponse).ToArray(),
                 pictures);
         }
     }

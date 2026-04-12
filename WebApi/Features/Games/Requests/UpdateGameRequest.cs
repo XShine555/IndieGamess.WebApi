@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApi.Features.Games
+namespace WebApi.Features.Games.Requests
 {
     public record UpdateGameRequest(
         [Required] [MinLength(3)]

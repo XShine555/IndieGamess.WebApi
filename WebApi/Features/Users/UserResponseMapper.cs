@@ -1,5 +1,6 @@
 using Application.Abstractions.Storage;
 using Application.Users.Responses;
+using WebApi.Features.Users.Responses;
 
 namespace WebApi.Features.Users
 {

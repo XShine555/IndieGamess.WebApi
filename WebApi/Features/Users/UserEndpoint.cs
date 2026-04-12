@@ -4,6 +4,9 @@ using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
+using WebApi.Features.Users.Parameters;
+using WebApi.Features.Users.Requests;
+using WebApi.Features.Users.Responses;
 
 namespace WebApi.Features.Users
 {

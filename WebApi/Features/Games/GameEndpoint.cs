@@ -5,6 +5,9 @@ using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
+using WebApi.Features.Games.Parameters;
+using WebApi.Features.Games.Requests;
+using WebApi.Features.Games.Responses;
 using WebApi.Services;
 
 namespace WebApi.Features.Games

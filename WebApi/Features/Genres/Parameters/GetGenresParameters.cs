@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace WebApi.Features.Genres
+namespace WebApi.Features.Genres.Parameters
 {
     public record GetGenresParameters
     {
