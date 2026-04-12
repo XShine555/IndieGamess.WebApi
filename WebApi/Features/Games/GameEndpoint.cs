@@ -1,5 +1,6 @@
 using Application.Games.Commands;
 using Application.Games.Queries;
+using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,8 @@ namespace WebApi.Features.Games
 
                 var response = await PaginatedResponse<GameResponse>.FromApplicationResponseAsync(
                     queryResult,
-                    game => mapper.FromApplicationResponseAsync(game, cancellationToken));
+                    game => mapper.FromApplicationResponseAsync(game, cancellationToken),
+                    cancellationToken);
 
                 return Results.Ok(response);
             } )

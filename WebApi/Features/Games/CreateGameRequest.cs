@@ -9,7 +9,7 @@ namespace WebApi.Features.Games
         [Required] [MinLength(10)]
         string Description)
     {
-        [DefaultValue(new int[0])]
+        [DefaultValue(new int[0] )]
         public int[] Genres { get; init; } = Array.Empty<int>();
     }
 }

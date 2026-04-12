@@ -16,6 +16,11 @@ namespace WebApi.Features.Users
             IS3Service s3Service,
             CancellationToken cancellationToken)
         {
+            ArgumentException.ThrowIfNullOrEmpty(picture.OriginalPictureKey, nameof(picture.OriginalPictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(picture.SmallPictureKey, nameof(picture.SmallPictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(picture.MediumPictureKey, nameof(picture.MediumPictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(picture.LargePictureKey, nameof(picture.LargePictureKey));
+
             var originalImageUrl = await s3Service.GetSignedUrlAsync(picture.OriginalPictureKey, TimeSpan.FromHours(1), cancellationToken);
             var smallImageUrl = await s3Service.GetSignedUrlAsync(picture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
             var mediumImageUrl = await s3Service.GetSignedUrlAsync(picture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);

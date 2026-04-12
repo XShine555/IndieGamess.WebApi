@@ -1,5 +1,6 @@
 using Application.Abstractions.Storage;
 using Application.Games.Responses;
+using Domain.Entities;
 using WebApi.Features.Genres;
 using WebApi.Features.Users;
 
@@ -10,7 +11,8 @@ namespace WebApi.Features.Games
         public async Task<GameResponse> FromApplicationResponseAsync(ApplicationGame game, CancellationToken cancellationToken)
         {
             var pictures = await Task.WhenAll(
-                game.Pictures.Select(picture =>
+                game.Pictures.Where(p => p.ProcessingStatus == GamePictureProcessingStatus.Completed)
+                .Select(picture =>
                     GameStorePictureResponse.FromApplicationResponseAsync(picture, s3Service, cancellationToken)));
 
             return new GameResponse(

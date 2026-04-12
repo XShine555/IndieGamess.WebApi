@@ -1,4 +1,5 @@
 using Application.Abstractions.Common;
+using System.Threading;
 
 namespace WebApi.Common
 {
@@ -27,8 +28,11 @@ namespace WebApi.Common
 
         public static async Task<PaginatedResponse<TDestination>> FromApplicationResponseAsync<TSource, TDestination>(
             PaginatedApplicationResponse<TSource> applicationResponse,
-            Func<TSource, Task<TDestination>> mapper)
+            Func<TSource, Task<TDestination>> mapper,
+            CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var mappedItems = await Task.WhenAll(
                 applicationResponse.Items.Select(mapper)
             );

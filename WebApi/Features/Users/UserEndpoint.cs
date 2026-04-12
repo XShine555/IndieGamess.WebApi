@@ -1,6 +1,5 @@
 using Application.Users.Commands;
 using Application.Users.Queries;
-using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
@@ -15,38 +14,18 @@ namespace WebApi.Features.Users
             var group = webApplication.MapGroup("/users")
                 .WithTags("Users");
 
-            group.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken,
+            group.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken, UserResponseMapper mapper,
                 [AsParameters] GetUsersParameters parameters) =>
             {
-                var queryResult = await mediator.Send(new GetUserByDisplayUsernameQuery(parameters.Name), cancellationToken);
+                var queryResult = await mediator.Send(new GetUsersQuery(parameters.Name, parameters.PageNumber, parameters.PageSize), cancellationToken);
 
-                if (queryResult.IsSuccess)
-                {
-                    var summary = UserSummary.FromApplicationResponse(queryResult.Value);
-                    return Results.Ok(new PaginatedResponse<UserSummary>(
-                        [summary],
-                        1,
-                        1,
-                        1,
-                        1,
-                        false,
-                        false));
-                }
+                var response = await PaginatedResponse<UserResponse>.FromApplicationResponseAsync(
+                    queryResult,
+                    user => mapper.FromApplicationResponseAsync(user, cancellationToken),
+                    cancellationToken);
 
-                if (queryResult.Status == ResultStatus.NotFound)
-                {
-                    return Results.Ok(new PaginatedResponse<UserSummary>(
-                        [],
-                        1,
-                        10,
-                        0,
-                        0,
-                        false,
-                        false));
-                }
-
-                return queryResult.ToMinimalApiResult();
-            })
+                return Results.Ok(response);
+            } )
                 .WithSummary("Get Users By Display Username");
 
             group.MapGet("/{id}", async (IMediator mediator, UserResponseMapper mapper, CancellationToken cancellationToken, string id) =>
@@ -60,7 +39,7 @@ namespace WebApi.Features.Users
 
                 var response = await mapper.FromApplicationResponseAsync(queryResult.Value, cancellationToken);
                 return Results.Ok(response);
-            })
+            } )
                 .WithSummary("Get User By Id");
 
             group.MapPost("/{id}/image", async (IMediator mediator, CancellationToken cancellationToken,
@@ -69,7 +48,7 @@ namespace WebApi.Features.Users
                 var fileData = FileData.FromFormFile(formFile);
                 var commandResult = await mediator.Send(new UpdateUserProfilePictureCommand(id, fileData), cancellationToken);
                 return commandResult.ToMinimalApiResult();
-            })
+            } )
                 .WithSummary("Upload User Profile Image")
                 .RequireAuthorization()
                 .DisableAntiforgery();
@@ -86,7 +65,7 @@ namespace WebApi.Features.Users
 
                 var response = await mapper.FromApplicationResponseAsync(commandResult.Value, cancellationToken);
                 return Results.Ok(response);
-            })
+            } )
                 .WithSummary("Update User")
                 .RequireAuthorization();
         }
