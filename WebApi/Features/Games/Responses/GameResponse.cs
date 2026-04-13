@@ -9,5 +9,6 @@ namespace WebApi.Features.Games.Responses
         string Description,
         UserSummaryResponse Owner,
         IReadOnlyCollection<GenreSummaryResponse> Genres,
+        IReadOnlyCollection<GameArtworkPictureResponse> GameArtworkPictures,
         IReadOnlyCollection<GameStorePictureResponse> GameStorePictures);
 }

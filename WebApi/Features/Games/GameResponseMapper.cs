@@ -11,10 +11,16 @@ namespace WebApi.Features.Games
     {
         public async Task<GameResponse> FromApplicationResponseAsync(ApplicationGame game, CancellationToken cancellationToken)
         {
-            var pictures = await Task.WhenAll(
+            var storePictures = await Task.WhenAll(
                 game.Pictures.Where(p => p.ProcessingStatus == GamePictureProcessingStatus.Completed)
                 .Select(picture =>
                     GameStorePictureResponse.FromApplicationResponseAsync(picture, s3Service, cancellationToken)));
+
+            var artworkPictures = Task.WhenAll(
+                game.Artworks.Where(p => p.ProcessingStatus == GameArtworkProcessingStatus.Completed)
+                .Select(picture =>
+                    GameArtworkPictureResponse.FromApplicationResponseAsync(picture, s3Service, cancellationToken))
+                );
 
             return new GameResponse(
                 game.Id,
@@ -22,7 +28,8 @@ namespace WebApi.Features.Games
                 game.Description,
                 UserSummaryResponse.FromApplicationSummaryResponse(game.ApplicationUserSummary),
                 game.Genres.Select(GenreSummaryResponse.FromApplicationResponse).ToArray(),
-                pictures);
+                await artworkPictures,
+                storePictures);
         }
     }
 }
