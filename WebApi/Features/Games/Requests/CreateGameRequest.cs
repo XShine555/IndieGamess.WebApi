@@ -10,11 +10,11 @@ namespace WebApi.Features.Games.Requests
         [Required] [MinLength(10)]
         string Description,
         [Required]
-        IFileData HeaderPicture,
+        IFormFile HeaderPicture,
         [Required]
-        IFileData CapsulePicture,
+        IFormFile CapsulePicture,
         [Required]
-        IFileData MainPicture)
+        IFormFile MainPicture)
     {
         [DefaultValue(new int[0] )]
         public int[] Genres { get; init; } = Array.Empty<int>();
