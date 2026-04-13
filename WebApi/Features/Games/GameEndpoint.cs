@@ -52,7 +52,7 @@ namespace WebApi.Features.Games
                 .WithSummary("Get Game By Id");
 
             group.MapPost("/", async (IMediator mediator, ICurrentUser currentUser, GameResponseMapper mapper, CancellationToken cancellationToken,
-                [FromBody] CreateGameRequest request) =>
+                [FromForm] CreateGameRequest request) =>
             {
                 var commandResult = await mediator.Send(new CreateGameCommand(
                     currentUser.IdentityId,
