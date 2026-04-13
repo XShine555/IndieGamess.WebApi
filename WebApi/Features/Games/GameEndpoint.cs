@@ -54,14 +54,18 @@ namespace WebApi.Features.Games
             group.MapPost("/", async (IMediator mediator, ICurrentUser currentUser, GameResponseMapper mapper, CancellationToken cancellationToken,
                 [FromForm] CreateGameRequest request) =>
             {
+                var headerPictureData = FileData.FromFormFile(request.HeaderPicture);
+                var capsulePictureData = FileData.FromFormFile(request.CapsulePicture);
+                var mainPictureData = FileData.FromFormFile(request.MainPicture);
+
                 var commandResult = await mediator.Send(new CreateGameCommand(
                     currentUser.IdentityId,
                     request.Title,
                     request.Description,
                     request.Genres,
-                    request.CapsulePicture,
-                    request.HeaderPicture,
-                    request.MainPicture), cancellationToken);
+                    capsulePictureData,
+                    headerPictureData,
+                    mainPictureData), cancellationToken);
 
                 if (!commandResult.IsSuccess)
                 {
@@ -72,7 +76,8 @@ namespace WebApi.Features.Games
                 return Results.Created($"/games/{commandResult.Value.Id}", response);
             } )
                 .WithSummary("Create Game")
-                .RequireAuthorization();
+                .RequireAuthorization()
+                .DisableAntiforgery();
 
             group.MapPost("/{id}/picture", async (IMediator mediator, ICurrentUser currentUser, CancellationToken cancellationToken,
                 int id, [FromForm] IFormFile formFile) =>
