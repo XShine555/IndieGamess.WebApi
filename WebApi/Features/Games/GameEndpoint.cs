@@ -58,7 +58,10 @@ namespace WebApi.Features.Games
                     currentUser.IdentityId,
                     request.Title,
                     request.Description,
-                    request.Genres), cancellationToken);
+                    request.Genres,
+                    request.CapsulePicture,
+                    request.HeaderPicture,
+                    request.MainPicture), cancellationToken);
 
                 if (!commandResult.IsSuccess)
                 {

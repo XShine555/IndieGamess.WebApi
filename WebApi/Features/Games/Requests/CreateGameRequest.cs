@@ -1,3 +1,4 @@
+using Application.Abstractions.Common;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,7 +8,13 @@ namespace WebApi.Features.Games.Requests
         [Required] [MinLength(3)]
         string Title,
         [Required] [MinLength(10)]
-        string Description)
+        string Description,
+        [Required]
+        IFileData HeaderPicture,
+        [Required]
+        IFileData CapsulePicture,
+        [Required]
+        IFileData MainPicture)
     {
         [DefaultValue(new int[0] )]
         public int[] Genres { get; init; } = Array.Empty<int>();
