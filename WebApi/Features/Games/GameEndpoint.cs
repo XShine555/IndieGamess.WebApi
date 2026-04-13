@@ -116,7 +116,8 @@ namespace WebApi.Features.Games
                     request.Title,
                     request.Description,
                     request.OwnerId,
-                    request.Genres), cancellationToken);
+                    request.Genres,
+                    request.IsPublic), cancellationToken);
 
                 if (!commandResult.IsSuccess)
                 {

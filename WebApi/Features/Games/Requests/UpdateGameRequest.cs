@@ -10,5 +10,7 @@ namespace WebApi.Features.Games.Requests
         [Required]
         string? OwnerId,
         [Required]
-        int[] Genres);
+        int[] Genres,
+        [Required]
+        bool IsPublic);
 }
