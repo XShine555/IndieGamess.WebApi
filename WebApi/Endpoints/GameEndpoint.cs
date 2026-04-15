@@ -15,6 +15,7 @@ namespace WebApi.Endpoints
 {
     [ApiController]
     [Route("games")]
+    [Tags("Games")]
     public class GameEndpoint(IMediator mediator, ILogger<GameEndpoint> logger, GameMapper mapper)
         : ControllerBase
     {

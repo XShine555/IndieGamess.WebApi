@@ -14,6 +14,7 @@ namespace WebApi.Endpoints
 {
     [ApiController]
     [Route("users")]
+    [Tags("Users")]
     public class UserEndpoint(IMediator mediator, ILogger<UserEndpoint> logger, UserMapper mapper)
         : Controller
     {

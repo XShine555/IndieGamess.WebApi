@@ -10,6 +10,7 @@ namespace WebApi.Endpoints
 {
     [ApiController]
     [Route("genres")]
+    [Tags("Genres")]
     public class GenreEndpoint(IMediator mediator, ILogger<GenreEndpoint> logger, GenreMapper mapper)
         : Controller
     {
