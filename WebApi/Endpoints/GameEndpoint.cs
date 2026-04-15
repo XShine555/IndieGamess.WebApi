@@ -1,11 +1,14 @@
-﻿using Application.Games.Queries;
+﻿using Application.Games.Commands;
+using Application.Games.Queries;
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Mediator;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Common;
 using WebApi.DataTransferObjects.Games;
 using WebApi.Mappers;
-using WebApi.Common;
+using WebApi.Services;
 
 namespace WebApi.Endpoints
 {
@@ -16,7 +19,7 @@ namespace WebApi.Endpoints
     {
         [TranslateResultToActionResult]
         [HttpGet]
-        public async Task<PaginatedResponse<GameResponse>> Get( [FromQuery] GetQuery query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<GameResponse>> Get([FromQuery] GetQuery query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGamesQuery(query.Title, query.Genres, query.PageSize, query.PageSize), cancellationToken);
             return await mapper.MapToGamePaginatedResponse(queryResult, cancellationToken);
@@ -29,6 +32,60 @@ namespace WebApi.Endpoints
         {
             var queryResult = await mediator.Send(new GetGameByIdQuery(id), cancellationToken);
             return await queryResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPost]
+        [Authorize]
+        public async Task<GameResponse> CreateGame([FromForm] CreateGameRequest createGameRequest, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var capsulePicture = FileData.FromFormFile(createGameRequest.CapsulePicture);
+            var headerPicture = FileData.FromFormFile(createGameRequest.HeaderPicture);
+            var mainPicture = FileData.FromFormFile(createGameRequest.MainPicture);
+            var commandResult = await mediator.Send(new CreateGameCommand(
+                currentUser.IdentityId,
+                createGameRequest.Title,
+                createGameRequest.Description,
+                createGameRequest.Price,
+                createGameRequest.Genres,
+                capsulePicture,
+                headerPicture,
+                mainPicture), cancellationToken);
+            return await commandResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
+        }
+
+        [TranslateResultToActionResult]
+        [HttpDelete("{id}")]
+        public async Task<Result> RemoveGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new RemoveGameCommand(currentUser.IdentityId, id), cancellationToken);
+            return commandResult;
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPut("{id}")]
+        public async Task<GameResponse> UpdateGame(Guid id, UpdateGameRequest updateGameRequest, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new UpdateGameCommand(
+                currentUser.IdentityId,
+                id,
+                updateGameRequest.Title,
+                updateGameRequest.Description,
+                updateGameRequest.Price,
+                updateGameRequest.Discount,
+                updateGameRequest.IsPublic), cancellationToken);
+            return await commandResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPatch("{id}/genres")]
+        public async Task<GameResponse> UpdateGenres(Guid id, UpdateGameGenresRequest updateGameGenresRequest, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new UpdateGameGenresCommand(currentUser.IdentityId, id, updateGameGenresRequest.Genres), cancellationToken);
+            return await commandResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
         }
     }
 }
