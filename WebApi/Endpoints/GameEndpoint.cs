@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
 using WebApi.DataTransferObjects.Games;
+using WebApi.Extensions;
 using WebApi.Mappers;
 using WebApi.Services;
 
@@ -80,12 +81,38 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
+        [HttpPost("{id}/publish")]
+        public async Task<Result> PublishGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new PublishGameCommand(currentUser.IdentityId, id), cancellationToken);
+            return commandResult;
+        }
+
+        [TranslateResultToActionResult]
         [HttpPatch("{id}/genres")]
         public async Task<GameResponse> UpdateGenres(Guid id, UpdateGameGenresRequest updateGameGenresRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new UpdateGameGenresCommand(currentUser.IdentityId, id, updateGameGenresRequest.Genres), cancellationToken);
             return await commandResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPost("{id}/storePicture")]
+        public async Task<Result> UpdateStorePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var storePicture = FileData.FromFormFile(formFile);
+            var commandResult = await mediator.Send(new AddStorePictureToGameCommand(currentUser.IdentityId, id, storePicture), cancellationToken);
+            return commandResult.ToResult();
+        }
+
+        [TranslateResultToActionResult]
+        [HttpDelete("{id}/storePicture")]
+        public async Task<Result> RemoveStorePicture(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new RemoveStorePictureToGameCommand(currentUser.IdentityId, id), cancellationToken);
+            return commandResult.ToResult();
         }
     }
 }
