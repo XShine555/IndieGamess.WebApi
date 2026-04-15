@@ -22,9 +22,9 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Games")]
         [EndpointSummary("Get Games")]
-        public async Task<PaginatedResponse<GameResponse>> Get( [FromQuery] GetGames query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<GameListItemResponse>> Get([FromQuery] GetGames query, CancellationToken cancellationToken)
         {
-            var queryResult = await mediator.Send(new GetGamesQuery(query.Title, query.Genres, query.PageSize, query.PageSize), cancellationToken);
+            var queryResult = await mediator.Send(new GetGamesQuery(query.Title, query.Genres, query.PageNumber, query.PageSize), cancellationToken);
             return await mapper.MapToGamePaginatedResponse(queryResult, cancellationToken);
         }
 
@@ -42,7 +42,7 @@ namespace WebApi.Endpoints
         [HttpPost(Name = "Create Game")]
         [EndpointSummary("Create Game")]
         [Authorize]
-        public async Task<GameResponse> CreateGame( [FromForm] CreateGameRequest createGameRequest, CancellationToken cancellationToken,
+        public async Task<GameMutationResponse> CreateGame([FromForm] CreateGameRequest createGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var capsulePicture = FileData.FromFormFile(createGameRequest.CapsulePicture);
@@ -57,7 +57,7 @@ namespace WebApi.Endpoints
                 capsulePicture,
                 headerPicture,
                 mainPicture), cancellationToken);
-            return await commandResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
+            return commandResult.Map(mapper.MapToGameMutationResponse);
         }
 
         [TranslateResultToActionResult]
@@ -74,7 +74,7 @@ namespace WebApi.Endpoints
         [HttpPut("{id}", Name = "Update By Id")]
         [EndpointSummary("Update Game")]
         [Authorize]
-        public async Task<GameResponse> UpdateGame(Guid id, UpdateGameRequest updateGameRequest, CancellationToken cancellationToken,
+        public async Task<GameMutationResponse> UpdateGame(Guid id, UpdateGameRequest updateGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new UpdateGameCommand(
@@ -85,7 +85,7 @@ namespace WebApi.Endpoints
                 updateGameRequest.Price,
                 updateGameRequest.Discount,
                 updateGameRequest.IsPublic), cancellationToken);
-            return await commandResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
+            return commandResult.Map(mapper.MapToGameMutationResponse);
         }
 
         [TranslateResultToActionResult]
@@ -102,11 +102,11 @@ namespace WebApi.Endpoints
         [HttpPatch("{id}/genres", Name = "Update Genres")]
         [EndpointSummary("Update Genres")]
         [Authorize]
-        public async Task<GameResponse> UpdateGenres(Guid id, UpdateGameGenresRequest updateGameGenresRequest, CancellationToken cancellationToken,
+        public async Task<GameGenresMutationResponse> UpdateGenres(Guid id, UpdateGameGenresRequest updateGameGenresRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new UpdateGameGenresCommand(currentUser.IdentityId, id, updateGameGenresRequest.Genres), cancellationToken);
-            return await commandResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
+            return commandResult.Map(mapper.MapToGameGenresMutationResponse);
         }
 
         [TranslateResultToActionResult]

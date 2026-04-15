@@ -13,9 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
-    <PackageReference Include="IndieGames.Application" Version="0.1.51" />
-    <PackageReference Include="IndieGames.Domain" Version="0.1.23" />
-    <PackageReference Include="IndieGames.Infrastructure" Version="0.1.40" />
+    <PackageReference Include="IndieGames.Application" Version="0.1.53" />
+    <PackageReference Include="IndieGames.Domain" Version="0.1.24" />
+    <PackageReference Include="IndieGames.Infrastructure" Version="0.1.41" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.13.20" />

@@ -7,9 +7,14 @@ namespace WebApi.Mappers
 {
     public class GenreMapper
     {
-        public PaginatedResponse<GenreResponse> MapToGenrePaginatedResponse(PaginatedApplicationResponse<ApplicationGenre> paginatedResponse)
+        public PaginatedResponse<GenreListItemResponse> MapToGenrePaginatedResponse(PaginatedApplicationResponse<ApplicationGenreListItem> paginatedResponse)
         {
-            return PaginatedResponse<GenreResponse>.FromApplicationResponse(paginatedResponse, MapToGenreResponse);
+            return PaginatedResponse<GenreListItemResponse>.FromApplicationResponse(paginatedResponse, MapToGenreListItemResponse);
+        }
+
+        public GenreListItemResponse MapToGenreListItemResponse(ApplicationGenreListItem applicationGenre)
+        {
+            return new GenreListItemResponse(applicationGenre.Id, applicationGenre.Name);
         }
 
         public GenreResponse MapToGenreResponse(ApplicationGenre applicationGenre)

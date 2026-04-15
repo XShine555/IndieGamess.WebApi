@@ -17,7 +17,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Genres")]
         [EndpointSummary("Get Genres")]
-        public async Task<PaginatedResponse<GenreResponse>> Get([FromQuery] GetGenres query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<GenreListItemResponse>> Get([FromQuery] GetGenres query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGenresQuery(query.Name, query.PageNumber, query.PageSize), cancellationToken);
             return mapper.MapToGenrePaginatedResponse(queryResult);

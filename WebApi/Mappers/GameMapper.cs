@@ -10,12 +10,39 @@ namespace WebApi.Mappers
 {
     public class GameMapper(IS3Service s3Service)
     {
-        public async Task<PaginatedResponse<GameResponse>> MapToGamePaginatedResponse(PaginatedApplicationResponse<ApplicationGame> paginatedResponse,
+        public async Task<PaginatedResponse<GameListItemResponse>> MapToGamePaginatedResponse(PaginatedApplicationResponse<ApplicationGameListItem> listItem,
             CancellationToken cancellationToken)
         {
-            return await PaginatedResponse<GameResponse>.FromApplicationResponseAsync(paginatedResponse,
-                source => MapToGameResponse(source, cancellationToken),
-                cancellationToken);
+            return PaginatedResponse<GameListItemResponse>.FromApplicationResponse(listItem, MapToGameListItem);
+        }
+
+        public GameListItemResponse MapToGameListItem(ApplicationGameListItem gameListItem)
+        {
+            return new GameListItemResponse(
+                gameListItem.Id,
+                gameListItem.Title,
+                gameListItem.Price,
+                gameListItem.Discount
+            );
+        }
+
+        public GameMutationResponse MapToGameMutationResponse(ApplicationGameMutation applicationGame)
+        {
+            return new GameMutationResponse(
+                applicationGame.Id,
+                applicationGame.Title,
+                applicationGame.Price,
+                applicationGame.Discount,
+                applicationGame.IsPublic,
+                applicationGame.IsPublished,
+                applicationGame.OwnerId);
+        }
+
+        public GameGenresMutationResponse MapToGameGenresMutationResponse(ApplicationGameGenresMutation applicationGame)
+        {
+            return new GameGenresMutationResponse(
+                applicationGame.GameId,
+                applicationGame.GenreIds.ToList());
         }
 
         public async Task<GameResponse> MapToGameResponse(ApplicationGame applicationGame, CancellationToken cancellationToken)
@@ -38,7 +65,7 @@ namespace WebApi.Mappers
 
         UserSummary MapUserSummary(ApplicationGame applicationGame)
         {
-            return new UserSummary(applicationGame.ApplicationUserSummary.IdentityId, applicationGame.ApplicationUserSummary.Username);
+            return new UserSummary(applicationGame.Owner.IdentityId, applicationGame.Owner.Username);
         }
 
         IReadOnlyList<GenreSummary> MapGenreSummary(ApplicationGame applicationGame)

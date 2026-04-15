@@ -21,7 +21,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Users")]
         [EndpointSummary("Get Users")]
-        public async Task<PaginatedResponse<UserResponse>> Get([FromQuery] GetUsers query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<UserListItemResponse>> Get([FromQuery] GetUsers query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUsersQuery(query.Username, query.PageNumber, query.PageSize), cancellationToken);
             return await mapper.MapToUserPaginatedResponseAsync(queryResult, cancellationToken);
