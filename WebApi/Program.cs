@@ -4,9 +4,7 @@ using Infrastructure.Persistence;
 using Infrastructure.Services;
 using Scalar.AspNetCore;
 using WebApi.Authentication;
-using WebApi.Features.Games;
-using WebApi.Features.Genres;
-using WebApi.Features.Users;
+using WebApi.Mappers;
 using WebApi.Scalar;
 using WebApi.Services;
 
@@ -29,9 +27,9 @@ services.AddApplicationMediator(configuration);
 
 services.AddHttpContextAccessor();
 services.AddScoped<ICurrentUser, CurrentUser>();
-services.AddScoped<GameResponseMapper>();
-services.AddScoped<UserResponseMapper>();
+services.AddScoped<GameMapper>();
 
+services.AddControllers();
 services.ConfigureScalar();
 
 var app = builder.Build();
@@ -44,9 +42,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
-
-app.MapGameEndpoint();
-app.MapGenreEndpoint();
-app.MapUserEndpoint();
+app.MapControllers();
 
 app.Run();

@@ -1,5 +1,4 @@
 using Application.Abstractions.Common;
-using System.Threading;
 
 namespace WebApi.Common
 {

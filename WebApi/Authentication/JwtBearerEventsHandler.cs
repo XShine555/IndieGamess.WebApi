@@ -12,7 +12,7 @@ namespace WebApi.Authentication
         {
             var id = tokenValidatedContext.Principal!.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var username = tokenValidatedContext.Principal!.FindFirstValue("username")!;
-            await mediator.Send(new CreateUserCommand(id, username), tokenValidatedContext.HttpContext.RequestAborted);
+            await mediator.Send(new CreateUserCommand(Guid.Parse(id), username), tokenValidatedContext.HttpContext.RequestAborted);
         }
     }
 }
