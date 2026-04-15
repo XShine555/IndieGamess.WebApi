@@ -4,6 +4,7 @@ using Application.Games.Responses;
 using WebApi.Common;
 using WebApi.DataTransferObjects.Games;
 using WebApi.DataTransferObjects.Genres;
+using WebApi.DataTransferObjects.Users;
 
 namespace WebApi.Mappers
 {
@@ -28,10 +29,16 @@ namespace WebApi.Mappers
                 applicationGame.Description,
                 applicationGame.Price,
                 applicationGame.Discount,
+                MapUserSummary(applicationGame),
                 MapGenreSummary(applicationGame),
                 artworks,
                 storePictures
             );
+        }
+
+        UserSummary MapUserSummary(ApplicationGame applicationGame)
+        {
+            return new UserSummary(applicationGame.ApplicationUserSummary.IdentityId, applicationGame.ApplicationUserSummary.Username);
         }
 
         IReadOnlyList<GenreSummary> MapGenreSummary(ApplicationGame applicationGame)

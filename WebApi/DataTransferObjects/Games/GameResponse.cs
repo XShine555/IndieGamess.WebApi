@@ -1,4 +1,5 @@
 ﻿using WebApi.DataTransferObjects.Genres;
+using WebApi.DataTransferObjects.Users;
 
 namespace WebApi.DataTransferObjects.Games
 {
@@ -8,6 +9,7 @@ namespace WebApi.DataTransferObjects.Games
         string Description,
         decimal Price,
         decimal Discount,
+        UserSummary User,
         IReadOnlyList<GenreSummary> Genres,
         IReadOnlyList<GameArtworkSummary> Artworks,
         IReadOnlyList<GameStorePictureSummary> StorePictures);
