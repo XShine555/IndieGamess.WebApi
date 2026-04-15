@@ -58,6 +58,7 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<Result> RemoveGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new RemoveGameCommand(currentUser.IdentityId, id), cancellationToken);
@@ -66,6 +67,7 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<GameResponse> UpdateGame(Guid id, UpdateGameRequest updateGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
@@ -82,6 +84,7 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpPost("{id}/publish")]
+        [Authorize]
         public async Task<Result> PublishGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new PublishGameCommand(currentUser.IdentityId, id), cancellationToken);
@@ -90,6 +93,7 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpPatch("{id}/genres")]
+        [Authorize]
         public async Task<GameResponse> UpdateGenres(Guid id, UpdateGameGenresRequest updateGameGenresRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
@@ -99,6 +103,7 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpPost("{id}/storePicture")]
+        [Authorize]
         public async Task<Result> UpdateStorePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
@@ -109,6 +114,7 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpDelete("{id}/storePicture")]
+        [Authorize]
         public async Task<Result> RemoveStorePicture(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new RemoveStorePictureToGameCommand(currentUser.IdentityId, id), cancellationToken);
