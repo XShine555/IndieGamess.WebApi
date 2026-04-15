@@ -30,6 +30,13 @@ namespace WebApi.Mappers
                 profilePicture);
         }
 
+        public GameCollectionResponse MapToGameCollectionResponse(ApplicationUserCollection gameCollection)
+        {
+            return new GameCollectionResponse(
+                gameCollection.Id,
+                gameCollection.Name);
+        }
+
         async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
         {
             ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture?.SmallPictureKey, nameof(applicationUser.ProfilePicture.SmallPictureKey));
