@@ -24,7 +24,7 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpGet]
-        [Route("{id}", Name = "Get By Id")]
+        [Route("{id}", Name = "Get Genre By Id")]
         [EndpointSummary("Get Genre By Id")]
         public async Task<ActionResult<GenreResponse>> GetById(Guid id, CancellationToken cancellationToken)
         {

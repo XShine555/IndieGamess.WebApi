@@ -29,7 +29,7 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpGet]
-        [Route("{id}", Name = "Get By Id")]
+        [Route("{id}", Name = "Get Game By Id")]
         [EndpointSummary("Get Game By Id")]
         public async Task<GameResponse> GetById(Guid id, CancellationToken cancellationToken)
         {
