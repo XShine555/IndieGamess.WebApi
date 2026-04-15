@@ -38,6 +38,30 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
+        [HttpGet("{id}/collections", Name = "Get User Collections")]
+        [EndpointSummary("Get User Collections")]
+        public async Task<PaginatedResponse<GameCollectionListItemResponse>> GetCollections(
+            Guid id,
+            [FromQuery] GetUserCollections query,
+            CancellationToken cancellationToken)
+        {
+            var queryResult = await mediator.Send(new GetUserCollectionsQuery(id, query.PageNumber, query.PageSize), cancellationToken);
+            return mapper.MapToGameCollectionPaginatedResponse(queryResult);
+        }
+
+        [TranslateResultToActionResult]
+        [HttpGet("{id}/collections/{collectionId}", Name = "Get User Collection By Id")]
+        [EndpointSummary("Get User Collection By Id")]
+        public async Task<Result<GameCollectionDetailsResponse>> GetCollectionById(
+            Guid id,
+            Guid collectionId,
+            CancellationToken cancellationToken)
+        {
+            var queryResult = await mediator.Send(new GetUserCollectionByIdQuery(id, collectionId), cancellationToken);
+            return queryResult.Map(mapper.MapToGameCollectionDetailsResponse);
+        }
+
+        [TranslateResultToActionResult]
         [HttpPatch("me/profile-picture", Name = "Update Profile Picture")]
         [EndpointSummary("Update Profile Picture")]
         [Authorize]

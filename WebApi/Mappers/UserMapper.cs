@@ -1,8 +1,10 @@
 ﻿using Application.Abstractions.Common;
 using Application.Abstractions.Storage;
+using Application.Games.Responses;
 using Application.Users.Responses;
 using Ardalis.Result;
 using WebApi.Common;
+using WebApi.DataTransferObjects.Games;
 using WebApi.DataTransferObjects.Users;
 
 namespace WebApi.Mappers
@@ -17,6 +19,14 @@ namespace WebApi.Mappers
                 paginatedResponse,
                 source => MapToUserListItemResponse(source, cancellationToken),
                 cancellationToken);
+        }
+
+        public PaginatedResponse<GameCollectionListItemResponse> MapToGameCollectionPaginatedResponse(
+            PaginatedApplicationResponse<ApplicationUserCollectionListItem> paginatedResponse)
+        {
+            return PaginatedResponse<GameCollectionListItemResponse>.FromApplicationResponse(
+                paginatedResponse,
+                MapToGameCollectionListItemResponse);
         }
 
         public async Task<Result<UserResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken)
@@ -52,6 +62,36 @@ namespace WebApi.Mappers
             return new GameCollectionResponse(
                 gameCollection.Id,
                 gameCollection.Name);
+        }
+
+        public GameCollectionListItemResponse MapToGameCollectionListItemResponse(ApplicationUserCollectionListItem gameCollection)
+        {
+            return new GameCollectionListItemResponse(
+                gameCollection.Id,
+                gameCollection.Name,
+                gameCollection.GamesCount,
+                gameCollection.PreviewSmallPictureUrls,
+                gameCollection.CreatedAt,
+                gameCollection.UpdatedAt);
+        }
+
+        public GameCollectionDetailsResponse MapToGameCollectionDetailsResponse(ApplicationUserCollectionDetails gameCollection)
+        {
+            return new GameCollectionDetailsResponse(
+                gameCollection.Id,
+                gameCollection.Name,
+                gameCollection.Games.Select(MapToGameListItemResponse).ToList(),
+                gameCollection.CreatedAt,
+                gameCollection.UpdatedAt);
+        }
+
+        GameListItemResponse MapToGameListItemResponse(ApplicationGame game)
+        {
+            return new GameListItemResponse(
+                game.Id,
+                game.Title,
+                game.Price,
+                game.Discount);
         }
 
         async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
