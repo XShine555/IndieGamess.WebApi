@@ -17,15 +17,19 @@ namespace WebApi.Endpoints
     public class UserEndpoint(IMediator mediator, ILogger<UserEndpoint> logger, UserMapper mapper)
         : Controller
     {
-        [HttpGet]
-        public async Task<PaginatedResponse<UserResponse>> Get( [FromQuery] GetUsers query, CancellationToken cancellationToken)
+        [TranslateResultToActionResult]
+        [HttpGet(Name = "Get Users")]
+        [EndpointSummary("Get Users")]
+        public async Task<PaginatedResponse<UserResponse>> Get([FromQuery] GetUsers query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUsersQuery(query.Username, query.PageNumber, query.PageSize), cancellationToken);
             return await mapper.MapToUserPaginatedResponseAsync(queryResult, cancellationToken);
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("{id}", Name = "Get By Id")]
+        [EndpointSummary("Get User By Id")]
         public async Task<Result<UserResponse>> GetById(Guid id, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(id), cancellationToken);
@@ -33,9 +37,10 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("me/profile-picture")]
+        [HttpPatch("me/profile-picture", Name = "Update Profile Picture")]
+        [EndpointSummary("Update Profile Picture")]
         [Authorize]
-        public async Task<Result> UpdateProfilePicture( [FromForm] IFormFile formFile, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result> UpdateProfilePicture([FromForm] IFormFile formFile, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var fileData = FileData.FromFormFile(formFile);
             var commandResult = await mediator.Send(new UpdateUserProfilePictureCommand(currentUser.IdentityId, fileData), cancellationToken);
@@ -43,9 +48,10 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("me/collections")]
+        [HttpPost("me/collections", Name = "Add Game Collection")]
+        [EndpointSummary("Add Game Collection")]
         [Authorize]
-        public async Task<Result<GameCollectionResponse>> AddGameCollection( [FromBody] CreateGameCollectionRequest createGameCollectionRequest,
+        public async Task<Result<GameCollectionResponse>> AddGameCollection([FromBody] CreateGameCollectionRequest createGameCollectionRequest,
             CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new CreateUserGameCollectionCommand(currentUser.IdentityId, createGameCollectionRequest.Name), cancellationToken);
@@ -53,7 +59,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("me/collections/{id}")]
+        [HttpDelete("me/collections/{id}", Name = "Remove Game Collection")]
+        [EndpointSummary("Remove Game Collection")]
         [Authorize]
         public async Task<Result> RemoveGameCollection(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {

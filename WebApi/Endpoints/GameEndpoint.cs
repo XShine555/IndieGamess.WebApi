@@ -19,7 +19,8 @@ namespace WebApi.Endpoints
         : ControllerBase
     {
         [TranslateResultToActionResult]
-        [HttpGet]
+        [HttpGet(Name = "Get Games")]
+        [EndpointSummary("Get Games")]
         public async Task<PaginatedResponse<GameResponse>> Get( [FromQuery] GetGames query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGamesQuery(query.Title, query.Genres, query.PageSize, query.PageSize), cancellationToken);
@@ -28,7 +29,8 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id}", Name = "Get By Id")]
+        [EndpointSummary("Get Game By Id")]
         public async Task<GameResponse> GetById(Guid id, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGameByIdQuery(id), cancellationToken);
@@ -36,7 +38,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost]
+        [HttpPost(Name = "Create Game")]
+        [EndpointSummary("Create Game")]
         [Authorize]
         public async Task<GameResponse> CreateGame( [FromForm] CreateGameRequest createGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -57,7 +60,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "Remove By Id")]
+        [EndpointSummary("Remove Game")]
         [Authorize]
         public async Task<Result> RemoveGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
@@ -66,7 +70,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPut("{id}")]
+        [HttpPut("{id}", Name = "Update By Id")]
+        [EndpointSummary("Update Game")]
         [Authorize]
         public async Task<GameResponse> UpdateGame(Guid id, UpdateGameRequest updateGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -83,7 +88,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/publish")]
+        [HttpPost("{id}/publish", Name = "Publish Game")]
+        [EndpointSummary("Publish Game")]
         [Authorize]
         public async Task<Result> PublishGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
@@ -92,7 +98,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("{id}/genres")]
+        [HttpPatch("{id}/genres", Name = "Update Genres")]
+        [EndpointSummary("Update Genres")]
         [Authorize]
         public async Task<GameResponse> UpdateGenres(Guid id, UpdateGameGenresRequest updateGameGenresRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -102,7 +109,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/store-picture")]
+        [HttpPost("{id}/store-picture", Name = "Upload Store Picture")]
+        [EndpointSummary("Upload Store Picture")]
         [Authorize]
         public async Task<Result> UpdateStorePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -113,7 +121,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}/store-picture")]
+        [HttpDelete("{id}/store-picture", Name = "Remove Store Picture")]
+        [EndpointSummary("Remove Store Picture")]
         [Authorize]
         public async Task<Result> RemoveStorePicture(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
