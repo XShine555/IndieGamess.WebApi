@@ -33,7 +33,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("me/profilePicture")]
+        [HttpPatch("me/profile-picture")]
         [Authorize]
         public async Task<Result> UpdateProfilePicture( [FromForm] IFormFile formFile, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {

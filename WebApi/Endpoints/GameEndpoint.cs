@@ -102,7 +102,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/storePicture")]
+        [HttpPost("{id}/store-picture")]
         [Authorize]
         public async Task<Result> UpdateStorePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -113,7 +113,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}/storePicture")]
+        [HttpDelete("{id}/store-picture")]
         [Authorize]
         public async Task<Result> RemoveStorePicture(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
