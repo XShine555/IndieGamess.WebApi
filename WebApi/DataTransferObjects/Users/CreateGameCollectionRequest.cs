@@ -5,7 +5,7 @@ namespace WebApi.DataTransferObjects.Users
     public class CreateGameCollectionRequest
     {
         [Required]
-        [Range(1, 24)]
+        [StringLength(24, MinimumLength = 1)]
         public required string Name { get; set; }
     }
 }
