@@ -38,26 +38,28 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}/collections", Name = "Get User Collections")]
+        [HttpGet("me/collections", Name = "Get User Collections")]
         [EndpointSummary("Get User Collections")]
+        [Authorize]
         public async Task<PaginatedResponse<GameCollectionListItemResponse>> GetCollections(
-            Guid id,
             [FromQuery] GetUserCollections query,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
         {
-            var queryResult = await mediator.Send(new GetUserCollectionsQuery(id, query.PageNumber, query.PageSize), cancellationToken);
+            var queryResult = await mediator.Send(new GetUserCollectionsQuery(currentUser.IdentityId, query.PageNumber, query.PageSize), cancellationToken);
             return mapper.MapToGameCollectionPaginatedResponse(queryResult);
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}/collections/{collectionId}", Name = "Get User Collection By Id")]
+        [HttpGet("me/collections/{collectionId}", Name = "Get User Collection By Id")]
         [EndpointSummary("Get User Collection By Id")]
+        [Authorize]
         public async Task<Result<GameCollectionDetailsResponse>> GetCollectionById(
-            Guid id,
             Guid collectionId,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
         {
-            var queryResult = await mediator.Send(new GetUserCollectionByIdQuery(id, collectionId), cancellationToken);
+            var queryResult = await mediator.Send(new GetUserCollectionByIdQuery(currentUser.IdentityId, collectionId), cancellationToken);
             return queryResult.Map(mapper.MapToGameCollectionDetailsResponse);
         }
 
