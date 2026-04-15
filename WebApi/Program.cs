@@ -29,6 +29,7 @@ services.AddHttpContextAccessor();
 services.AddScoped<ICurrentUser, CurrentUser>();
 services.AddScoped<GameMapper>();
 services.AddScoped<GenreMapper>();
+services.AddScoped<UserMapper>();
 
 services.AddControllers();
 services.ConfigureScalar();

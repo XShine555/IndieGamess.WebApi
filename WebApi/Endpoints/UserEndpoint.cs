@@ -1,0 +1,42 @@
+﻿using Application.Users.Commands;
+using Application.Users.Queries;
+using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
+using Mediator;
+using Microsoft.AspNetCore.Mvc;
+using WebApi.Common;
+using WebApi.DataTransferObjects.Users;
+using WebApi.Mappers;
+
+namespace WebApi.Endpoints
+{
+    [ApiController]
+    [Route("users")]
+    public class UserEndpoint(IMediator mediator, ILogger<UserEndpoint> logger, UserMapper mapper)
+        : Controller
+    {
+        [HttpGet]
+        public async Task<PaginatedResponse<UserResponse>> Get([FromQuery] GetUsers query, CancellationToken cancellationToken)
+        {
+            var queryResult = await mediator.Send(new GetUsersQuery(query.Username, query.PageNumber, query.PageSize), cancellationToken);
+            return await mapper.MapToUserPaginatedResponseAsync(queryResult, cancellationToken);
+        }
+
+        [TranslateResultToActionResult]
+        [HttpGet("{id}")]
+        public async Task<Result<UserResponse>> GetById(Guid id, CancellationToken cancellationToken)
+        {
+            var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(id), cancellationToken);
+            return await mapper.MapToUserResponse(queryResult, cancellationToken);
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPatch("{id}/profilePicture")]
+        public async Task<Result> UpdateProfilePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken)
+        {
+            var fileData = FileData.FromFormFile(formFile);
+            var commandResult = await mediator.Send(new UpdateUserProfilePictureCommand(id, fileData), cancellationToken);
+            return commandResult;
+        }
+    }
+}
