@@ -75,6 +75,16 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
+        [HttpPut("me", Name = "Update User")]
+        [EndpointSummary("Update User")]
+        [Authorize]
+        public async Task<Result<UpdateUserResponse>> Update( [FromBody] UpdateUserRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new UpdateUserCommand(currentUser.IdentityId, request.DisplayName), cancellationToken);
+            return commandResult.Map(mapper.MapToUpdateUserResponse);
+        }
+
+        [TranslateResultToActionResult]
         [HttpPost("me/collections", Name = "Add Game Collection")]
         [EndpointSummary("Add Game Collection")]
         [Authorize]

@@ -130,5 +130,17 @@ namespace WebApi.Endpoints
             var commandResult = await mediator.Send(new RemoveStorePictureToGameCommand(currentUser.IdentityId, id), cancellationToken);
             return commandResult.ToResult();
         }
+
+        [TranslateResultToActionResult]
+        [HttpPatch("{id}/artwork/{artworkId}", Name = "Update Artwork")]
+        [EndpointSummary("Update Artwork")]
+        [Authorize]
+        public async Task<Result> UpdateArtwork(Guid id, Guid artworkId, [FromForm] IFormFile formFile, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var artwork = FileData.FromFormFile(formFile);
+            var commandResult = await mediator.Send(new UpdateGameArtworkCommand(currentUser.IdentityId, id, artworkId, artwork), cancellationToken);
+            return commandResult.ToResult();
+        }
     }
 }

@@ -44,6 +44,13 @@ namespace WebApi.Mappers
                 profilePicture);
         }
 
+        public UpdateUserResponse MapToUpdateUserResponse(ApplicationUserMutation applicationUser)
+        {
+            return new UpdateUserResponse(
+                    applicationUser.IdentityId,
+                    applicationUser.DisplayUsername);
+        }
+
         public async Task<UserListItemResponse> MapToUserListItemResponse(ApplicationUserListItem applicationUser, CancellationToken cancellationToken)
         {
             var profilePicture = await MapToUserProfilePictureResponse(applicationUser, cancellationToken);
@@ -96,9 +103,9 @@ namespace WebApi.Mappers
 
         async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
         {
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture?.SmallPictureKey, nameof(applicationUser.ProfilePicture.SmallPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture?.MediumPictureKey, nameof(applicationUser.ProfilePicture.MediumPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture?.LargePictureKey, nameof(applicationUser.ProfilePicture.LargePictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.SmallPictureKey, nameof(applicationUser.ProfilePicture.SmallPictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.MediumPictureKey, nameof(applicationUser.ProfilePicture.MediumPictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.LargePictureKey, nameof(applicationUser.ProfilePicture.LargePictureKey));
 
             var smallImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
             var mediumImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
@@ -111,9 +118,9 @@ namespace WebApi.Mappers
 
         async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUserListItem applicationUser, CancellationToken cancellationToken)
         {
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture?.SmallPictureKey, nameof(applicationUser.ProfilePicture.SmallPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture?.MediumPictureKey, nameof(applicationUser.ProfilePicture.MediumPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture?.LargePictureKey, nameof(applicationUser.ProfilePicture.LargePictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.SmallPictureKey, nameof(applicationUser.ProfilePicture.SmallPictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.MediumPictureKey, nameof(applicationUser.ProfilePicture.MediumPictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.LargePictureKey, nameof(applicationUser.ProfilePicture.LargePictureKey));
 
             var smallImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
             var mediumImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
