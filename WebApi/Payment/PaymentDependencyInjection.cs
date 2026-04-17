@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Stripe;
+using Stripe.Checkout;
 
 namespace WebApi.Payment
 {
@@ -17,9 +18,11 @@ namespace WebApi.Payment
             serviceDescriptors.AddSingleton<IStripeClient>(serviceProvider =>
             {
                 var paymentConfiguration = serviceProvider.GetRequiredService<PaymentConfiguration>();
-                StripeConfiguration.ApiKey = paymentConfiguration.ApiKey;
+                global::Stripe.StripeConfiguration.ApiKey = paymentConfiguration.ApiKey;
                 return new StripeClient(paymentConfiguration.ApiKey);
             });
+
+            serviceDescriptors.AddSingleton<SessionService>();
 
             return serviceDescriptors;
         }

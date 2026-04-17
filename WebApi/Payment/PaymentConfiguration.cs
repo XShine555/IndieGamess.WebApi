@@ -8,5 +8,8 @@ namespace WebApi.Payment
 
         [Required]
         public required string ApiKey { get; set; }
+
+        [Required]
+        public required string WebhookSecret { get; set; }
     }
 }
