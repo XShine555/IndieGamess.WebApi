@@ -3,7 +3,6 @@ using Application.Abstractions.Storage;
 using Application.Games.Responses;
 using Application.Genres.Responses;
 using Application.Users.Responses;
-using Domain.Entities;
 using WebApi.Common;
 using WebApi.DataTransferObjects.AdminGame;
 using WebApi.DataTransferObjects.AdminUser;
