@@ -7,6 +7,7 @@ using WebApi.Authentication;
 using WebApi.Mappers;
 using WebApi.Scalar;
 using WebApi.Services;
+using WebApi.Payment;
 
 var builder = WebApplication.CreateBuilder();
 var services = builder.Services;
@@ -19,6 +20,7 @@ services.AddValidation();
 
 services.ConfigureAuthentication(configuration);
 services.AddAuthorization();
+services.AddPayment(configuration);
 
 services.AddOpenApi();
 services.AddS3Service(configuration);
