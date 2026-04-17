@@ -1,6 +1,6 @@
-﻿namespace WebApi.DataTransferObjects.AdminGenre
+namespace WebApi.DataTransferObjects.AdminGenre
 {
-    public record GenreResponse(
+    public record GenreListItemAdminResponse(
         Guid Id,
         string Name,
         DateTime CreatedAt,

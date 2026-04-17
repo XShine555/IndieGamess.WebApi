@@ -1,10 +1,10 @@
 namespace WebApi.DataTransferObjects.AdminUser
 {
-    public record UserListItemResponse(
+    public record UserListItemAdminResponse(
         Guid Id,
         string Username,
         string DisplayUsername,
-        UserProfilePictureResponse ProfilePicture,
+        UserProfilePictureAdminResponse ProfilePicture,
         int CreatedGamesCount,
         int OwnedGamesCount,
         DateTime CreatedAt,

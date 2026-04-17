@@ -2,7 +2,7 @@
 
 namespace WebApi.DataTransferObjects.Genres
 {
-    public class GetGenres
+    public class GetGenresRequest
     {
         public string Name { get; set; } = string.Empty;
 

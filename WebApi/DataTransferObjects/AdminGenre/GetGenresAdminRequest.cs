@@ -2,7 +2,7 @@
 
 namespace WebApi.DataTransferObjects.AdminGenre
 {
-    public class GetGenres
+    public class GetGenresAdminRequest
     {
         public string Name { get; set; } = string.Empty;
 

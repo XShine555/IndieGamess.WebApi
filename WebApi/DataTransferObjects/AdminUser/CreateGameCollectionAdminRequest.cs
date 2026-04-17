@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.DataTransferObjects.AdminUser
 {
-    public class CreateGameCollectionRequest
+    public class CreateGameCollectionAdminRequest
     {
         [Required]
         [StringLength(24, MinimumLength = 1)]

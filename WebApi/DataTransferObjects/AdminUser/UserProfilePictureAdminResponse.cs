@@ -1,6 +1,6 @@
 namespace WebApi.DataTransferObjects.AdminUser
 {
-    public record UserProfilePictureResponse(
+    public record UserProfilePictureAdminResponse(
         string SmallPictureUrl,
         string MediumPictureUrl,
         string LargePictureUrl);

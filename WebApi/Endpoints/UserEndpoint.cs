@@ -21,7 +21,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Users")]
         [EndpointSummary("Get Users")]
-        public async Task<PaginatedResponse<UserListItemResponse>> Get([FromQuery] GetUsers query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<UserListItemResponse>> Get([FromQuery] GetUsersRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUsersQuery(query.Username, query.PageNumber, query.PageSize), cancellationToken);
             return await mapper.MapToUserPaginatedResponseAsync(queryResult, cancellationToken);
@@ -42,7 +42,7 @@ namespace WebApi.Endpoints
         [EndpointSummary("Get User Collections")]
         [Authorize]
         public async Task<PaginatedResponse<GameCollectionListItemResponse>> GetCollections(
-            [FromQuery] GetUserCollections query,
+            [FromQuery] GetUserCollectionsRequest query,
             CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {

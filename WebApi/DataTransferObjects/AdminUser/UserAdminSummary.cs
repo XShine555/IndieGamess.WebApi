@@ -1,6 +1,6 @@
 namespace WebApi.DataTransferObjects.AdminUser
 {
-    public record UserSummary(
+    public record UserAdminSummary(
         Guid Id,
         string Username,
         string DisplayUsername);

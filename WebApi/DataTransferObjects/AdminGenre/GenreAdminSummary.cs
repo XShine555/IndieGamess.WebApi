@@ -1,6 +1,6 @@
 ﻿namespace WebApi.DataTransferObjects.AdminGenre
 {
-    public record GenreSummary(
+    public record GenreAdminSummary(
         Guid Id,
         string Name);
 }

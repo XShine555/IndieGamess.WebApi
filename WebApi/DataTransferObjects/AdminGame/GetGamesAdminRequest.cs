@@ -1,9 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApi.DataTransferObjects.AdminUser
+namespace WebApi.DataTransferObjects.AdminGame
 {
-    public class GetUserCollections
+    public class GetGamesAdminRequest
     {
+        public string Title { get; set; } = string.Empty;
+
+        public Guid[] Genres { get; set; } = Array.Empty<Guid>();
+
         [Range(1, 2147483647)]
         public int PageNumber { get; set; } = 1;
 

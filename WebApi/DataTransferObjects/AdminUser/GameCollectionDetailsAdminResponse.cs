@@ -2,7 +2,7 @@ using WebApi.DataTransferObjects.Games;
 
 namespace WebApi.DataTransferObjects.AdminUser
 {
-    public record GameCollectionDetailsResponse(
+    public record GameCollectionDetailsAdminResponse(
         Guid Id,
         string Name,
         IReadOnlyList<GameListItemResponse> Games,

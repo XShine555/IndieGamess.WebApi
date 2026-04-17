@@ -11,11 +11,11 @@ namespace WebApi.Mappers
 {
     public class AdminUserMapper(IS3Service s3Service)
     {
-        public async Task<PaginatedResponse<UserListItemResponse>> MapToUserPaginatedResponseAsync(
+        public async Task<PaginatedResponse<UserListItemAdminResponse>> MapToUserPaginatedResponseAsync(
             PaginatedApplicationResponse<ApplicationUserListItem> paginatedResponse,
             CancellationToken cancellationToken)
         {
-            return await PaginatedResponse<UserListItemResponse>.FromApplicationResponseAsync(
+            return await PaginatedResponse<UserListItemAdminResponse>.FromApplicationResponseAsync(
                 paginatedResponse,
                 source => MapToUserListItemResponse(source, cancellationToken),
                 cancellationToken);
@@ -29,16 +29,16 @@ namespace WebApi.Mappers
                 MapToGameCollectionListItemResponse);
         }
 
-        public async Task<Result<UserResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken)
+        public async Task<Result<UserAdminResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken)
         {
             return await result.MapAsync(source => MapToUserResponse(source, cancellationToken));
         }
 
-        public async Task<UserResponse> MapToUserResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
+        public async Task<UserAdminResponse> MapToUserResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
         {
             var profilePicture = await MapToUserProfilePictureResponse(applicationUser, cancellationToken);
 
-            return new UserResponse(
+            return new UserAdminResponse(
                 applicationUser.IdentityId,
                 applicationUser.Username,
                 applicationUser.DisplayUsername,
@@ -49,20 +49,20 @@ namespace WebApi.Mappers
                 applicationUser.UpdatedAt);
         }
 
-        public UpdateUserResponse MapToUpdateUserResponse(ApplicationUserMutation applicationUser)
+        public UpdateUserAdminResponse MapToUpdateUserResponse(ApplicationUserMutation applicationUser)
         {
-            return new UpdateUserResponse(
+            return new UpdateUserAdminResponse(
                     applicationUser.IdentityId,
                     applicationUser.Username,
                     applicationUser.DisplayUsername,
                     applicationUser.UpdatedAt);
         }
 
-        public async Task<UserListItemResponse> MapToUserListItemResponse(ApplicationUserListItem applicationUser, CancellationToken cancellationToken)
+        public async Task<UserListItemAdminResponse> MapToUserListItemResponse(ApplicationUserListItem applicationUser, CancellationToken cancellationToken)
         {
             var profilePicture = await MapToUserProfilePictureResponse(applicationUser, cancellationToken);
 
-            return new UserListItemResponse(
+            return new UserListItemAdminResponse(
                 applicationUser.IdentityId,
                 applicationUser.Username,
                 applicationUser.DisplayUsername,
@@ -73,9 +73,9 @@ namespace WebApi.Mappers
                 applicationUser.UpdatedAt);
         }
 
-        public GameCollectionResponse MapToGameCollectionResponse(ApplicationUserCollectionListItem gameCollection)
+        public GameCollectionAdminResponse MapToGameCollectionResponse(ApplicationUserCollectionListItem gameCollection)
         {
-            return new GameCollectionResponse(
+            return new GameCollectionAdminResponse(
                 gameCollection.Id,
                 gameCollection.Name);
         }
@@ -91,9 +91,9 @@ namespace WebApi.Mappers
                 gameCollection.UpdatedAt);
         }
 
-        public GameCollectionDetailsResponse MapToGameCollectionDetailsResponse(ApplicationUserCollectionDetails gameCollection)
+        public GameCollectionDetailsAdminResponse MapToGameCollectionDetailsResponse(ApplicationUserCollectionDetails gameCollection)
         {
-            return new GameCollectionDetailsResponse(
+            return new GameCollectionDetailsAdminResponse(
                 gameCollection.Id,
                 gameCollection.Name,
                 gameCollection.Games.Select(MapToGameListItemResponse).ToList(),
@@ -110,7 +110,7 @@ namespace WebApi.Mappers
                 game.Discount);
         }
 
-        async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
+        async Task<UserProfilePictureAdminResponse> MapToUserProfilePictureResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
         {
             ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.SmallPictureKey, nameof(applicationUser.ProfilePicture.SmallPictureKey));
             ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.MediumPictureKey, nameof(applicationUser.ProfilePicture.MediumPictureKey));
@@ -119,13 +119,13 @@ namespace WebApi.Mappers
             var smallImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
             var mediumImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
             var largeImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.LargePictureKey, TimeSpan.FromHours(1), cancellationToken);
-            return new UserProfilePictureResponse(
+            return new UserProfilePictureAdminResponse(
                 smallImageUrl,
                 mediumImageUrl,
                 largeImageUrl);
         }
 
-        async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUserListItem applicationUser, CancellationToken cancellationToken)
+        async Task<UserProfilePictureAdminResponse> MapToUserProfilePictureResponse(ApplicationUserListItem applicationUser, CancellationToken cancellationToken)
         {
             ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.SmallPictureKey, nameof(applicationUser.ProfilePicture.SmallPictureKey));
             ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.MediumPictureKey, nameof(applicationUser.ProfilePicture.MediumPictureKey));
@@ -134,7 +134,7 @@ namespace WebApi.Mappers
             var smallImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
             var mediumImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
             var largeImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.LargePictureKey, TimeSpan.FromHours(1), cancellationToken);
-            return new UserProfilePictureResponse(
+            return new UserProfilePictureAdminResponse(
                 smallImageUrl,
                 mediumImageUrl,
                 largeImageUrl);

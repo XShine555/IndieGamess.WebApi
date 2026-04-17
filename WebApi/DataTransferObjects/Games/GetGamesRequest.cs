@@ -2,7 +2,7 @@
 
 namespace WebApi.DataTransferObjects.Games
 {
-    public class GetGames
+    public class GetGamesRequest
     {
         public string Title { get; set; } = string.Empty;
 

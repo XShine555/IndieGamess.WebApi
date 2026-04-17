@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.DataTransferObjects.Users
 {
-    public class GetUsers
+    public class GetUsersRequest
     {
         public string Username { get; set; } = string.Empty;
 

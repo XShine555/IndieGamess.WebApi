@@ -7,32 +7,32 @@ namespace WebApi.Mappers
 {
     public class AdminGenreMapper
     {
-        public PaginatedResponse<GenreListItemResponse> MapToGenrePaginatedResponse(PaginatedApplicationResponse<ApplicationGenreListItem> paginatedResponse)
+        public PaginatedResponse<GenreListItemAdminResponse> MapToGenrePaginatedResponse(PaginatedApplicationResponse<ApplicationGenreListItem> paginatedResponse)
         {
-            return PaginatedResponse<GenreListItemResponse>.FromApplicationResponse(paginatedResponse, MapToGenreListItemResponse);
+            return PaginatedResponse<GenreListItemAdminResponse>.FromApplicationResponse(paginatedResponse, MapToGenreListItemResponse);
         }
 
-        public GenreListItemResponse MapToGenreListItemResponse(ApplicationGenreListItem applicationGenre)
+        public GenreListItemAdminResponse MapToGenreListItemResponse(ApplicationGenreListItem applicationGenre)
         {
-            return new GenreListItemResponse(
+            return new GenreListItemAdminResponse(
                     applicationGenre.Id,
                     applicationGenre.Name,
                     applicationGenre.CreatedAt,
                     applicationGenre.UpdatedAt);
         }
 
-        public GenreResponse MapToGenreResponse(ApplicationGenre applicationGenre)
+        public GenreAdminResponse MapToGenreResponse(ApplicationGenre applicationGenre)
         {
-            return new GenreResponse(
+            return new GenreAdminResponse(
                     applicationGenre.Id,
                     applicationGenre.Name,
                     applicationGenre.CreatedAt,
                     applicationGenre.UpdatedAt);
         }
 
-        public GenreSummary MapToGenreSummary(ApplicationGenreMutation applicationGenreMutation)
+        public GenreAdminSummary MapToGenreSummary(ApplicationGenreMutation applicationGenreMutation)
         {
-            return new GenreSummary(
+            return new GenreAdminSummary(
                     applicationGenreMutation.Id,
                     applicationGenreMutation.Name);
         }

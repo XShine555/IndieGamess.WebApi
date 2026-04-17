@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.DataTransferObjects.AdminGenre
 {
-    public class CreateGenreRequest
+    public class UpdateGenreAdminRequest
     {
         [Required]
         [StringLength(24, MinimumLength = 3)]

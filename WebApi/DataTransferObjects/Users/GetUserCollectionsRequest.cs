@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.DataTransferObjects.Users
 {
-    public class GetUserCollections
+    public class GetUserCollectionsRequest
     {
         [Range(1, 2147483647)]
         public int PageNumber { get; set; } = 1;
