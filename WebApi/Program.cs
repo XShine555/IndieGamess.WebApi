@@ -30,6 +30,9 @@ services.AddScoped<ICurrentUser, CurrentUser>();
 services.AddScoped<GameMapper>();
 services.AddScoped<GenreMapper>();
 services.AddScoped<UserMapper>();
+services.AddScoped<AdminGameMapper>();
+services.AddScoped<AdminGenreMapper>();
+services.AddScoped<AdminUserMapper>();
 
 services.AddControllers();
 services.ConfigureScalar();
