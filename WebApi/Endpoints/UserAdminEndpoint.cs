@@ -19,8 +19,8 @@ namespace WebApi.Endpoints
         : ControllerBase
     {
         [TranslateResultToActionResult]
-        [HttpGet(Name = "Get Admin Users")]
-        [EndpointSummary("Get Admin Users")]
+        [HttpGet(Name = "Get User Admins")]
+        [EndpointSummary("Get Users")]
         public async Task<PaginatedResponse<UserListItemAdminResponse>> Get([FromQuery] GetUsersAdminRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUsersQuery(query.Username, query.PageNumber, query.PageSize), cancellationToken);
@@ -28,8 +28,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}", Name = "Get Admin User By Id")]
-        [EndpointSummary("Get Admin User By Id")]
+        [HttpGet("{id}", Name = "Get User By Id Admin")]
+        [EndpointSummary("Get User By Id")]
         public async Task<Result<UserAdminResponse>> GetById(Guid id, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(id), cancellationToken);
@@ -37,8 +37,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}/collections", Name = "Get Admin User Collections")]
-        [EndpointSummary("Get Admin User Collections")]
+        [HttpGet("{id}/collections", Name = "Get User Collection Admins")]
+        [EndpointSummary("Get User Collections")]
         public async Task<PaginatedResponse<GameCollectionListItemResponse>> GetCollections(
             Guid id,
             [FromQuery] GetUserCollectionsAdminRequest query,
@@ -49,8 +49,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}/collections/{collectionId}", Name = "Get Admin User Collection By Id")]
-        [EndpointSummary("Get Admin User Collection By Id")]
+        [HttpGet("{id}/collections/{collectionId}", Name = "Get User Collection By Id Admin")]
+        [EndpointSummary("Get User Collection By Id")]
         public async Task<Result<GameCollectionDetailsAdminResponse>> GetCollectionById(Guid id, Guid collectionId, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUserCollectionByIdQuery(id, collectionId), cancellationToken);
@@ -58,8 +58,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("{id}/profile-picture", Name = "Update Admin Profile Picture")]
-        [EndpointSummary("Update Admin Profile Picture")]
+        [HttpPatch("{id}/profile-picture", Name = "Update Profile Picture Admin")]
+        [EndpointSummary("Update Profile Picture")]
         public async Task<Result> UpdateProfilePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken)
         {
             var fileData = FileData.FromFormFile(formFile);
@@ -68,8 +68,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPut("{id}", Name = "Update Admin User")]
-        [EndpointSummary("Update Admin User")]
+        [HttpPut("{id}", Name = "Update User Admin")]
+        [EndpointSummary("Update User")]
         public async Task<Result<UpdateUserAdminResponse>> Update(Guid id, [FromBody] UpdateUserAdminRequest request, CancellationToken cancellationToken)
         {
             var commandResult = await mediator.Send(new UpdateUserCommand(id, request.DisplayName), cancellationToken);
@@ -77,8 +77,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/collections", Name = "Add Admin Game Collection")]
-        [EndpointSummary("Add Admin Game Collection")]
+        [HttpPost("{id}/collections", Name = "Add Game Collection Admin")]
+        [EndpointSummary("Add Game Collection")]
         public async Task<Result<GameCollectionAdminResponse>> AddGameCollection(Guid id, [FromBody] CreateGameCollectionAdminRequest createGameCollectionRequest,
             CancellationToken cancellationToken)
         {
@@ -87,8 +87,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}/collections/{collectionId}", Name = "Remove Admin Game Collection")]
-        [EndpointSummary("Remove Admin Game Collection")]
+        [HttpDelete("{id}/collections/{collectionId}", Name = "Remove Game Collection Admin")]
+        [EndpointSummary("Remove Game Collection")]
         public async Task<Result> RemoveGameCollection(Guid id, Guid collectionId, CancellationToken cancellationToken)
         {
             var commandResult = await mediator.Send(new RemoveUserGameCollectionCommand(id, collectionId), cancellationToken);
