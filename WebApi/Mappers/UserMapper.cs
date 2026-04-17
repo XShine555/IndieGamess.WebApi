@@ -1,10 +1,12 @@
 ﻿using Application.Abstractions.Common;
 using Application.Abstractions.Storage;
 using Application.Games.Responses;
+using Application.Genres.Responses;
 using Application.Users.Responses;
 using Ardalis.Result;
 using WebApi.Common;
 using WebApi.DataTransferObjects.Games;
+using WebApi.DataTransferObjects.Genres;
 using WebApi.DataTransferObjects.Users;
 
 namespace WebApi.Mappers
@@ -38,10 +40,20 @@ namespace WebApi.Mappers
         {
             var profilePicture = await MapToUserProfilePictureResponse(applicationUser, cancellationToken);
 
+            var createdGames = await Task.WhenAll(
+                applicationUser.CreatedGames.Select(game => MapToGameSummaryResponse(game, cancellationToken))
+            );
+
+            var ownedGames = await Task.WhenAll(
+                applicationUser.OwnedGames.Select(game => MapToGameSummaryResponse(game, cancellationToken))
+            );
+
             return new UserResponse(
                 applicationUser.IdentityId,
                 applicationUser.Username,
-                profilePicture);
+                profilePicture,
+                createdGames.ToList(),
+                ownedGames.ToList());
         }
 
         public UpdateUserResponse MapToUpdateUserResponse(ApplicationUserMutation applicationUser)
@@ -87,9 +99,95 @@ namespace WebApi.Mappers
             return new GameCollectionDetailsResponse(
                 gameCollection.Id,
                 gameCollection.Name,
-                gameCollection.Games.Select(MapToGameListItemResponse).ToList(),
+                gameCollection.Games.Select(game => MapToGameListItemResponse(game)).ToList(),
                 gameCollection.CreatedAt,
                 gameCollection.UpdatedAt);
+        }
+
+        async Task<GameSummary> MapToGameSummaryResponse(ApplicationGame applicationGame, CancellationToken cancellationToken)
+        {
+            var artworks = await Task.WhenAll(
+                applicationGame.Artworks.Select(artwork => MapToGameArtworkSummaryResponse(artwork, cancellationToken))
+            );
+
+            var storePictures = await Task.WhenAll(
+                applicationGame.Pictures.Select(picture => MapToGameStorePictureSummaryResponse(picture, cancellationToken))
+            );
+
+            return new GameSummary(
+                applicationGame.Id,
+                applicationGame.Title,
+                applicationGame.Description,
+                applicationGame.Genres.Select(MapToGenreSummaryResponse).ToList(),
+                storePictures.ToList(),
+                artworks.ToList());
+        }
+
+        async Task<GameSummary> MapToGameSummaryResponse(ApplicationUserGame applicationGame, CancellationToken cancellationToken)
+        {
+            var artworks = await Task.WhenAll(
+                applicationGame.Artworks.Select(artwork => MapToGameArtworkSummaryResponse(artwork, cancellationToken))
+            );
+
+            var storePictures = await Task.WhenAll(
+                applicationGame.Pictures.Select(picture => MapToGameStorePictureSummaryResponse(picture, cancellationToken))
+            );
+
+            return new GameSummary(
+                applicationGame.Id,
+                applicationGame.Title,
+                applicationGame.Description,
+                applicationGame.Genres.Select(MapToGenreSummaryResponse).ToList(),
+                storePictures.ToList(),
+                artworks.ToList());
+        }
+
+        GenreSummary MapToGenreSummaryResponse(ApplicationGenre applicationGenre)
+        {
+            return new GenreSummary(
+                applicationGenre.Id,
+                applicationGenre.Name);
+        }
+
+        async Task<GameArtworkSummary> MapToGameArtworkSummaryResponse(ApplicationGameArtwork applicationGameArtwork, CancellationToken cancellationToken)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(applicationGameArtwork.SmallArtworkKey, nameof(applicationGameArtwork.LargeArtworkKey));
+            ArgumentException.ThrowIfNullOrEmpty(applicationGameArtwork.MediumArtworkKey, nameof(applicationGameArtwork.LargeArtworkKey));
+            ArgumentException.ThrowIfNullOrEmpty(applicationGameArtwork.LargeArtworkKey, nameof(applicationGameArtwork.LargeArtworkKey));
+
+            var smallImageUrl = await s3Service.GetSignedUrlAsync(applicationGameArtwork.SmallArtworkKey, TimeSpan.FromHours(1), cancellationToken);
+            var mediumImageUrl = await s3Service.GetSignedUrlAsync(applicationGameArtwork.MediumArtworkKey, TimeSpan.FromHours(1), cancellationToken);
+            var largeImageUrl = await s3Service.GetSignedUrlAsync(applicationGameArtwork.LargeArtworkKey, TimeSpan.FromHours(1), cancellationToken);
+
+            return new GameArtworkSummary(
+                smallImageUrl,
+                mediumImageUrl,
+                largeImageUrl);
+        }
+
+        async Task<GameStorePictureSummary> MapToGameStorePictureSummaryResponse(ApplicationGamePicture gameStorePicture, CancellationToken cancellationToken)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(gameStorePicture.SmallPictureKey, nameof(gameStorePicture.SmallPictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(gameStorePicture.MediumPictureKey, nameof(gameStorePicture.MediumPictureKey));
+            ArgumentException.ThrowIfNullOrEmpty(gameStorePicture.LargePictureKey, nameof(gameStorePicture.LargePictureKey));
+
+            var smallImageUrl = await s3Service.GetSignedUrlAsync(gameStorePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
+            var mediumImageUrl = await s3Service.GetSignedUrlAsync(gameStorePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
+            var largeImageUrl = await s3Service.GetSignedUrlAsync(gameStorePicture.LargePictureKey, TimeSpan.FromHours(1), cancellationToken);
+
+            return new GameStorePictureSummary(
+                smallImageUrl,
+                mediumImageUrl,
+                largeImageUrl);
+        }
+
+        GameListItemResponse MapToGameListItemResponse(ApplicationUserGame game)
+        {
+            return new GameListItemResponse(
+                game.Id,
+                game.Title,
+                0,
+                0);
         }
 
         GameListItemResponse MapToGameListItemResponse(ApplicationGame game)
