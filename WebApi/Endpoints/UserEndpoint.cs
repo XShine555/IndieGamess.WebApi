@@ -78,7 +78,7 @@ namespace WebApi.Endpoints
         [HttpPut("me", Name = "Update User")]
         [EndpointSummary("Update User")]
         [Authorize]
-        public async Task<Result<UpdateUserResponse>> Update( [FromBody] UpdateUserRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result<UpdateUserResponse>> Update([FromBody] UpdateUserRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new UpdateUserCommand(currentUser.IdentityId, request.DisplayName), cancellationToken);
             return commandResult.Map(mapper.MapToUpdateUserResponse);
@@ -103,6 +103,16 @@ namespace WebApi.Endpoints
         {
             var commandResult = await mediator.Send(new RemoveUserGameCollectionCommand(currentUser.IdentityId, id), cancellationToken);
             return commandResult;
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPost("me/promote-to-devoloper", Name = "Promote To Developer")]
+        [EndpointSummary("Promote To Developer")]
+        [Authorize]
+        public async Task<Result<UpdateUserResponse>> PromoteToDeveloper(CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new PromoteUserToDeveloperCommand(currentUser.IdentityId), cancellationToken);
+            return commandResult.Map(mapper.MapToUpdateUserResponse);
         }
     }
 }

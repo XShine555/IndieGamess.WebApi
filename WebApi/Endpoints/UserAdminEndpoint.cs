@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
 using WebApi.DataTransferObjects.AdminUser;
 using WebApi.Mappers;
+using WebApi.Services;
 
 namespace WebApi.Endpoints
 {
@@ -93,6 +94,16 @@ namespace WebApi.Endpoints
         {
             var commandResult = await mediator.Send(new RemoveUserGameCollectionCommand(id, collectionId), cancellationToken);
             return commandResult;
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPost("me/promote-to-devoloper", Name = "Promote To Developer")]
+        [EndpointSummary("Promote To Developer")]
+        [Authorize]
+        public async Task<Result<UpdateUserAdminResponse>> PromoteToDeveloper(CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new PromoteUserToDeveloperCommand(currentUser.IdentityId), cancellationToken);
+            return commandResult.Map(mapper.MapToUpdateUserResponse);
         }
     }
 }
