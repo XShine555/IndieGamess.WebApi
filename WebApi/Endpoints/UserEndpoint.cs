@@ -134,5 +134,15 @@ namespace WebApi.Endpoints
             var commandResult = await mediator.Send(new RemoveGameFromUserCartCommand(currentUser.IdentityId, id), cancellationToken);
             return commandResult;
         }
+
+        [TranslateResultToActionResult]
+        [HttpGet("me/cart", Name = "Get Cart")]
+        [EndpointSummary("Get Cart")]
+        [Authorize]
+        public async Task<Result<GetUserCartResponse>> GetCart(CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(new GetUserCartItemsQuery(currentUser.IdentityId), cancellationToken);
+            return await queryResult.MapAsync(r => mapper.MapToGetUserCartResponse(r, cancellationToken));
+        }
     }
 }

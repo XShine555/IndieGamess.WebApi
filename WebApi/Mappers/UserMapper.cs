@@ -31,6 +31,23 @@ namespace WebApi.Mappers
                 MapToGameCollectionListItemResponse);
         }
 
+        public async Task<Result<GetUserCartResponse>> MapToGetUserCartResponse(
+            Result<IReadOnlyCollection<ApplicationUserCartItem>> result,
+            CancellationToken cancellationToken)
+        {
+            return await result.MapAsync(source => MapToGetUserCartResponse(source, cancellationToken));
+        }
+
+        public async Task<GetUserCartResponse> MapToGetUserCartResponse(
+            IReadOnlyCollection<ApplicationUserCartItem> cartItems,
+            CancellationToken cancellationToken)
+        {
+            var mappedCartItems = await Task.WhenAll(
+                cartItems.Select(cartItem => MapToGameSummaryResponse(cartItem.Game, cancellationToken)));
+
+            return new GetUserCartResponse(mappedCartItems.ToList());
+        }
+
         public async Task<Result<UserResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken)
         {
             return await result.MapAsync(source => MapToUserResponse(source, cancellationToken));
