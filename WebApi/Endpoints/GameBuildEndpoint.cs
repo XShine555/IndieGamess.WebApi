@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DataTransferObjects.GameBuild.Requests;
 using WebApi.DataTransferObjects.GameBuild.Responses;
-using WebApi.Extensions;
 using WebApi.Mappers;
 using WebApi.Services;
 
