@@ -1,12 +1,14 @@
-using Application.Games.Commands;
-using Application.Games.Queries;
+using Application.Games.Catalog.Commands;
+using Application.Games.Catalog.Queries;
+using Application.Games.Media.Commands;
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
-using WebApi.DataTransferObjects.AdminGame;
+using WebApi.DataTransferObjects.AdminGame.Requests;
+using WebApi.DataTransferObjects.AdminGame.Responses;
 using WebApi.Extensions;
 using WebApi.Mappers;
 using WebApi.Services;
@@ -56,7 +58,7 @@ namespace WebApi.Endpoints
                 capsulePicture,
                 headerPicture,
                 mainPicture), cancellationToken);
-            return commandResult.Map(mapper.MapToGameMutationResponse);
+            return commandResult.Map(r => mapper.MapToGameMutationResponse(r));
         }
 
         [TranslateResultToActionResult]
@@ -82,7 +84,7 @@ namespace WebApi.Endpoints
                 updateGameRequest.Price,
                 updateGameRequest.Discount,
                 updateGameRequest.IsPublic), cancellationToken);
-            return commandResult.Map(mapper.MapToGameMutationResponse);
+            return commandResult.Map(r => mapper.MapToGameMutationResponse(r));
         }
 
         [TranslateResultToActionResult]
@@ -101,7 +103,7 @@ namespace WebApi.Endpoints
             [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new UpdateGameGenresCommand(currentUser.IdentityId, id, updateGameGenresRequest.Genres), cancellationToken);
-            return commandResult.Map(mapper.MapToGameGenresMutationResponse);
+            return commandResult.Map(r => mapper.MapToGameGenresMutationResponse(r));
         }
 
         [TranslateResultToActionResult]
@@ -111,7 +113,7 @@ namespace WebApi.Endpoints
             [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new ChangeGameOwnerCommand(currentUser.IdentityId, id, request.NewOwnerId), cancellationToken);
-            return commandResult.Map(mapper.MapToGameMutationResponse);
+            return commandResult.Map(r => mapper.MapToGameMutationResponse(r));
         }
 
         [TranslateResultToActionResult]

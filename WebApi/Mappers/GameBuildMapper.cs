@@ -1,11 +1,10 @@
-using Application.Games.Responses;
-using WebApi.DataTransferObjects.GameBuild;
+using WebApi.DataTransferObjects.GameBuild.Responses;
 
 namespace WebApi.Mappers
 {
     public class GameBuildMapper
     {
-        public GameBuildResponse MapToGameBuildResponse(ApplicationGameBuild applicationGameBuild)
+        public GameBuildResponse MapToGameBuildResponse(global::Application.Games.Builds.Responses.ApplicationGameBuild applicationGameBuild)
         {
             return new GameBuildResponse(
                 applicationGameBuild.BuildId,
@@ -15,7 +14,7 @@ namespace WebApi.Mappers
                 applicationGameBuild.CreatedAt);
         }
 
-        public GameBuildMutationResponse MapToGameBuildMutationResponse(ApplicationGameBuildMutation applicationGameBuild)
+        public GameBuildMutationResponse MapToGameBuildMutationResponse(global::Application.Games.Builds.Responses.ApplicationGameBuildMutation applicationGameBuild)
         {
             return new GameBuildMutationResponse(
                 applicationGameBuild.BuildId,
@@ -23,7 +22,7 @@ namespace WebApi.Mappers
                 applicationGameBuild.CreatedAt);
         }
 
-        public GameBuildUploadFileResponse MapToGameBuildUploadFileResponse(ApplicationPreSignGameFileRequestMutation fileRequest)
+        public GameBuildUploadFileResponse MapToGameBuildUploadFileResponse(global::Application.Games.Builds.Responses.ApplicationPreSignGameFileRequestMutation fileRequest)
         {
             return new GameBuildUploadFileResponse(
                 fileRequest.OriginalFilePath,

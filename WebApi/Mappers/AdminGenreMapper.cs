@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.Common;
 using Application.Genres.Responses;
 using WebApi.Common;
-using WebApi.DataTransferObjects.AdminGenre;
+using WebApi.DataTransferObjects.AdminGenre.Responses;
 
 namespace WebApi.Mappers
 {

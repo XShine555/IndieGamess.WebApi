@@ -1,13 +1,15 @@
 using Application.Abstractions.Common;
 using Application.Abstractions.Storage;
-using Application.Games.Responses;
+using Application.Games.Catalog.Responses;
+using Application.Games.Media.Responses;
 using Application.Genres.Responses;
 using Application.Users.Responses;
 using Ardalis.Result;
 using WebApi.Common;
-using WebApi.DataTransferObjects.AdminUser;
-using WebApi.DataTransferObjects.Games;
-using WebApi.DataTransferObjects.Genres;
+using WebApi.DataTransferObjects.Games.Responses;
+using WebApi.DataTransferObjects.Users.Responses;
+using WebApi.DataTransferObjects.Genres.Responses;
+using WebApi.DataTransferObjects.AdminUser.Responses;
 
 namespace WebApi.Mappers
 {
@@ -23,29 +25,29 @@ namespace WebApi.Mappers
                 cancellationToken);
         }
 
-        public PaginatedResponse<GameCollectionListItemResponse> MapToGameCollectionPaginatedResponse(
+        public PaginatedResponse<GameCollectionListItemAdminResponse> MapToGameCollectionPaginatedResponse(
             PaginatedApplicationResponse<ApplicationUserCollectionListItem> paginatedResponse)
         {
-            return PaginatedResponse<GameCollectionListItemResponse>.FromApplicationResponse(
+            return PaginatedResponse<GameCollectionListItemAdminResponse>.FromApplicationResponse(
                 paginatedResponse,
                 MapToGameCollectionListItemResponse);
         }
 
-        public async Task<Result<WebApi.DataTransferObjects.Users.GetUserCartResponse>> MapToGetUserCartResponse(
+        public async Task<Result<GetUserCartResponse>> MapToGetUserCartResponse(
             Result<IReadOnlyCollection<ApplicationUserCartItem>> result,
             CancellationToken cancellationToken)
         {
             return await result.MapAsync(source => MapToGetUserCartResponse(source, cancellationToken));
         }
 
-        public async Task<WebApi.DataTransferObjects.Users.GetUserCartResponse> MapToGetUserCartResponse(
+        public async Task<GetUserCartResponse> MapToGetUserCartResponse(
             IReadOnlyCollection<ApplicationUserCartItem> cartItems,
             CancellationToken cancellationToken)
         {
             var mappedCartItems = await Task.WhenAll(
                 cartItems.Select(cartItem => MapToGameSummaryResponse(cartItem.Game, cancellationToken)));
 
-            return new WebApi.DataTransferObjects.Users.GetUserCartResponse(mappedCartItems.ToList());
+            return new GetUserCartResponse(mappedCartItems.ToList());
         }
 
         public async Task<Result<UserAdminResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken)
@@ -99,9 +101,9 @@ namespace WebApi.Mappers
                 gameCollection.Name);
         }
 
-        public GameCollectionListItemResponse MapToGameCollectionListItemResponse(ApplicationUserCollectionListItem gameCollection)
+        public GameCollectionListItemAdminResponse MapToGameCollectionListItemResponse(ApplicationUserCollectionListItem gameCollection)
         {
-            return new GameCollectionListItemResponse(
+            return new GameCollectionListItemAdminResponse(
                 gameCollection.Id,
                 gameCollection.Name,
                 gameCollection.GamesCount,
@@ -176,6 +178,15 @@ namespace WebApi.Mappers
                 smallImageUrl,
                 mediumImageUrl,
                 largeImageUrl);
+        }
+
+        GameListItemResponse MapToGameListItemResponse(ApplicationUserGame game)
+        {
+            return new GameListItemResponse(
+                game.Id,
+                game.Title,
+                0,
+                0);
         }
 
         GameListItemResponse MapToGameListItemResponse(ApplicationGame game)

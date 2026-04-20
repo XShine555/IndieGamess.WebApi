@@ -6,7 +6,9 @@ using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
-using WebApi.DataTransferObjects.AdminUser;
+using WebApi.DataTransferObjects.AdminUser.Requests;
+using WebApi.DataTransferObjects.AdminUser.Responses;
+using WebApi.DataTransferObjects.Users.Responses;
 using WebApi.Mappers;
 using WebApi.Services;
 
@@ -40,7 +42,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpGet("{id}/collections", Name = "Get User Collection Admins")]
         [EndpointSummary("Get User Collections")]
-        public async Task<PaginatedResponse<GameCollectionListItemResponse>> GetCollections(
+        public async Task<PaginatedResponse<GameCollectionListItemAdminResponse>> GetCollections(
             Guid id,
             [FromQuery] GetUserCollectionsAdminRequest query,
             CancellationToken cancellationToken)
@@ -130,7 +132,7 @@ namespace WebApi.Endpoints
         [HttpGet("{id}/cart", Name = "Get User Cart Admin")]
         [EndpointSummary("Get User Cart")]
         [Authorize]
-        public async Task<Result<WebApi.DataTransferObjects.Users.GetUserCartResponse>> GetCart(Guid id, CancellationToken cancellationToken)
+        public async Task<Result<GetUserCartResponse>> GetCart(Guid id, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUserCartItemsQuery(id), cancellationToken);
             return await queryResult.MapAsync(r => mapper.MapToGetUserCartResponse(r, cancellationToken));

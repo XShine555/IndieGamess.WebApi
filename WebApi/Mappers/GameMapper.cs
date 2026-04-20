@@ -1,10 +1,10 @@
 ﻿using Application.Abstractions.Common;
 using Application.Abstractions.Storage;
-using Application.Games.Responses;
+using Application.Games.Catalog.Responses;
 using WebApi.Common;
-using WebApi.DataTransferObjects.Games;
-using WebApi.DataTransferObjects.Genres;
-using WebApi.DataTransferObjects.Users;
+using WebApi.DataTransferObjects.Games.Responses;
+using WebApi.DataTransferObjects.Genres.Responses;
+using WebApi.DataTransferObjects.Users.Responses;
 
 namespace WebApi.Mappers
 {

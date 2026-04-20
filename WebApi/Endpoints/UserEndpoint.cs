@@ -6,7 +6,8 @@ using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
-using WebApi.DataTransferObjects.Users;
+using WebApi.DataTransferObjects.Users.Requests;
+using WebApi.DataTransferObjects.Users.Responses;
 using WebApi.Mappers;
 using WebApi.Services;
 

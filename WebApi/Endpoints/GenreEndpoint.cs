@@ -3,7 +3,8 @@ using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
-using WebApi.DataTransferObjects.Genres;
+using WebApi.DataTransferObjects.Genres.Requests;
+using WebApi.DataTransferObjects.Genres.Responses;
 using WebApi.Mappers;
 
 namespace WebApi.Endpoints

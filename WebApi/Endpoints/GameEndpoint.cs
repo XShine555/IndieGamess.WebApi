@@ -1,12 +1,14 @@
-﻿using Application.Games.Commands;
-using Application.Games.Queries;
+﻿using Application.Games.Catalog.Commands;
+using Application.Games.Catalog.Queries;
+using Application.Games.Media.Commands;
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
-using WebApi.DataTransferObjects.Games;
+using WebApi.DataTransferObjects.Games.Requests;
+using WebApi.DataTransferObjects.Games.Responses;
 using WebApi.Extensions;
 using WebApi.Mappers;
 using WebApi.Services;
