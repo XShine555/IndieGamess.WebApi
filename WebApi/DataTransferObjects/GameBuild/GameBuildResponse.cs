@@ -1,10 +1,11 @@
-﻿using Domain.Games.Enums;
+using Domain.Games.Enums;
 
 namespace WebApi.DataTransferObjects.GameBuild
 {
-    public record GetGameBuildRequest(
+    public record GameBuildResponse(
         Guid BuildId,
         string VersionName,
         GameBuildStatus Status,
-        bool IsReleaseBuild);
+        bool IsReleaseBuild,
+        DateTime CreatedAt);
 }

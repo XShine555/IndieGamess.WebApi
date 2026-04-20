@@ -2,6 +2,6 @@
 {
     public record GameBuildMutationResponse(
         Guid BuildId,
-        Guid GameId,
-        string VersionName);
+        string VersionName,
+        DateTime CreatedAt);
 }
