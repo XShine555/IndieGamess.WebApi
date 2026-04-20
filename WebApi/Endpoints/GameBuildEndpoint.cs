@@ -1,4 +1,5 @@
-﻿using Application.Games.Builds.Queries;
+﻿using Application.Games.Builds.Commands;
+using Application.Games.Builds.Queries;
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Mediator;
@@ -55,7 +56,7 @@ namespace WebApi.Endpoints
         public async Task<Result<GameBuildMutationResponse>> CreateGameBuild(Guid gameId, [FromBody] CreateGameBuildRequest request,
             CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new global::Application.Games.Builds.Commands.CreateGameBuildCommand(currentUser.IdentityId, gameId, request.VersionName), cancellationToken);
+            var commandResult = await mediator.Send(new CreateGameBuildCommand(currentUser.IdentityId, gameId, request.VersionName), cancellationToken);
             return commandResult.Map(mapper.MapToGameBuildMutationResponse);
         }
 
@@ -66,7 +67,7 @@ namespace WebApi.Endpoints
         public async Task<Result<GameBuildMutationResponse>> UpdateGameBuild(Guid gameId, Guid buildId, [FromBody] UpdateGameBuildRequest request,
             CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new global::Application.Games.Builds.Commands.UpdateGameBuildCommand(currentUser.IdentityId, buildId, request.VersionName), cancellationToken);
+            var commandResult = await mediator.Send(new UpdateGameBuildCommand(currentUser.IdentityId, buildId, request.VersionName), cancellationToken);
             return commandResult.Map(mapper.MapToGameBuildMutationResponse);
         }
 
@@ -77,7 +78,7 @@ namespace WebApi.Endpoints
         public async Task<Result> RemoveGameBuild(Guid gameId, Guid buildId, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new global::Application.Games.Builds.Commands.RemoveGameBuildCommand(currentUser.IdentityId, buildId), cancellationToken);
+            var commandResult = await mediator.Send(new RemoveGameBuildCommand(currentUser.IdentityId, buildId), cancellationToken);
             return commandResult;
         }
 
@@ -88,7 +89,7 @@ namespace WebApi.Endpoints
         public async Task<Result<IReadOnlyCollection<GameBuildUploadFileResponse>>> GetPresignUrl(Guid gameId, Guid buildId,
             [FromBody] GameBuildUploadFilesRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new global::Application.Games.Builds.Commands.PreSignGameFilesRequestCommand(currentUser.IdentityId, buildId, request.FilePaths), cancellationToken);
+            var commandResult = await mediator.Send(new PreSignGameFilesRequestCommand(currentUser.IdentityId, buildId, request.FilePaths), cancellationToken);
             return commandResult.Map(items => (IReadOnlyCollection<GameBuildUploadFileResponse>)items.Select(mapper.MapToGameBuildUploadFileResponse).ToArray());
         }
 
@@ -99,7 +100,7 @@ namespace WebApi.Endpoints
         public async Task<Result> CompleteUploadGameBuild(Guid gameId, Guid buildId, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new global::Application.Games.Builds.Commands.CompleteGameBuildCommand(currentUser.IdentityId, buildId), cancellationToken);
+            var commandResult = await mediator.Send(new CompleteGameBuildCommand(currentUser.IdentityId, buildId), cancellationToken);
             return commandResult;
         }
     }
