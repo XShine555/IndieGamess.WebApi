@@ -12,13 +12,13 @@ namespace WebApi.Endpoints
     [ApiController]
     [Route("genres")]
     [Tags("Genres")]
-    public class GenreEndpoint(IMediator mediator, ILogger<GenreEndpoint> logger, GenreMapper mapper)
+    public class GenreEndpoint(IMediator mediator, GenreMapper mapper)
         : Controller
     {
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Genres")]
         [EndpointSummary("Get Genres")]
-        public async Task<PaginatedResponse<GenreListItemResponse>> Get([FromQuery] GetGenresRequest query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<GenreListItemResponse>> Get( [FromQuery] GetGenresRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGenresQuery(query.Name, query.PageNumber, query.PageSize), cancellationToken);
             return mapper.MapToGenrePaginatedResponse(queryResult);

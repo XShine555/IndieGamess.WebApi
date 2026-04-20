@@ -18,13 +18,13 @@ namespace WebApi.Endpoints
     [Route("admin/user")]
     [Tags("Admin User")]
     [Authorize]
-    public class UserAdminEndpoint(IMediator mediator, ILogger<UserAdminEndpoint> logger, AdminUserMapper mapper)
+    public class UserAdminEndpoint(IMediator mediator, AdminUserMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get User Admins")]
         [EndpointSummary("Get Users")]
-        public async Task<PaginatedResponse<UserListItemAdminResponse>> Get([FromQuery] GetUsersAdminRequest query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<UserListItemAdminResponse>> Get( [FromQuery] GetUsersAdminRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUsersQuery(query.Username, query.PageNumber, query.PageSize), cancellationToken);
             return await mapper.MapToUserPaginatedResponseAsync(queryResult, cancellationToken);

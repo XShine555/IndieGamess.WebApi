@@ -22,7 +22,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Genres Admin")]
         [EndpointSummary("Get Genres")]
-        public async Task<PaginatedResponse<GenreListItemAdminResponse>> Get([FromQuery] GetGenresAdminRequest query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<GenreListItemAdminResponse>> Get( [FromQuery] GetGenresAdminRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGenresQuery(query.Name, query.PageNumber, query.PageSize), cancellationToken);
             return mapper.MapToGenrePaginatedResponse(queryResult);
@@ -40,7 +40,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpPost(Name = "Create Genre Admin")]
         [EndpointSummary("Create Genre")]
-        public async Task<GenreAdminSummary> Create([FromBody] CreateGenreAdminRequest request, CancellationToken cancellationToken)
+        public async Task<GenreAdminSummary> Create( [FromBody] CreateGenreAdminRequest request, CancellationToken cancellationToken)
         {
             var commandResult = await mediator.Send(new CreateGenreCommand(request.Name), cancellationToken);
             return mapper.MapToGenreSummary(commandResult);

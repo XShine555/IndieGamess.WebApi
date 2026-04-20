@@ -19,7 +19,7 @@ namespace WebApi.Endpoints
     [Route("admin/game")]
     [Tags("Admin Game")]
     [Authorize]
-    public class GameAdminEndpoint(IMediator mediator, ILogger<GameAdminEndpoint> logger, AdminGameMapper mapper)
+    public class GameAdminEndpoint(IMediator mediator, AdminGameMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]
