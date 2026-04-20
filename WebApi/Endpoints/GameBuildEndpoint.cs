@@ -1,4 +1,5 @@
 ﻿using Application.Games.Commands;
+using Application.Games.Queries;
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Mediator;
@@ -10,7 +11,7 @@ using WebApi.Services;
 namespace WebApi.Endpoints
 {
     [ApiController]
-    [Route("game-builds")]
+    [Route("games/{gameId}/game-builds/")]
     [Tags("Game Builds")]
     public class GameBuildEndpoint(IMediator mediator)
         : ControllerBase
@@ -19,10 +20,19 @@ namespace WebApi.Endpoints
         [HttpPost]
         [EndpointSummary("Create Game Build")]
         [Authorize]
-        public async Task<Result<GameBuildMutationResponse>> CreateGameBuild(CreateGameBuildRequest request, [FromServices] ICurrentUser currentUser)
+        public async Task<Result<GameBuildMutationResponse>> CreateGameBuild(Guid gameId, CreateGameBuildRequest request, [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new CreateGameBuildCommand(currentUser.IdentityId, request.GameId, request.VersionName));
-            return commandResult.Map(r => new GameBuildMutationResponse(r.BuildId, request.GameId, r.VersionName));
+            var commandResult = await mediator.Send(new CreateGameBuildCommand(currentUser.IdentityId, gameId, request.VersionName));
+            return commandResult.Map(r => new GameBuildMutationResponse(r.BuildId, gameId, r.VersionName));
+        }
+
+        [HttpGet("{buildId}")]
+        [EndpointSummary("Get Game Build Details")]
+        [Authorize]
+        public async Task<Result<GetGameBuildRequest>> GetGameBuild(Guid buildId, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new GetGameBuildsQuery(currentUser.IdentityId, buildId));
+            return commandResult;
         }
 
         [HttpPost("{buildId}/upload")]

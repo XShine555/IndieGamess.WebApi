@@ -32,7 +32,7 @@ namespace WebApi.Endpoints
         [HttpGet]
         [Route("{id}", Name = "Get Game By Id")]
         [EndpointSummary("Get Game By Id")]
-        public async Task<GameResponse> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<Result<GameResponse>> GetById(Guid id, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGameByIdQuery(id), cancellationToken);
             return await queryResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
@@ -40,9 +40,10 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpPost(Name = "Create Game")]
+        [Consumes("multipart/form-data")]
         [EndpointSummary("Create Game")]
         [Authorize]
-        public async Task<GameMutationResponse> CreateGame([FromForm] CreateGameRequest createGameRequest, CancellationToken cancellationToken,
+        public async Task<Result<GameMutationResponse>> CreateGame([FromForm] CreateGameRequest createGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var capsulePicture = FileData.FromFormFile(createGameRequest.CapsulePicture);
@@ -74,7 +75,7 @@ namespace WebApi.Endpoints
         [HttpPut("{id}", Name = "Update By Id")]
         [EndpointSummary("Update Game")]
         [Authorize]
-        public async Task<GameMutationResponse> UpdateGame(Guid id, UpdateGameRequest updateGameRequest, CancellationToken cancellationToken,
+        public async Task<Result<GameMutationResponse>> UpdateGame(Guid id, UpdateGameRequest updateGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new UpdateGameCommand(
@@ -102,7 +103,7 @@ namespace WebApi.Endpoints
         [HttpPatch("{id}/genres", Name = "Update Genres")]
         [EndpointSummary("Update Genres")]
         [Authorize]
-        public async Task<GameGenresMutationResponse> UpdateGenres(Guid id, UpdateGameGenresRequest updateGameGenresRequest, CancellationToken cancellationToken,
+        public async Task<Result<GameGenresMutationResponse>> UpdateGenres(Guid id, UpdateGameGenresRequest updateGameGenresRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new UpdateGameGenresCommand(currentUser.IdentityId, id, updateGameGenresRequest.Genres), cancellationToken);

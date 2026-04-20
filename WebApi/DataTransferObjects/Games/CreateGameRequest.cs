@@ -5,11 +5,11 @@ namespace WebApi.DataTransferObjects.Games
     public class CreateGameRequest
     {
         [Required]
-        [Range(3, 24)]
+        [StringLength(24, MinimumLength = 3)]
         public required string Title { get; set; }
 
         [Required]
-        [Range(1, 4096)]
+        [StringLength(4096, MinimumLength = 1)]
         public required string Description { get; set; }
 
         [Required]

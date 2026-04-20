@@ -97,7 +97,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("me/promote-to-devoloper", Name = "Promote To Developer")]
+        [HttpPost("me/promote-to-devoloper", Name = "Promote To Developer Admin")]
         [EndpointSummary("Promote To Developer")]
         [Authorize]
         public async Task<Result<UpdateUserAdminResponse>> PromoteToDeveloper(CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
@@ -107,7 +107,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/cart/{gameId}", Name = "Add Item To Cart")]
+        [HttpPost("{id}/cart/{gameId}", Name = "Add Item To Cart Admin")]
         [EndpointSummary("Add Item To Cart")]
         [Authorize]
         public async Task<Result> AddItemToCart(Guid id, Guid gameId, CancellationToken cancellationToken)
@@ -117,7 +117,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}/cart/{gameId}", Name = "Remove Item From Cart")]
+        [HttpDelete("{id}/cart/{gameId}", Name = "Remove Item From Cart Admin")]
         [EndpointSummary("Remove Item From Cart")]
         [Authorize]
         public async Task<Result> RemoveItemFromCart(Guid id, Guid gameId, CancellationToken cancellationToken)
