@@ -90,7 +90,8 @@ namespace WebApi.Endpoints
             [FromBody] GameBuildUploadFilesRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new PreSignGameFilesRequestCommand(currentUser.IdentityId, buildId, request.FilePaths), cancellationToken);
-            return commandResult.Map(items => (IReadOnlyCollection<GameBuildUploadFileResponse>)items.Select(mapper.MapToGameBuildUploadFileResponse).ToArray());
+            return commandResult.Map(items =>
+                (IReadOnlyCollection<GameBuildUploadFileResponse>)items.Select(mapper.MapToGameBuildUploadFileResponse).ToArray());
         }
 
         [TranslateResultToActionResult]
