@@ -1,4 +1,5 @@
-﻿using Ardalis.Result;
+﻿using Application.Games.Builds.Queries;
+using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +24,7 @@ namespace WebApi.Endpoints
         public async Task<Result<IReadOnlyCollection<GameBuildResponse>>> GetGameBuilds(Guid gameId, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
-            var queryResult = await mediator.Send(new global::Application.Games.Builds.Queries.GetGameBuildsQuery(currentUser.IdentityId, gameId), cancellationToken);
+            var queryResult = await mediator.Send(new GetGameBuildsQuery(currentUser.IdentityId, gameId), cancellationToken);
             return queryResult.Map(builds => (IReadOnlyCollection<GameBuildResponse>)builds.Select(mapper.MapToGameBuildResponse).ToArray());
         }
 
@@ -34,7 +35,7 @@ namespace WebApi.Endpoints
         public async Task<Result<GameBuildResponse>> GetGameBuild(Guid gameId, Guid buildId, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
-            var queryResult = await mediator.Send(new global::Application.Games.Builds.Queries.GetGameBuildsQuery(currentUser.IdentityId, gameId), cancellationToken);
+            var queryResult = await mediator.Send(new GetGameBuildsQuery(currentUser.IdentityId, gameId), cancellationToken);
 
             if (!queryResult.IsSuccess)
             {
