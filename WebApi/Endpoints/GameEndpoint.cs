@@ -1,5 +1,7 @@
 ﻿using Application.Games.Catalog.Commands;
 using Application.Games.Catalog.Queries;
+using Application.Games.Builds.Commands;
+using Application.Games.Builds.Queries;
 using Application.Games.Media.Commands;
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
@@ -9,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
 using WebApi.DataTransferObjects.Games.Requests;
 using WebApi.DataTransferObjects.Games.Responses;
+using WebApi.DataTransferObjects.GameBuild.Requests;
+using WebApi.DataTransferObjects.GameBuild.Responses;
 using WebApi.Extensions;
 using WebApi.Mappers;
 using WebApi.Services;
@@ -18,7 +22,7 @@ namespace WebApi.Endpoints
     [ApiController]
     [Route("games")]
     [Tags("Games")]
-    public class GameEndpoint(IMediator mediator, GameMapper mapper)
+    public class GameEndpoint(IMediator mediator, GameMapper mapper, GameBuildMapper gameBuildMapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]
@@ -147,6 +151,28 @@ namespace WebApi.Endpoints
             var artwork = FileData.FromFormFile(request.Artwork);
             var commandResult = await mediator.Send(new UpdateGameArtworkCommand(currentUser.IdentityId, id, artworkId, artwork), cancellationToken);
             return commandResult.ToResult();
+        }
+
+        [TranslateResultToActionResult]
+        [HttpGet("{id}/builds", Name = "Get Game Builds As User")]
+        [EndpointSummary("Get Game Builds As User")]
+        [Authorize]
+        public async Task<Result<IReadOnlyCollection<GameBuildResponse>>> GetGameBuilds(Guid id, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(new GetGameBuildsQuery(currentUser.IdentityId, id), cancellationToken);
+            return queryResult.Map(builds => (IReadOnlyCollection<GameBuildResponse>)builds.Select(gameBuildMapper.MapToGameBuildResponse).ToArray());
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPost("{id}/builds", Name = "Create Game Build")]
+        [EndpointSummary("Create Game Build")]
+        [Authorize]
+        public async Task<Result<GameBuildMutationResponse>> CreateGameBuild(Guid id, [FromBody] CreateGameBuildRequest request,
+            CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new CreateGameBuildCommand(currentUser.IdentityId, id, request.VersionName), cancellationToken);
+            return commandResult.Map(gameBuildMapper.MapToGameBuildMutationResponse);
         }
     }
 }
