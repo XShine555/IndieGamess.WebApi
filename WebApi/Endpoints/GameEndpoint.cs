@@ -87,7 +87,8 @@ namespace WebApi.Endpoints
                 updateGameRequest.Description,
                 updateGameRequest.Price,
                 updateGameRequest.Discount,
-                updateGameRequest.IsPublic), cancellationToken);
+                updateGameRequest.IsPublic,
+                updateGameRequest.ReleaseBuildId), cancellationToken);
             return commandResult.Map(mapper.MapToGameMutationResponse);
         }
 
@@ -115,6 +116,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpPost("{id}/store-picture", Name = "Upload Store Picture")]
         [EndpointSummary("Upload Store Picture")]
+        [Consumes("multipart/form-data")]
         [Authorize]
         public async Task<Result> UpdateStorePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -137,6 +139,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpPatch("{id}/artwork/{artworkId}", Name = "Update Artwork")]
         [EndpointSummary("Update Artwork")]
+        [Consumes("multipart/form-data")]
         [Authorize]
         public async Task<Result> UpdateArtwork(Guid id, Guid artworkId, [FromForm] IFormFile formFile, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)

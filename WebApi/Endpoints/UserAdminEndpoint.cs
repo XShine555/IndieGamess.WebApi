@@ -63,9 +63,10 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpPatch("{id}/profile-picture", Name = "Update Profile Picture Admin")]
         [EndpointSummary("Update Profile Picture")]
-        public async Task<Result> UpdateProfilePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken)
+        [Consumes("multipart/form-data")]
+        public async Task<Result> UpdateProfilePicture(Guid id, [FromForm] UpdateUserProfilePictureAdminRequest request, CancellationToken cancellationToken)
         {
-            var fileData = FileData.FromFormFile(formFile);
+            var fileData = FileData.FromFormFile(request.ProfilePicture);
             var commandResult = await mediator.Send(new UpdateUserProfilePictureCommand(id, fileData), cancellationToken);
             return commandResult;
         }

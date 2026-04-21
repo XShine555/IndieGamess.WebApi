@@ -22,5 +22,8 @@ namespace WebApi.DataTransferObjects.AdminGame.Requests
 
         [Required]
         public bool IsPublic { get; set; }
+
+        [Required]
+        public Guid ReleaseBuildId { get; set; }
     }
 }

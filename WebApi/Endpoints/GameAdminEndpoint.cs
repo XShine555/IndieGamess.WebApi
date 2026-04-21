@@ -83,7 +83,8 @@ namespace WebApi.Endpoints
                 updateGameRequest.Description,
                 updateGameRequest.Price,
                 updateGameRequest.Discount,
-                updateGameRequest.IsPublic), cancellationToken);
+                updateGameRequest.IsPublic,
+                updateGameRequest.ReleaseBuildId), cancellationToken);
             return commandResult.Map(r => mapper.MapToGameMutationResponse(r));
         }
 

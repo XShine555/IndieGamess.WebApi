@@ -67,10 +67,11 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpPatch("me/profile-picture", Name = "Update Profile Picture")]
         [EndpointSummary("Update Profile Picture")]
+        [Consumes("multipart/form-data")]
         [Authorize]
-        public async Task<Result> UpdateProfilePicture( [FromForm] IFormFile formFile, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result> UpdateProfilePicture( [FromForm] UpdateUserProfilePictureRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var fileData = FileData.FromFormFile(formFile);
+            var fileData = FileData.FromFormFile(request.ProfilePicture);
             var commandResult = await mediator.Send(new UpdateUserProfilePictureCommand(currentUser.IdentityId, fileData), cancellationToken);
             return commandResult;
         }
@@ -79,7 +80,7 @@ namespace WebApi.Endpoints
         [HttpPut("me", Name = "Update User")]
         [EndpointSummary("Update User")]
         [Authorize]
-        public async Task<Result<UpdateUserResponse>> Update( [FromBody] UpdateUserRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result<UpdateUserResponse>> Update( [FromForm] UpdateUserRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new UpdateUserCommand(currentUser.IdentityId, request.DisplayName), cancellationToken);
             return commandResult.Map(mapper.MapToUpdateUserResponse);
