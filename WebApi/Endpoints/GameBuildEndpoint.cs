@@ -19,8 +19,8 @@ namespace WebApi.Endpoints
         : ControllerBase
     {
         [TranslateResultToActionResult]
-        [HttpGet(Name = "Get Game Builds")]
-        [EndpointSummary("Get Game Builds")]
+        [HttpGet(Name = "Get Game Builds As User")]
+        [EndpointSummary("Get Game Builds As User")]
         [Authorize]
         public async Task<Result<IReadOnlyCollection<GameBuildResponse>>> GetGameBuilds(Guid gameId, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -30,8 +30,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{buildId}", Name = "Get Game Build By Id")]
-        [EndpointSummary("Get Game Build By Id")]
+        [HttpGet("{buildId}", Name = "Get Game Build By Id As User")]
+        [EndpointSummary("Get Game Build By Id As User")]
         [Authorize]
         public async Task<Result<GameBuildResponse>> GetGameBuild(Guid gameId, Guid buildId, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
