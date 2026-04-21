@@ -9,7 +9,6 @@ namespace WebApi.DataTransferObjects.AdminGame.Responses
         string Description,
         decimal Price,
         decimal Discount,
-        bool IsReadyForStore,
         bool IsPublic,
         bool IsPublished,
         UserAdminSummary Owner,
