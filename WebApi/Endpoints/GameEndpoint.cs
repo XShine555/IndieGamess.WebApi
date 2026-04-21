@@ -118,10 +118,10 @@ namespace WebApi.Endpoints
         [EndpointSummary("Upload Store Picture")]
         [Consumes("multipart/form-data")]
         [Authorize]
-        public async Task<Result> UpdateStorePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken,
+        public async Task<Result> UpdateStorePicture(Guid id, [FromForm] UpdateGameStorePictureRequest request, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
-            var storePicture = FileData.FromFormFile(formFile);
+            var storePicture = FileData.FromFormFile(request.StorePicture);
             var commandResult = await mediator.Send(new AddStorePictureToGameCommand(currentUser.IdentityId, id, storePicture), cancellationToken);
             return commandResult.ToResult();
         }
@@ -141,10 +141,10 @@ namespace WebApi.Endpoints
         [EndpointSummary("Update Artwork")]
         [Consumes("multipart/form-data")]
         [Authorize]
-        public async Task<Result> UpdateArtwork(Guid id, Guid artworkId, [FromForm] IFormFile formFile, CancellationToken cancellationToken,
+        public async Task<Result> UpdateArtwork(Guid id, Guid artworkId, [FromForm] UpdateGameArtworkRequest request, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
-            var artwork = FileData.FromFormFile(formFile);
+            var artwork = FileData.FromFormFile(request.Artwork);
             var commandResult = await mediator.Send(new UpdateGameArtworkCommand(currentUser.IdentityId, id, artworkId, artwork), cancellationToken);
             return commandResult.ToResult();
         }
