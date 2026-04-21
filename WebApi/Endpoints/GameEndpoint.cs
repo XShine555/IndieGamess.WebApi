@@ -22,8 +22,8 @@ namespace WebApi.Endpoints
         : ControllerBase
     {
         [TranslateResultToActionResult]
-        [HttpGet(Name = "Get Games")]
-        [EndpointSummary("Get Games")]
+        [HttpGet(Name = "Get Store Games")]
+        [EndpointSummary("Get Store Games")]
         public async Task<PaginatedResponse<GameListItemResponse>> Get( [FromQuery] GetGamesRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGamesQuery(query.Title, query.Genres, query.PageNumber, query.PageSize), cancellationToken);
@@ -32,8 +32,8 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpGet]
-        [Route("{id}", Name = "Get Game By Id")]
-        [EndpointSummary("Get Game By Id")]
+        [Route("{id}", Name = "Get Store Game By Id")]
+        [EndpointSummary("Get Store Game By Id")]
         public async Task<Result<GameResponse>> GetById(Guid id, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGameByIdQuery(id), cancellationToken);
