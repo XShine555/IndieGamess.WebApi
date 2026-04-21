@@ -28,6 +28,7 @@ services.AddApplicationMediator(configuration);
 services.AddHttpContextAccessor();
 services.AddScoped<ICurrentUser, CurrentUser>();
 services.AddScoped<GameMapper>();
+services.AddScoped<GameBuildMapper>();
 services.AddScoped<GenreMapper>();
 services.AddScoped<UserMapper>();
 services.AddScoped<AdminGameMapper>();
