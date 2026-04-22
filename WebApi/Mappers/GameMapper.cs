@@ -10,10 +10,16 @@ namespace WebApi.Mappers
 {
     public class GameMapper(IS3Service s3Service)
     {
-        public async Task<PaginatedResponse<GameListItemResponse>> MapToGamePaginatedResponse(PaginatedApplicationResponse<ApplicationGameListItem> listItem,
+        public async Task<PaginatedResponse<GameListItemResponse>> MapToGameListPaginatedResponseAsync(PaginatedApplicationResponse<ApplicationGameListItem> listItem,
             CancellationToken cancellationToken)
         {
             return PaginatedResponse<GameListItemResponse>.FromApplicationResponse(listItem, MapToGameListItem);
+        }
+
+        public async Task<PaginatedResponse<GameResponse>> MapToGamePaginatedResponseAsync(PaginatedApplicationResponse<ApplicationGame> listItem,
+            CancellationToken cancellationToken)
+        {
+            return await PaginatedResponse<GameResponse>.FromApplicationResponseAsync(listItem, async item => await MapToGameResponse(item, cancellationToken), cancellationToken);
         }
 
         public GameListItemResponse MapToGameListItem(ApplicationGameListItem gameListItem)

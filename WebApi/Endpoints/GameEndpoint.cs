@@ -31,7 +31,7 @@ namespace WebApi.Endpoints
         public async Task<PaginatedResponse<GameListItemResponse>> Get( [FromQuery] GetGamesRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGamesQuery(query.Title, query.Genres, query.PageNumber, query.PageSize), cancellationToken);
-            return await mapper.MapToGamePaginatedResponse(queryResult, cancellationToken);
+            return await mapper.MapToGameListPaginatedResponseAsync(queryResult, cancellationToken);
         }
 
         [TranslateResultToActionResult]
