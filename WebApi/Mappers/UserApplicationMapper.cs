@@ -85,7 +85,8 @@ namespace WebApi.Mappers
             return new GetBasicUserResponse(
                 applicationBasicUser.Id,
                 applicationBasicUser.DisplayName,
-                profilePicture);
+                profilePicture,
+                applicationBasicUser.Role.ToString());
         }
 
         public UpdateUserResponse MapToUpdateUserResponse(ApplicationUserMutation applicationUser)

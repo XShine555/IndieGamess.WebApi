@@ -3,5 +3,6 @@
     public record GetBasicUserResponse(
         Guid UserId,
         string DisplayName,
-        UserProfilePictureResponse ProfilePicture);
+        UserProfilePictureResponse ProfilePicture,
+        string Role);
 }
