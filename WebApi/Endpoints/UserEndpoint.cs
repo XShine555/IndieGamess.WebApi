@@ -79,6 +79,16 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
+        [HttpGet("me", Name = "Get Current User")]
+        [EndpointSummary("Get Current User")]
+        [Authorize]
+        public async Task<Result<UserResponse>> GetCurrentUser(CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(currentUser.IdentityId), cancellationToken);
+            return await userMapper.MapToUserResponse(queryResult, cancellationToken);
+        }
+
+        [TranslateResultToActionResult]
         [HttpPut("me", Name = "Update User")]
         [EndpointSummary("Update User")]
         [Authorize]
