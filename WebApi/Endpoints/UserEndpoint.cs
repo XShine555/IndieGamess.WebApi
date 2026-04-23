@@ -23,7 +23,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Users")]
         [EndpointSummary("Get Users")]
-        public async Task<PaginatedResponse<UserListItemResponse>> Get([FromQuery] GetUsersRequest query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<UserListItemResponse>> Get( [FromQuery] GetUsersRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUsersQuery(query.Username, query.PageNumber, query.PageSize), cancellationToken);
             return await userMapper.MapToUserPaginatedResponseAsync(queryResult, cancellationToken);
@@ -70,7 +70,7 @@ namespace WebApi.Endpoints
         [EndpointSummary("Update Profile Picture")]
         [Consumes("multipart/form-data")]
         [Authorize]
-        public async Task<Result> UpdateProfilePicture([FromForm] UpdateUserProfilePictureRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result> UpdateProfilePicture( [FromForm] UpdateUserProfilePictureRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var fileData = FileData.FromFormFile(request.ProfilePicture);
             var commandResult = await mediator.Send(new UpdateUserProfilePictureCommand(currentUser.IdentityId, fileData), cancellationToken);
@@ -91,7 +91,7 @@ namespace WebApi.Endpoints
         [HttpPut("me", Name = "Update User")]
         [EndpointSummary("Update User")]
         [Authorize]
-        public async Task<Result<UpdateUserResponse>> Update([FromForm] UpdateUserRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result<UpdateUserResponse>> Update( [FromForm] UpdateUserRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new UpdateUserCommand(currentUser.IdentityId, request.DisplayName), cancellationToken);
             return commandResult.Map(userMapper.MapToUpdateUserResponse);
@@ -101,7 +101,7 @@ namespace WebApi.Endpoints
         [HttpPost("me/collections", Name = "Add Game Collection")]
         [EndpointSummary("Add Game Collection")]
         [Authorize]
-        public async Task<Result<GameCollectionResponse>> AddGameCollection([FromBody] CreateGameCollectionRequest createGameCollectionRequest,
+        public async Task<Result<GameCollectionResponse>> AddGameCollection( [FromBody] CreateGameCollectionRequest createGameCollectionRequest,
             CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
             var commandResult = await mediator.Send(new CreateUserGameCollectionCommand(currentUser.IdentityId, createGameCollectionRequest.Name), cancellationToken);
@@ -161,7 +161,7 @@ namespace WebApi.Endpoints
         [HttpGet("me/created-games", Name = "Get Created Games")]
         [EndpointSummary("Get Created Games")]
         [Authorize]
-        public async Task<PaginatedResponse<GameResponse>> GetCreatedGames([FromQuery] GetCreatedGamesRequest request, CancellationToken cancellationToken,
+        public async Task<PaginatedResponse<GameResponse>> GetCreatedGames( [FromQuery] GetCreatedGamesRequest request, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var queryResult = await mediator.Send(new GetCreatedGamesByIdentityIdQuery(
