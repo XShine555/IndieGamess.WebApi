@@ -29,9 +29,11 @@ namespace WebApi.Mappers
             IReadOnlyCollection<ApplicationUserCartItem> cartItems,
             CancellationToken cancellationToken);
 
-        Task<Result<UserResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken);
+        Task<Result<GetUserResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken);
 
-        Task<UserResponse> MapToUserResponse(ApplicationUser applicationUser, CancellationToken cancellationToken);
+        Task<Result<GetBasicUserResponse>> MapToBasicUserResponse(Result<ApplicationBasicUser> result, CancellationToken cancellationToken);
+
+        Task<GetUserResponse> MapToUserResponse(ApplicationUser applicationUser, CancellationToken cancellationToken);
 
         UpdateUserResponse MapToUpdateUserResponse(ApplicationUserMutation applicationUser);
 

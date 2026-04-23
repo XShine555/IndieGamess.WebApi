@@ -34,7 +34,7 @@ namespace WebApi.Endpoints
         [HttpGet]
         [Route("{userId}", Name = "Get User By Id")]
         [EndpointSummary("Get User By Id")]
-        public async Task<Result<UserResponse>> GetById(Guid userId, CancellationToken cancellationToken)
+        public async Task<Result<GetUserResponse>> GetById(Guid userId, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(userId), cancellationToken);
             return await userMapper.MapToUserResponse(queryResult, cancellationToken);
@@ -82,10 +82,10 @@ namespace WebApi.Endpoints
         [HttpGet("me", Name = "Get Current User")]
         [EndpointSummary("Get Current User")]
         [Authorize]
-        public async Task<Result<UserResponse>> GetCurrentUser(CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result<GetBasicUserResponse>> GetCurrentUser(CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(currentUser.IdentityId), cancellationToken);
-            return await userMapper.MapToUserResponse(queryResult, cancellationToken);
+            var queryResult = await mediator.Send(new GetBasicUserQuery(currentUser.IdentityId), cancellationToken);
+            return await userMapper.MapToBasicUserResponse(queryResult, cancellationToken);
         }
 
         [TranslateResultToActionResult]

@@ -50,14 +50,19 @@ namespace WebApi.Mappers
             return new GetUserCartResponse(mappedCartItems.ToList());
         }
 
-        public async Task<Result<UserResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken)
+        public async Task<Result<GetUserResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken)
         {
             return await result.MapAsync(source => MapToUserResponse(source, cancellationToken));
         }
 
-        public async Task<UserResponse> MapToUserResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
+        public async Task<Result<GetBasicUserResponse>> MapToBasicUserResponse(Result<ApplicationBasicUser> result, CancellationToken cancellationToken)
         {
-            var profilePicture = await MapToUserProfilePictureResponse(applicationUser, cancellationToken);
+            return await result.MapAsync(source => MapToBasicUserResponse(source, cancellationToken));
+        }
+
+        public async Task<GetUserResponse> MapToUserResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
+        {
+            var profilePicture = await MapToUserProfilePictureResponse(applicationUser.ProfilePicture, cancellationToken);
 
             var createdGames = await Task.WhenAll(
                 applicationUser.CreatedGames.Select(game => MapToGameSummaryResponse(game, cancellationToken)));
@@ -65,12 +70,22 @@ namespace WebApi.Mappers
             var ownedGames = await Task.WhenAll(
                 applicationUser.OwnedGames.Select(game => MapToGameSummaryResponse(game, cancellationToken)));
 
-            return new UserResponse(
+            return new GetUserResponse(
                 applicationUser.IdentityId,
                 applicationUser.Username,
                 profilePicture,
                 createdGames.ToList(),
                 ownedGames.ToList());
+        }
+
+        public async Task<GetBasicUserResponse> MapToBasicUserResponse(ApplicationBasicUser applicationBasicUser, CancellationToken cancellationToken)
+        {
+            var profilePicture = await MapToUserProfilePictureResponse(applicationBasicUser.ProfilePicture, cancellationToken);
+
+            return new GetBasicUserResponse(
+                applicationBasicUser.Id,
+                applicationBasicUser.DisplayName,
+                profilePicture);
         }
 
         public UpdateUserResponse MapToUpdateUserResponse(ApplicationUserMutation applicationUser)
@@ -205,12 +220,12 @@ namespace WebApi.Mappers
                 artworks);
         }
 
-        async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
+        async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUserPicture applicationUserPicture, CancellationToken cancellationToken)
         {
             var urls = await CreateSignedUrlsAsync(
-                applicationUser.ProfilePicture.SmallPictureKey,
-                applicationUser.ProfilePicture.MediumPictureKey,
-                applicationUser.ProfilePicture.LargePictureKey,
+                applicationUserPicture.SmallPictureKey,
+                applicationUserPicture.MediumPictureKey,
+                applicationUserPicture.LargePictureKey,
                 cancellationToken);
 
             return new UserProfilePictureResponse(

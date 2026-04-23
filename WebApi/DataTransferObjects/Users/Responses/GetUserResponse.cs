@@ -3,7 +3,7 @@ using WebApi.DataTransferObjects.Users.Responses;
 
 namespace WebApi.DataTransferObjects.Users.Requests
 {
-    public record UserResponse(
+    public record GetUserResponse(
         Guid Id,
         string Username,
         UserProfilePictureResponse ProfilePicture,
