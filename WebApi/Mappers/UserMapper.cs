@@ -112,12 +112,16 @@ namespace WebApi.Mappers
                 gameCollection.CreatedAt);
         }
 
-        public GameCollectionDetailsResponse MapToGameCollectionDetailsResponse(ApplicationUserCollectionDetails gameCollection)
+        public async Task<GameCollectionDetailsResponse> MapToGameCollectionDetailsResponse(ApplicationUserCollectionDetails gameCollection, CancellationToken cancellationToken)
         {
+            var games = await Task.WhenAll(
+                gameCollection.Games.Select(game => MapToGameListItemResponse(game, cancellationToken))
+            );
+
             return new GameCollectionDetailsResponse(
                 gameCollection.Id,
                 gameCollection.Name,
-                gameCollection.Games.Select(game => MapToGameListItemResponse(game)).ToList(),
+                games,
                 gameCollection.CreatedAt,
                 gameCollection.UpdatedAt);
         }
@@ -199,22 +203,18 @@ namespace WebApi.Mappers
                 largeImageUrl);
         }
 
-        GameListItemResponse MapToGameListItemResponse(ApplicationUserGame game)
+        async Task<GameListItemResponse> MapToGameListItemResponse(ApplicationGame game, CancellationToken cancellationToken)
         {
-            return new GameListItemResponse(
-                game.Id,
-                game.Title,
-                0,
-                0);
-        }
+            var artworks = await Task.WhenAll(
+                game.Artworks.Select(artwork => MapToGameArtworkSummaryResponse(artwork, cancellationToken))
+            );
 
-        GameListItemResponse MapToGameListItemResponse(ApplicationGame game)
-        {
             return new GameListItemResponse(
                 game.Id,
                 game.Title,
                 game.Price,
-                game.Discount);
+                game.Discount,
+                artworks);
         }
 
         async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)

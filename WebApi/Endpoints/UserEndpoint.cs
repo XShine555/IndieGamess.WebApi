@@ -63,7 +63,7 @@ namespace WebApi.Endpoints
             [FromServices] ICurrentUser currentUser)
         {
             var queryResult = await mediator.Send(new GetUserCollectionByIdQuery(currentUser.IdentityId, collectionId), cancellationToken);
-            return queryResult.Map(userMapper.MapToGameCollectionDetailsResponse);
+            return await queryResult.MapAsync(r => userMapper.MapToGameCollectionDetailsResponse(r, cancellationToken));
         }
 
         [TranslateResultToActionResult]

@@ -57,7 +57,7 @@ namespace WebApi.Endpoints
         public async Task<Result<GameCollectionDetailsAdminResponse>> GetCollectionById(Guid id, Guid collectionId, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUserCollectionByIdQuery(id, collectionId), cancellationToken);
-            return queryResult.Map(mapper.MapToGameCollectionDetailsResponse);
+            return await queryResult.MapAsync(r => mapper.MapToGameCollectionDetailsResponse(r, cancellationToken));
         }
 
         [TranslateResultToActionResult]
