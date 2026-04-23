@@ -25,6 +25,8 @@ namespace WebApi.Common
 
         Task<Result<GetUserResponse>> MapToUserResponse(Result<ApplicationUser> result, CancellationToken cancellationToken);
 
+        Task<Result<GetUserLibraryResponse>> MapToUserLibraryResponse(Result<ApplicationUser> result, CancellationToken cancellationToken);
+
         Task<Result<GetBasicUserResponse>> MapToBasicUserResponse(Result<ApplicationBasicUser> result, CancellationToken cancellationToken);
 
         Task<GetUserResponse> MapToUserResponse(ApplicationUser applicationUser, CancellationToken cancellationToken);

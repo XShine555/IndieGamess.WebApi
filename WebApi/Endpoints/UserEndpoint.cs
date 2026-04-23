@@ -129,22 +129,22 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("me/cart/{userId}", Name = "Add Item To Cart")]
+        [HttpPost("me/cart/{gameId}", Name = "Add Item To Cart")]
         [EndpointSummary("Add Item To Cart")]
         [Authorize]
-        public async Task<Result> AddItemToCart(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result> AddItemToCart(Guid gameId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new AddGameToUserCartCommand(currentUser.IdentityId, id), cancellationToken);
+            var commandResult = await mediator.Send(new AddGameToUserCartCommand(currentUser.IdentityId, gameId), cancellationToken);
             return commandResult;
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("me/cart/{userId}", Name = "Remove Item From Cart")]
+        [HttpDelete("me/cart/{gameId}", Name = "Remove Item From Cart")]
         [EndpointSummary("Remove Item From Cart")]
         [Authorize]
-        public async Task<Result> RemoveItemFromCart(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result> RemoveItemFromCart(Guid gameId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new RemoveGameFromUserCartCommand(currentUser.IdentityId, id), cancellationToken);
+            var commandResult = await mediator.Send(new RemoveGameFromUserCartCommand(currentUser.IdentityId, gameId), cancellationToken);
             return commandResult;
         }
 
@@ -156,6 +156,37 @@ namespace WebApi.Endpoints
         {
             var queryResult = await mediator.Send(new GetUserCartItemsQuery(currentUser.IdentityId), cancellationToken);
             return await queryResult.MapAsync(r => userMapper.MapToGetUserCartResponse(r, cancellationToken));
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPost("me/cart/checkout", Name = "Checkout Cart")]
+        [EndpointSummary("Checkout Cart")]
+        [Authorize]
+        public async Task<Result> Checkout([FromServices] ICurrentUser currentUser, CancellationToken cancellationToken)
+        {
+            var cartResult = await mediator.Send(new GetUserCartItemsQuery(currentUser.IdentityId), cancellationToken);
+            if (!cartResult.IsSuccess)
+                return Result.Error("Error al obtener el carrito.");
+
+            foreach (var cartItem in cartResult.Value)
+            {
+                await mediator.Send(new AddGameToUserLibraryCommand(currentUser.IdentityId, cartItem.Game.Id), cancellationToken);
+                await mediator.Send(new RemoveGameFromUserCartCommand(currentUser.IdentityId, cartItem.Game.Id), cancellationToken);
+            }
+
+            return Result.Success();
+        }
+
+        [TranslateResultToActionResult]
+        [HttpGet("me/library", Name = "Get User Library")]
+        [EndpointSummary("Get User Library")]
+        [Authorize]
+        public async Task<Result<GetUserLibraryResponse>> GetLibrary(
+            CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(currentUser.IdentityId), cancellationToken);
+            return await userMapper.MapToUserLibraryResponse(queryResult, cancellationToken);
         }
 
         [HttpGet("me/created-games", Name = "Get Created Games")]

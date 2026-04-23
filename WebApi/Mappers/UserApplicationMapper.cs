@@ -55,6 +55,16 @@ namespace WebApi.Mappers
             return await result.MapAsync(source => MapToUserResponse(source, cancellationToken));
         }
 
+        public async Task<Result<GetUserLibraryResponse>> MapToUserLibraryResponse(Result<ApplicationUser> result, CancellationToken cancellationToken)
+        {
+            return await result.MapAsync(async source =>
+            {
+                var ownedGames = await Task.WhenAll(
+                    source.OwnedGames.Select(game => MapToGameSummaryResponse(game, cancellationToken)));
+                return new GetUserLibraryResponse(ownedGames.ToList());
+            });
+        }
+
         public async Task<Result<GetBasicUserResponse>> MapToBasicUserResponse(Result<ApplicationBasicUser> result, CancellationToken cancellationToken)
         {
             return await result.MapAsync(source => MapToBasicUserResponse(source, cancellationToken));
