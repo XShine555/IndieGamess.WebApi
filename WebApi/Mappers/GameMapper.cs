@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions.Common;
 using Application.Abstractions.Storage;
 using Application.Games.Catalog.Responses;
+using Application.Games.Media.Responses;
 using WebApi.Common;
 using WebApi.DataTransferObjects.Games.Responses;
 using WebApi.DataTransferObjects.Genres.Responses;
@@ -13,7 +14,8 @@ namespace WebApi.Mappers
         public async Task<PaginatedResponse<GameListItemResponse>> MapToGameListPaginatedResponseAsync(PaginatedApplicationResponse<ApplicationGameListItem> listItem,
             CancellationToken cancellationToken)
         {
-            return PaginatedResponse<GameListItemResponse>.FromApplicationResponse(listItem, MapToGameListItem);
+            return await PaginatedResponse<GameListItemResponse>.FromApplicationResponseAsync(listItem,
+                    item => MapToGameListItem(item, cancellationToken), cancellationToken);
         }
 
         public async Task<PaginatedResponse<GameResponse>> MapToGamePaginatedResponseAsync(PaginatedApplicationResponse<ApplicationGame> listItem,
@@ -22,13 +24,14 @@ namespace WebApi.Mappers
             return await PaginatedResponse<GameResponse>.FromApplicationResponseAsync(listItem, async item => await MapToGameResponse(item, cancellationToken), cancellationToken);
         }
 
-        public GameListItemResponse MapToGameListItem(ApplicationGameListItem gameListItem)
+        public async Task<GameListItemResponse> MapToGameListItem(ApplicationGameListItem gameListItem, CancellationToken cancellationToken)
         {
             return new GameListItemResponse(
                 gameListItem.Id,
                 gameListItem.Title,
                 gameListItem.Price,
-                gameListItem.Discount
+                gameListItem.Discount,
+                await MapArtworkSummary(gameListItem.Artworks, cancellationToken)
             );
         }
 
@@ -53,7 +56,7 @@ namespace WebApi.Mappers
 
         public async Task<GameResponse> MapToGameResponse(ApplicationGame applicationGame, CancellationToken cancellationToken)
         {
-            var artworks = await MapArtworkSummary(applicationGame, cancellationToken);
+            var artworks = await MapArtworkSummary(applicationGame.Artworks, cancellationToken);
             var storePictures = await MapStorePictureSummary(applicationGame, cancellationToken);
 
             return new GameResponse(
@@ -79,10 +82,10 @@ namespace WebApi.Mappers
             return applicationGame.Genres.Select(g => new GenreSummary(g.Id, g.Name)).ToList();
         }
 
-        async Task<IReadOnlyList<GameArtworkSummary>> MapArtworkSummary(ApplicationGame applicationGame, CancellationToken cancellationToken)
+        async Task<IReadOnlyList<GameArtworkSummary>> MapArtworkSummary(IReadOnlyCollection<ApplicationGameArtwork> applicationGameArtwork, CancellationToken cancellationToken)
         {
-            var result = new List<GameArtworkSummary>(applicationGame.Artworks.Count);
-            foreach (var artwork in applicationGame.Artworks)
+            var result = new List<GameArtworkSummary>(applicationGameArtwork.Count);
+            foreach (var artwork in applicationGameArtwork)
             {
                 ArgumentException.ThrowIfNullOrEmpty(artwork.SmallArtworkKey, nameof(artwork.SmallArtworkKey));
                 ArgumentException.ThrowIfNullOrEmpty(artwork.MediumArtworkKey, nameof(artwork.MediumArtworkKey));

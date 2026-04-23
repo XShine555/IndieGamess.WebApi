@@ -4,5 +4,6 @@
         Guid Id,
         string Title,
         decimal Price,
-        decimal Discount);
+        decimal Discount,
+        IReadOnlyCollection<GameArtworkSummary> Artworks);
 }
