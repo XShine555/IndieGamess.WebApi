@@ -9,7 +9,7 @@ using WebApi.DataTransferObjects.Users.Responses;
 
 namespace WebApi.Mappers
 {
-    public class GameMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IGameMapper
+    public class GameApplicationMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IGameApplicationMapper
     {
         public async Task<PaginatedResponse<GameListItemResponse>> MapToGameListPaginatedResponseAsync(
             PaginatedApplicationResponse<ApplicationGameListItem> listItem,

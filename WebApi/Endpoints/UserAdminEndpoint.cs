@@ -9,7 +9,6 @@ using WebApi.Common;
 using WebApi.DataTransferObjects.AdminUser.Requests;
 using WebApi.DataTransferObjects.AdminUser.Responses;
 using WebApi.DataTransferObjects.Users.Responses;
-using WebApi.Mappers;
 using WebApi.Services;
 
 namespace WebApi.Endpoints
@@ -18,7 +17,7 @@ namespace WebApi.Endpoints
     [Route("admin/user")]
     [Tags("Admin User")]
     [Authorize]
-    public class UserAdminEndpoint(IMediator mediator, IAdminUserMapper mapper)
+    public class UserAdminEndpoint(IMediator mediator, IAdminUserApplicationMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]

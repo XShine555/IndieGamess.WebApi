@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Infrastructure.Services;
 using Scalar.AspNetCore;
 using WebApi.Authentication;
+using WebApi.Common;
 using WebApi.Mappers;
 using WebApi.Scalar;
 using WebApi.Services;
@@ -27,13 +28,13 @@ services.AddApplicationMediator(configuration);
 
 services.AddHttpContextAccessor();
 services.AddScoped<ICurrentUser, CurrentUser>();
-services.AddScoped<IGameMapper, GameMapper>();
-services.AddScoped<IGameBuildMapper, GameBuildMapper>();
-services.AddScoped<IGenreMapper, GenreMapper>();
-services.AddScoped<IUserMapper, UserMapper>();
-services.AddScoped<IAdminGameMapper, AdminGameMapper>();
-services.AddScoped<IAdminGenreMapper, AdminGenreMapper>();
-services.AddScoped<IAdminUserMapper, AdminUserMapper>();
+services.AddScoped<IGameApplicationMapper, GameApplicationMapper>();
+services.AddScoped<IGameApplicationBuildMapper, GameBuildApplicationMapper>();
+services.AddScoped<IGenreApplicationMapper, GenreApplicationMapper>();
+services.AddScoped<IUserApplicationMapper, UserApplicationMapper>();
+services.AddScoped<IAdminGameApplicationMapper, AdminGameApplicationMapper>();
+services.AddScoped<IAdminGenreApplicationMapper, AdminGenreApplicationMapper>();
+services.AddScoped<IAdminUserApplicationMapper, AdminUserApplicationMapper>();
 
 services.AddControllers();
 services.ConfigureScalar();

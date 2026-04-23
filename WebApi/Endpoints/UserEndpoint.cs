@@ -10,7 +10,6 @@ using WebApi.Common;
 using WebApi.DataTransferObjects.Games.Responses;
 using WebApi.DataTransferObjects.Users.Requests;
 using WebApi.DataTransferObjects.Users.Responses;
-using WebApi.Mappers;
 using WebApi.Services;
 
 namespace WebApi.Endpoints
@@ -18,7 +17,7 @@ namespace WebApi.Endpoints
     [ApiController]
     [Route("users")]
     [Tags("Users")]
-    public class UserEndpoint(IMediator mediator, IUserMapper userMapper, IGameMapper gameMapper)
+    public class UserEndpoint(IMediator mediator, IUserApplicationMapper userMapper, IGameApplicationMapper gameMapper)
         : Controller
     {
         [TranslateResultToActionResult]

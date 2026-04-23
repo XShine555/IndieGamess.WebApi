@@ -5,7 +5,7 @@ using WebApi.DataTransferObjects.AdminGenre.Responses;
 
 namespace WebApi.Mappers
 {
-    public class AdminGenreMapper : IAdminGenreMapper
+    public class AdminGenreApplicationMapper : IAdminGenreApplicationMapper
     {
         public PaginatedResponse<GenreListItemAdminResponse> MapToGenrePaginatedResponse(PaginatedApplicationResponse<ApplicationGenreListItem> paginatedResponse)
         {

@@ -1,18 +1,12 @@
 using Application.Abstractions.Common;
-using Application.Games.Catalog.Responses;
-using Application.Games.Media.Responses;
-using Application.Genres.Responses;
 using Application.Users.Responses;
 using Ardalis.Result;
-using WebApi.Common;
-using WebApi.DataTransferObjects.Games.Responses;
-using WebApi.DataTransferObjects.Genres.Responses;
 using WebApi.DataTransferObjects.Users.Requests;
 using WebApi.DataTransferObjects.Users.Responses;
 
-namespace WebApi.Mappers
+namespace WebApi.Common
 {
-    public interface IUserMapper
+    public interface IUserApplicationMapper
     {
         Task<PaginatedResponse<UserListItemResponse>> MapToUserPaginatedResponseAsync(
             PaginatedApplicationResponse<ApplicationUserListItem> paginatedResponse,

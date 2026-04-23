@@ -5,9 +5,9 @@ using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Common;
 using WebApi.DataTransferObjects.GameBuild.Requests;
 using WebApi.DataTransferObjects.GameBuild.Responses;
-using WebApi.Mappers;
 using WebApi.Services;
 
 namespace WebApi.Endpoints
@@ -15,7 +15,7 @@ namespace WebApi.Endpoints
     [ApiController]
     [Route("game-builds")]
     [Tags("Game Builds")]
-    public class GameBuildEndpoint(IMediator mediator, IGameBuildMapper mapper)
+    public class GameBuildEndpoint(IMediator mediator, IGameApplicationBuildMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]

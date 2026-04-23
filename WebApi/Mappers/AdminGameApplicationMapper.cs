@@ -11,7 +11,7 @@ using WebApi.DataTransferObjects.Genres.Responses;
 
 namespace WebApi.Mappers
 {
-    public class AdminGameMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IAdminGameMapper
+    public class AdminGameApplicationMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IAdminGameApplicationMapper
     {
         public PaginatedResponse<GameListItemAdminResponse> MapToGamePaginatedResponse(PaginatedApplicationResponse<ApplicationGameListItem> listItem)
         {

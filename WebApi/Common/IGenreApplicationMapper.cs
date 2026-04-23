@@ -1,11 +1,10 @@
 using Application.Abstractions.Common;
 using Application.Genres.Responses;
-using WebApi.Common;
 using WebApi.DataTransferObjects.Genres.Responses;
 
-namespace WebApi.Mappers
+namespace WebApi.Common
 {
-    public interface IGenreMapper
+    public interface IGenreApplicationMapper
     {
         PaginatedResponse<GenreListItemResponse> MapToGenrePaginatedResponse(PaginatedApplicationResponse<ApplicationGenreListItem> paginatedResponse);
 

@@ -13,7 +13,7 @@ using WebApi.DataTransferObjects.Users.Responses;
 
 namespace WebApi.Mappers
 {
-    public class UserMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IUserMapper
+    public class UserApplicationMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IUserApplicationMapper
     {
         public async Task<PaginatedResponse<UserListItemResponse>> MapToUserPaginatedResponseAsync(
             PaginatedApplicationResponse<ApplicationUserListItem> paginatedResponse,

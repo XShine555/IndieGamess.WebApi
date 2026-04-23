@@ -1,13 +1,10 @@
 using Application.Abstractions.Common;
 using Application.Games.Catalog.Responses;
-using Application.Games.Media.Responses;
-using Ardalis.Result;
-using WebApi.Common;
 using WebApi.DataTransferObjects.AdminGame.Responses;
 
-namespace WebApi.Mappers
+namespace WebApi.Common
 {
-    public interface IAdminGameMapper
+    public interface IAdminGameApplicationMapper
     {
         PaginatedResponse<GameListItemAdminResponse> MapToGamePaginatedResponse(PaginatedApplicationResponse<ApplicationGameListItem> listItem);
 

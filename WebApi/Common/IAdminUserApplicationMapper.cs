@@ -1,13 +1,12 @@
 using Application.Abstractions.Common;
 using Application.Users.Responses;
 using Ardalis.Result;
-using WebApi.Common;
 using WebApi.DataTransferObjects.AdminUser.Responses;
 using WebApi.DataTransferObjects.Users.Responses;
 
-namespace WebApi.Mappers
+namespace WebApi.Common
 {
-    public interface IAdminUserMapper
+    public interface IAdminUserApplicationMapper
     {
         Task<PaginatedResponse<UserListItemAdminResponse>> MapToUserPaginatedResponseAsync(
             PaginatedApplicationResponse<ApplicationUserListItem> paginatedResponse,

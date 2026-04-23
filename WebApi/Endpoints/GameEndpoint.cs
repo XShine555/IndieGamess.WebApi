@@ -14,7 +14,6 @@ using WebApi.DataTransferObjects.Games.Responses;
 using WebApi.DataTransferObjects.GameBuild.Requests;
 using WebApi.DataTransferObjects.GameBuild.Responses;
 using WebApi.Extensions;
-using WebApi.Mappers;
 using WebApi.Services;
 
 namespace WebApi.Endpoints
@@ -22,7 +21,7 @@ namespace WebApi.Endpoints
     [ApiController]
     [Route("games")]
     [Tags("Games")]
-    public class GameEndpoint(IMediator mediator, IGameMapper mapper, IGameBuildMapper gameBuildMapper)
+    public class GameEndpoint(IMediator mediator, IGameApplicationMapper mapper, IGameApplicationBuildMapper gameBuildMapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]

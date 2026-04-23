@@ -1,8 +1,9 @@
+using WebApi.Common;
 using WebApi.DataTransferObjects.GameBuild.Responses;
 
 namespace WebApi.Mappers
 {
-    public class GameBuildMapper : IGameBuildMapper
+    public class GameBuildApplicationMapper : IGameApplicationBuildMapper
     {
         public GameBuildResponse MapToGameBuildResponse(global::Application.Games.Builds.Responses.ApplicationGameBuild applicationGameBuild)
         {

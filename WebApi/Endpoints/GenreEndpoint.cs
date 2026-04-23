@@ -5,14 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
 using WebApi.DataTransferObjects.Genres.Requests;
 using WebApi.DataTransferObjects.Genres.Responses;
-using WebApi.Mappers;
 
 namespace WebApi.Endpoints
 {
     [ApiController]
     [Route("genres")]
     [Tags("Genres")]
-    public class GenreEndpoint(IMediator mediator, IGenreMapper mapper)
+    public class GenreEndpoint(IMediator mediator, IGenreApplicationMapper mapper)
         : Controller
     {
         [TranslateResultToActionResult]

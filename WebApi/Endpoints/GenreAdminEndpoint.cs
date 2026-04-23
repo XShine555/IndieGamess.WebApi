@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
 using WebApi.DataTransferObjects.AdminGenre.Requests;
 using WebApi.DataTransferObjects.AdminGenre.Responses;
-using WebApi.Mappers;
 
 namespace WebApi.Endpoints
 {
@@ -16,7 +15,7 @@ namespace WebApi.Endpoints
     [Route("admin/genre")]
     [Tags("Admin Genre")]
     [Authorize]
-    public class GenreAdminEndpoint(IMediator mediator, IAdminGenreMapper mapper)
+    public class GenreAdminEndpoint(IMediator mediator, IAdminGenreApplicationMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]

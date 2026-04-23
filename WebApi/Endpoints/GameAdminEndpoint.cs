@@ -10,7 +10,6 @@ using WebApi.Common;
 using WebApi.DataTransferObjects.AdminGame.Requests;
 using WebApi.DataTransferObjects.AdminGame.Responses;
 using WebApi.Extensions;
-using WebApi.Mappers;
 using WebApi.Services;
 
 namespace WebApi.Endpoints
@@ -19,7 +18,7 @@ namespace WebApi.Endpoints
     [Route("admin/game")]
     [Tags("Admin Game")]
     [Authorize]
-    public class GameAdminEndpoint(IMediator mediator, IAdminGameMapper mapper)
+    public class GameAdminEndpoint(IMediator mediator, IAdminGameApplicationMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]
