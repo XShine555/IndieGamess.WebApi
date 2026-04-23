@@ -2,7 +2,7 @@ using WebApi.DataTransferObjects.GameBuild.Responses;
 
 namespace WebApi.Mappers
 {
-    public class GameBuildMapper
+    public class GameBuildMapper : IGameBuildMapper
     {
         public GameBuildResponse MapToGameBuildResponse(global::Application.Games.Builds.Responses.ApplicationGameBuild applicationGameBuild)
         {

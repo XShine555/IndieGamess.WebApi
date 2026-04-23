@@ -1,6 +1,7 @@
 using Application.Abstractions.Common;
 using Application.Abstractions.Storage;
 using Application.Games.Catalog.Responses;
+using Application.Games.Media.Responses;
 using Application.Genres.Responses;
 using Application.Users.Responses;
 using WebApi.Common;
@@ -10,7 +11,7 @@ using WebApi.DataTransferObjects.Genres.Responses;
 
 namespace WebApi.Mappers
 {
-    public class AdminGameMapper(IS3Service s3Service)
+    public class AdminGameMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IAdminGameMapper
     {
         public PaginatedResponse<GameListItemAdminResponse> MapToGamePaginatedResponse(PaginatedApplicationResponse<ApplicationGameListItem> listItem)
         {
@@ -54,8 +55,8 @@ namespace WebApi.Mappers
 
         public async Task<GameAdminResponse> MapToGameResponse(ApplicationGame applicationGame, CancellationToken cancellationToken)
         {
-            var artworks = await MapArtworkSummary(applicationGame, cancellationToken);
-            var storePictures = await MapStorePictureSummary(applicationGame, cancellationToken);
+            var artworks = await MapArtworkSummary(applicationGame.Artworks, cancellationToken);
+            var storePictures = await MapStorePictureSummary(applicationGame.Pictures, cancellationToken);
 
             return new GameAdminResponse(
                 applicationGame.Id,
@@ -83,29 +84,27 @@ namespace WebApi.Mappers
             return new GenreSummary(genre.Id, genre.Name);
         }
 
-        async Task<IReadOnlyList<GameArtworkAdminSummary>> MapArtworkSummary(ApplicationGame applicationGame, CancellationToken cancellationToken)
+        async Task<IReadOnlyList<GameArtworkAdminSummary>> MapArtworkSummary(IReadOnlyCollection<ApplicationGameArtwork> artworks, CancellationToken cancellationToken)
         {
-            var result = new List<GameArtworkAdminSummary>(applicationGame.Artworks.Count);
-            foreach (var artwork in applicationGame.Artworks)
+            var result = new List<GameArtworkAdminSummary>(artworks.Count);
+            foreach (var artwork in artworks)
             {
-                ArgumentException.ThrowIfNullOrEmpty(artwork.OriginalArtworkKey, nameof(artwork.OriginalArtworkKey));
-                ArgumentException.ThrowIfNullOrEmpty(artwork.SmallArtworkKey, nameof(artwork.SmallArtworkKey));
-                ArgumentException.ThrowIfNullOrEmpty(artwork.MediumArtworkKey, nameof(artwork.MediumArtworkKey));
-                ArgumentException.ThrowIfNullOrEmpty(artwork.LargeArtworkKey, nameof(artwork.LargeArtworkKey));
+                var urls = await CreateSignedUrlsAsync(
+                    artwork.SmallArtworkKey,
+                    artwork.MediumArtworkKey,
+                    artwork.LargeArtworkKey,
+                    cancellationToken);
 
-                var smallImageUrl = await s3Service.GetSignedUrlAsync(artwork.SmallArtworkKey, TimeSpan.FromHours(1), cancellationToken);
-                var mediumImageUrl = await s3Service.GetSignedUrlAsync(artwork.MediumArtworkKey, TimeSpan.FromHours(1), cancellationToken);
-                var largeImageUrl = await s3Service.GetSignedUrlAsync(artwork.LargeArtworkKey, TimeSpan.FromHours(1), cancellationToken);
                 result.Add(new GameArtworkAdminSummary(
                     artwork.ArtworkId,
                     artwork.Type,
                     artwork.OriginalArtworkKey,
                     artwork.SmallArtworkKey,
-                    smallImageUrl,
+                    urls.SmallUrl,
                     artwork.MediumArtworkKey,
-                    mediumImageUrl,
+                    urls.MediumUrl,
                     artwork.LargeArtworkKey,
-                    largeImageUrl,
+                    urls.LargeUrl,
                     artwork.ProcessingStatus,
                     artwork.CreatedAt,
                     artwork.UpdatedAt));
@@ -114,28 +113,26 @@ namespace WebApi.Mappers
             return result;
         }
 
-        async Task<IReadOnlyList<GameStorePictureAdminSummary>> MapStorePictureSummary(ApplicationGame applicationGame, CancellationToken cancellationToken)
+        async Task<IReadOnlyList<GameStorePictureAdminSummary>> MapStorePictureSummary(IReadOnlyCollection<ApplicationGamePicture> storePictures, CancellationToken cancellationToken)
         {
-            var result = new List<GameStorePictureAdminSummary>(applicationGame.Pictures.Count);
-            foreach (var storePicture in applicationGame.Pictures)
+            var result = new List<GameStorePictureAdminSummary>(storePictures.Count);
+            foreach (var storePicture in storePictures)
             {
-                ArgumentException.ThrowIfNullOrEmpty(storePicture.OriginalPictureKey, nameof(storePicture.OriginalPictureKey));
-                ArgumentException.ThrowIfNullOrEmpty(storePicture.SmallPictureKey, nameof(storePicture.SmallPictureKey));
-                ArgumentException.ThrowIfNullOrEmpty(storePicture.MediumPictureKey, nameof(storePicture.MediumPictureKey));
-                ArgumentException.ThrowIfNullOrEmpty(storePicture.LargePictureKey, nameof(storePicture.LargePictureKey));
+                var urls = await CreateSignedUrlsAsync(
+                    storePicture.SmallPictureKey,
+                    storePicture.MediumPictureKey,
+                    storePicture.LargePictureKey,
+                    cancellationToken);
 
-                var smallImageUrl = await s3Service.GetSignedUrlAsync(storePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
-                var mediumImageUrl = await s3Service.GetSignedUrlAsync(storePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
-                var largeImageUrl = await s3Service.GetSignedUrlAsync(storePicture.LargePictureKey, TimeSpan.FromHours(1), cancellationToken);
                 result.Add(new GameStorePictureAdminSummary(
                     storePicture.PictureId,
                     storePicture.OriginalPictureKey,
                     storePicture.SmallPictureKey,
-                    smallImageUrl,
+                    urls.SmallUrl,
                     storePicture.MediumPictureKey,
-                    mediumImageUrl,
+                    urls.MediumUrl,
                     storePicture.LargePictureKey,
-                    largeImageUrl,
+                    urls.LargeUrl,
                     storePicture.ProcessingStatus,
                     storePicture.AddedAt));
             }

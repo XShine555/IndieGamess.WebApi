@@ -19,13 +19,13 @@ namespace WebApi.Endpoints
     [Route("admin/game")]
     [Tags("Admin Game")]
     [Authorize]
-    public class GameAdminEndpoint(IMediator mediator, AdminGameMapper mapper)
+    public class GameAdminEndpoint(IMediator mediator, IAdminGameMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Game Admins")]
         [EndpointSummary("Get Games")]
-        public async Task<PaginatedResponse<GameListItemAdminResponse>> Get( [FromQuery] GetGamesAdminRequest query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<GameListItemAdminResponse>> Get([FromQuery] GetGamesAdminRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGamesQuery(query.Title, query.Genres, query.PageNumber, query.PageSize), cancellationToken);
             return mapper.MapToGamePaginatedResponse(queryResult);
@@ -43,7 +43,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpPost(Name = "Create Game Admin")]
         [EndpointSummary("Create Game")]
-        public async Task<GameMutationAdminResponse> CreateGame( [FromForm] CreateGameAdminRequest createGameRequest, CancellationToken cancellationToken,
+        public async Task<GameMutationAdminResponse> CreateGame([FromForm] CreateGameAdminRequest createGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var capsulePicture = FileData.FromFormFile(createGameRequest.CapsulePicture);

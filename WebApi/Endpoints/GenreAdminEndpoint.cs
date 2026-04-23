@@ -16,7 +16,7 @@ namespace WebApi.Endpoints
     [Route("admin/genre")]
     [Tags("Admin Genre")]
     [Authorize]
-    public class GenreAdminEndpoint(IMediator mediator, AdminGenreMapper mapper)
+    public class GenreAdminEndpoint(IMediator mediator, IAdminGenreMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]

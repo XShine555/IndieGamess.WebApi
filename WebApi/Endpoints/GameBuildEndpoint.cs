@@ -15,7 +15,7 @@ namespace WebApi.Endpoints
     [ApiController]
     [Route("game-builds")]
     [Tags("Game Builds")]
-    public class GameBuildEndpoint(IMediator mediator, GameBuildMapper mapper)
+    public class GameBuildEndpoint(IMediator mediator, IGameBuildMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]

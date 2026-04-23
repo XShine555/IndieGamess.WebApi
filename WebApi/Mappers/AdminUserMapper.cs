@@ -13,7 +13,7 @@ using WebApi.DataTransferObjects.AdminUser.Responses;
 
 namespace WebApi.Mappers
 {
-    public class AdminUserMapper(IS3Service s3Service)
+    public class AdminUserMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IAdminUserMapper
     {
         public async Task<PaginatedResponse<UserListItemAdminResponse>> MapToUserPaginatedResponseAsync(
             PaginatedApplicationResponse<ApplicationUserListItem> paginatedResponse,
@@ -73,10 +73,10 @@ namespace WebApi.Mappers
         public UpdateUserAdminResponse MapToUpdateUserResponse(ApplicationUserMutation applicationUser)
         {
             return new UpdateUserAdminResponse(
-                    applicationUser.IdentityId,
-                    applicationUser.Username,
-                    applicationUser.DisplayUsername,
-                    applicationUser.UpdatedAt);
+                applicationUser.IdentityId,
+                applicationUser.Username,
+                applicationUser.DisplayUsername,
+                applicationUser.UpdatedAt);
         }
 
         public async Task<UserListItemAdminResponse> MapToUserListItemResponse(ApplicationUserListItem applicationUser, CancellationToken cancellationToken)
@@ -115,8 +115,7 @@ namespace WebApi.Mappers
         public async Task<GameCollectionDetailsAdminResponse> MapToGameCollectionDetailsResponse(ApplicationUserCollectionDetails gameCollection, CancellationToken cancellationToken)
         {
             var games = await Task.WhenAll(
-                gameCollection.Games.Select(game => MapToGameListItemResponse(game, cancellationToken))
-            );
+                gameCollection.Games.Select(game => MapToGameListItemResponse(game, cancellationToken)));
 
             return new GameCollectionDetailsAdminResponse(
                 gameCollection.Id,
@@ -129,12 +128,10 @@ namespace WebApi.Mappers
         async Task<GameSummary> MapToGameSummaryResponse(ApplicationUserGame applicationGame, CancellationToken cancellationToken)
         {
             var artworks = await Task.WhenAll(
-                applicationGame.Artworks.Select(artwork => MapToGameArtworkSummaryResponse(artwork, cancellationToken))
-            );
+                applicationGame.Artworks.Select(artwork => MapToGameArtworkSummaryResponse(artwork, cancellationToken)));
 
             var storePictures = await Task.WhenAll(
-                applicationGame.Pictures.Select(picture => MapToGameStorePictureSummaryResponse(picture, cancellationToken))
-            );
+                applicationGame.Pictures.Select(picture => MapToGameStorePictureSummaryResponse(picture, cancellationToken)));
 
             return new GameSummary(
                 applicationGame.Id,
@@ -154,41 +151,36 @@ namespace WebApi.Mappers
 
         async Task<GameArtworkSummary> MapToGameArtworkSummaryResponse(ApplicationGameArtwork applicationGameArtwork, CancellationToken cancellationToken)
         {
-            ArgumentException.ThrowIfNullOrEmpty(applicationGameArtwork.SmallArtworkKey, nameof(applicationGameArtwork.LargeArtworkKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationGameArtwork.MediumArtworkKey, nameof(applicationGameArtwork.LargeArtworkKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationGameArtwork.LargeArtworkKey, nameof(applicationGameArtwork.LargeArtworkKey));
-
-            var smallImageUrl = await s3Service.GetSignedUrlAsync(applicationGameArtwork.SmallArtworkKey, TimeSpan.FromHours(1), cancellationToken);
-            var mediumImageUrl = await s3Service.GetSignedUrlAsync(applicationGameArtwork.MediumArtworkKey, TimeSpan.FromHours(1), cancellationToken);
-            var largeImageUrl = await s3Service.GetSignedUrlAsync(applicationGameArtwork.LargeArtworkKey, TimeSpan.FromHours(1), cancellationToken);
+            var urls = await CreateSignedUrlsAsync(
+                applicationGameArtwork.SmallArtworkKey,
+                applicationGameArtwork.MediumArtworkKey,
+                applicationGameArtwork.LargeArtworkKey,
+                cancellationToken);
 
             return new GameArtworkSummary(
-                smallImageUrl,
-                mediumImageUrl,
-                largeImageUrl);
+                urls.SmallUrl,
+                urls.MediumUrl,
+                urls.LargeUrl);
         }
 
         async Task<GameStorePictureSummary> MapToGameStorePictureSummaryResponse(ApplicationGamePicture gameStorePicture, CancellationToken cancellationToken)
         {
-            ArgumentException.ThrowIfNullOrEmpty(gameStorePicture.SmallPictureKey, nameof(gameStorePicture.SmallPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(gameStorePicture.MediumPictureKey, nameof(gameStorePicture.MediumPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(gameStorePicture.LargePictureKey, nameof(gameStorePicture.LargePictureKey));
-
-            var smallImageUrl = await s3Service.GetSignedUrlAsync(gameStorePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
-            var mediumImageUrl = await s3Service.GetSignedUrlAsync(gameStorePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
-            var largeImageUrl = await s3Service.GetSignedUrlAsync(gameStorePicture.LargePictureKey, TimeSpan.FromHours(1), cancellationToken);
+            var urls = await CreateSignedUrlsAsync(
+                gameStorePicture.SmallPictureKey,
+                gameStorePicture.MediumPictureKey,
+                gameStorePicture.LargePictureKey,
+                cancellationToken);
 
             return new GameStorePictureSummary(
-                smallImageUrl,
-                mediumImageUrl,
-                largeImageUrl);
+                urls.SmallUrl,
+                urls.MediumUrl,
+                urls.LargeUrl);
         }
 
         async Task<GameListItemResponse> MapToGameListItemResponse(ApplicationGame game, CancellationToken cancellationToken)
         {
             var artworks = await Task.WhenAll(
-                game.Artworks.Select(artwork => MapToGameArtworkSummaryResponse(artwork, cancellationToken))
-            );
+                game.Artworks.Select(artwork => MapToGameArtworkSummaryResponse(artwork, cancellationToken)));
 
             return new GameListItemResponse(
                 game.Id,
@@ -200,32 +192,30 @@ namespace WebApi.Mappers
 
         async Task<UserProfilePictureAdminResponse> MapToUserProfilePictureResponse(ApplicationUser applicationUser, CancellationToken cancellationToken)
         {
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.SmallPictureKey, nameof(applicationUser.ProfilePicture.SmallPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.MediumPictureKey, nameof(applicationUser.ProfilePicture.MediumPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.LargePictureKey, nameof(applicationUser.ProfilePicture.LargePictureKey));
+            var urls = await CreateSignedUrlsAsync(
+                applicationUser.ProfilePicture.SmallPictureKey,
+                applicationUser.ProfilePicture.MediumPictureKey,
+                applicationUser.ProfilePicture.LargePictureKey,
+                cancellationToken);
 
-            var smallImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
-            var mediumImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
-            var largeImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.LargePictureKey, TimeSpan.FromHours(1), cancellationToken);
             return new UserProfilePictureAdminResponse(
-                smallImageUrl,
-                mediumImageUrl,
-                largeImageUrl);
+                urls.SmallUrl,
+                urls.MediumUrl,
+                urls.LargeUrl);
         }
 
         async Task<UserProfilePictureAdminResponse> MapToUserProfilePictureResponse(ApplicationUserListItem applicationUser, CancellationToken cancellationToken)
         {
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.SmallPictureKey, nameof(applicationUser.ProfilePicture.SmallPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.MediumPictureKey, nameof(applicationUser.ProfilePicture.MediumPictureKey));
-            ArgumentException.ThrowIfNullOrEmpty(applicationUser.ProfilePicture.LargePictureKey, nameof(applicationUser.ProfilePicture.LargePictureKey));
+            var urls = await CreateSignedUrlsAsync(
+                applicationUser.ProfilePicture.SmallPictureKey,
+                applicationUser.ProfilePicture.MediumPictureKey,
+                applicationUser.ProfilePicture.LargePictureKey,
+                cancellationToken);
 
-            var smallImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
-            var mediumImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
-            var largeImageUrl = await s3Service.GetSignedUrlAsync(applicationUser.ProfilePicture.LargePictureKey, TimeSpan.FromHours(1), cancellationToken);
             return new UserProfilePictureAdminResponse(
-                smallImageUrl,
-                mediumImageUrl,
-                largeImageUrl);
+                urls.SmallUrl,
+                urls.MediumUrl,
+                urls.LargeUrl);
         }
     }
 }

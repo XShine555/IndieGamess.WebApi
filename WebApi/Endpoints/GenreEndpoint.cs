@@ -12,7 +12,7 @@ namespace WebApi.Endpoints
     [ApiController]
     [Route("genres")]
     [Tags("Genres")]
-    public class GenreEndpoint(IMediator mediator, GenreMapper mapper)
+    public class GenreEndpoint(IMediator mediator, IGenreMapper mapper)
         : Controller
     {
         [TranslateResultToActionResult]

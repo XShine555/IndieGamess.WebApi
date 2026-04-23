@@ -22,7 +22,7 @@ namespace WebApi.Endpoints
     [ApiController]
     [Route("games")]
     [Tags("Games")]
-    public class GameEndpoint(IMediator mediator, GameMapper mapper, GameBuildMapper gameBuildMapper)
+    public class GameEndpoint(IMediator mediator, IGameMapper mapper, IGameBuildMapper gameBuildMapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]

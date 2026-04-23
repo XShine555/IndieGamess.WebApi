@@ -9,19 +9,26 @@ using WebApi.DataTransferObjects.Users.Responses;
 
 namespace WebApi.Mappers
 {
-    public class GameMapper(IS3Service s3Service)
+    public class GameMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IGameMapper
     {
-        public async Task<PaginatedResponse<GameListItemResponse>> MapToGameListPaginatedResponseAsync(PaginatedApplicationResponse<ApplicationGameListItem> listItem,
+        public async Task<PaginatedResponse<GameListItemResponse>> MapToGameListPaginatedResponseAsync(
+            PaginatedApplicationResponse<ApplicationGameListItem> listItem,
             CancellationToken cancellationToken)
         {
-            return await PaginatedResponse<GameListItemResponse>.FromApplicationResponseAsync(listItem,
-                    item => MapToGameListItem(item, cancellationToken), cancellationToken);
+            return await PaginatedResponse<GameListItemResponse>.FromApplicationResponseAsync(
+                listItem,
+                item => MapToGameListItem(item, cancellationToken),
+                cancellationToken);
         }
 
-        public async Task<PaginatedResponse<GameResponse>> MapToGamePaginatedResponseAsync(PaginatedApplicationResponse<ApplicationGame> listItem,
+        public async Task<PaginatedResponse<GameResponse>> MapToGamePaginatedResponseAsync(
+            PaginatedApplicationResponse<ApplicationGame> listItem,
             CancellationToken cancellationToken)
         {
-            return await PaginatedResponse<GameResponse>.FromApplicationResponseAsync(listItem, async item => await MapToGameResponse(item, cancellationToken), cancellationToken);
+            return await PaginatedResponse<GameResponse>.FromApplicationResponseAsync(
+                listItem,
+                item => MapToGameResponse(item, cancellationToken),
+                cancellationToken);
         }
 
         public async Task<GameListItemResponse> MapToGameListItem(ApplicationGameListItem gameListItem, CancellationToken cancellationToken)
@@ -31,8 +38,7 @@ namespace WebApi.Mappers
                 gameListItem.Title,
                 gameListItem.Price,
                 gameListItem.Discount,
-                await MapArtworkSummary(gameListItem.Artworks, cancellationToken)
-            );
+                await MapArtworkSummary(gameListItem.Artworks, cancellationToken));
         }
 
         public GameMutationResponse MapToGameMutationResponse(ApplicationGameMutation applicationGame)
@@ -57,7 +63,7 @@ namespace WebApi.Mappers
         public async Task<GameResponse> MapToGameResponse(ApplicationGame applicationGame, CancellationToken cancellationToken)
         {
             var artworks = await MapArtworkSummary(applicationGame.Artworks, cancellationToken);
-            var storePictures = await MapStorePictureSummary(applicationGame, cancellationToken);
+            var storePictures = await MapStorePictureSummary(applicationGame.Pictures, cancellationToken);
 
             return new GameResponse(
                 applicationGame.Id,
@@ -68,8 +74,7 @@ namespace WebApi.Mappers
                 MapUserSummary(applicationGame),
                 MapGenreSummary(applicationGame),
                 artworks,
-                storePictures
-            );
+                storePictures);
         }
 
         UserSummary MapUserSummary(ApplicationGame applicationGame)
@@ -87,38 +92,38 @@ namespace WebApi.Mappers
             var result = new List<GameArtworkSummary>(applicationGameArtwork.Count);
             foreach (var artwork in applicationGameArtwork)
             {
-                ArgumentException.ThrowIfNullOrEmpty(artwork.SmallArtworkKey, nameof(artwork.SmallArtworkKey));
-                ArgumentException.ThrowIfNullOrEmpty(artwork.MediumArtworkKey, nameof(artwork.MediumArtworkKey));
-                ArgumentException.ThrowIfNullOrEmpty(artwork.LargeArtworkKey, nameof(artwork.LargeArtworkKey));
+                var urls = await CreateSignedUrlsAsync(
+                    artwork.SmallArtworkKey,
+                    artwork.MediumArtworkKey,
+                    artwork.LargeArtworkKey,
+                    cancellationToken);
 
-                var smallImageUrl = await s3Service.GetSignedUrlAsync(artwork.SmallArtworkKey, TimeSpan.FromHours(1), cancellationToken);
-                var mediumImageUrl = await s3Service.GetSignedUrlAsync(artwork.MediumArtworkKey, TimeSpan.FromHours(1), cancellationToken);
-                var largeImageUrl = await s3Service.GetSignedUrlAsync(artwork.LargeArtworkKey, TimeSpan.FromHours(1), cancellationToken);
                 result.Add(new GameArtworkSummary(
-                    smallImageUrl,
-                    mediumImageUrl,
-                    largeImageUrl));
+                    urls.SmallUrl,
+                    urls.MediumUrl,
+                    urls.LargeUrl));
             }
+
             return result;
         }
 
-        async Task<IReadOnlyList<GameStorePictureSummary>> MapStorePictureSummary(ApplicationGame applicationGame, CancellationToken cancellationToken)
+        async Task<IReadOnlyList<GameStorePictureSummary>> MapStorePictureSummary(IReadOnlyCollection<ApplicationGamePicture> storePictures, CancellationToken cancellationToken)
         {
-            var result = new List<GameStorePictureSummary>(applicationGame.Pictures.Count);
-            foreach (var storePicture in applicationGame.Pictures)
+            var result = new List<GameStorePictureSummary>(storePictures.Count);
+            foreach (var storePicture in storePictures)
             {
-                ArgumentException.ThrowIfNullOrEmpty(storePicture.SmallPictureKey, nameof(storePicture.SmallPictureKey));
-                ArgumentException.ThrowIfNullOrEmpty(storePicture.MediumPictureKey, nameof(storePicture.MediumPictureKey));
-                ArgumentException.ThrowIfNullOrEmpty(storePicture.LargePictureKey, nameof(storePicture.LargePictureKey));
+                var urls = await CreateSignedUrlsAsync(
+                    storePicture.SmallPictureKey,
+                    storePicture.MediumPictureKey,
+                    storePicture.LargePictureKey,
+                    cancellationToken);
 
-                var smallImageUrl = await s3Service.GetSignedUrlAsync(storePicture.SmallPictureKey, TimeSpan.FromHours(1), cancellationToken);
-                var mediumImageUrl = await s3Service.GetSignedUrlAsync(storePicture.MediumPictureKey, TimeSpan.FromHours(1), cancellationToken);
-                var largeImageUrl = await s3Service.GetSignedUrlAsync(storePicture.LargePictureKey, TimeSpan.FromHours(1), cancellationToken);
                 result.Add(new GameStorePictureSummary(
-                    smallImageUrl,
-                    mediumImageUrl,
-                    largeImageUrl));
+                    urls.SmallUrl,
+                    urls.MediumUrl,
+                    urls.LargeUrl));
             }
+
             return result;
         }
     }

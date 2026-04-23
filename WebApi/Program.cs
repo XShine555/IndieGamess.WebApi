@@ -27,13 +27,13 @@ services.AddApplicationMediator(configuration);
 
 services.AddHttpContextAccessor();
 services.AddScoped<ICurrentUser, CurrentUser>();
-services.AddScoped<GameMapper>();
-services.AddScoped<GameBuildMapper>();
-services.AddScoped<GenreMapper>();
-services.AddScoped<UserMapper>();
-services.AddScoped<AdminGameMapper>();
-services.AddScoped<AdminGenreMapper>();
-services.AddScoped<AdminUserMapper>();
+services.AddScoped<IGameMapper, GameMapper>();
+services.AddScoped<IGameBuildMapper, GameBuildMapper>();
+services.AddScoped<IGenreMapper, GenreMapper>();
+services.AddScoped<IUserMapper, UserMapper>();
+services.AddScoped<IAdminGameMapper, AdminGameMapper>();
+services.AddScoped<IAdminGenreMapper, AdminGenreMapper>();
+services.AddScoped<IAdminUserMapper, AdminUserMapper>();
 
 services.AddControllers();
 services.ConfigureScalar();
