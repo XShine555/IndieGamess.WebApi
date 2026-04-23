@@ -26,11 +26,11 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpGet]
-        [Route("{id}", Name = "Get Genre By Id")]
+        [Route("{genreId}", Name = "Get Genre By Id")]
         [EndpointSummary("Get Genre By Id")]
-        public async Task<ActionResult<GenreResponse>> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<GenreResponse>> GetById(Guid genreId, CancellationToken cancellationToken)
         {
-            var queryResult = await mediator.Send(new GetGenreByIdQuery(id), cancellationToken);
+            var queryResult = await mediator.Send(new GetGenreByIdQuery(genreId), cancellationToken);
             return mapper.MapToGenreResponse(queryResult);
         }
     }

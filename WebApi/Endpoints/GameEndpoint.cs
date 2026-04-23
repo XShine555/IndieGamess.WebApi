@@ -36,11 +36,11 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpGet]
-        [Route("{id}", Name = "Get Store Game By Id")]
+        [Route("{gameId}", Name = "Get Store Game By Id")]
         [EndpointSummary("Get Store Game By Id")]
-        public async Task<Result<GameResponse>> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<Result<GameResponse>> GetById(Guid gameId, CancellationToken cancellationToken)
         {
-            var queryResult = await mediator.Send(new GetGameByIdQuery(id), cancellationToken);
+            var queryResult = await mediator.Send(new GetGameByIdQuery(gameId), cancellationToken);
             return await queryResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
         }
 
@@ -68,7 +68,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}", Name = "Remove By Id")]
+        [HttpDelete("{gameId}", Name = "Remove By Id")]
         [EndpointSummary("Remove Game")]
         [Authorize]
         public async Task<Result> RemoveGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
@@ -78,7 +78,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPut("{id}", Name = "Update By Id")]
+        [HttpPut("{gameId}", Name = "Update By Id")]
         [EndpointSummary("Update Game")]
         [Authorize]
         public async Task<Result<GameMutationResponse>> UpdateGame(Guid id, UpdateGameRequest updateGameRequest, CancellationToken cancellationToken,
@@ -96,7 +96,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/publish", Name = "Publish Game")]
+        [HttpPost("{gameId}/publish", Name = "Publish Game")]
         [EndpointSummary("Publish Game")]
         [Authorize]
         public async Task<Result> PublishGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
@@ -106,7 +106,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("{id}/genres", Name = "Update Genres")]
+        [HttpPatch("{gameId}/genres", Name = "Update Genres")]
         [EndpointSummary("Update Genres")]
         [Authorize]
         public async Task<Result<GameGenresMutationResponse>> UpdateGenres(Guid id, UpdateGameGenresRequest updateGameGenresRequest, CancellationToken cancellationToken,
@@ -117,7 +117,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/store-picture", Name = "Upload Store Picture")]
+        [HttpPost("{gameId}/store-picture", Name = "Upload Store Picture")]
         [EndpointSummary("Upload Store Picture")]
         [Consumes("multipart/form-data")]
         [Authorize]
@@ -130,7 +130,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}/store-picture", Name = "Remove Store Picture")]
+        [HttpDelete("{gameId}/store-picture", Name = "Remove Store Picture")]
         [EndpointSummary("Remove Store Picture")]
         [Authorize]
         public async Task<Result> RemoveStorePicture(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
@@ -140,7 +140,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("{id}/artwork/{artworkId}", Name = "Update Artwork")]
+        [HttpPatch("{gameId}/artwork/{artworkId}", Name = "Update Artwork")]
         [EndpointSummary("Update Artwork")]
         [Consumes("multipart/form-data")]
         [Authorize]
@@ -153,7 +153,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}/builds", Name = "Get Game Builds As User")]
+        [HttpGet("{gameId}/builds", Name = "Get Game Builds As User")]
         [EndpointSummary("Get Game Builds As User")]
         [Authorize]
         public async Task<Result<IReadOnlyCollection<GameBuildResponse>>> GetGameBuilds(Guid id, CancellationToken cancellationToken,
@@ -164,7 +164,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/builds", Name = "Create Game Build")]
+        [HttpPost("{gameId}/builds", Name = "Create Game Build")]
         [EndpointSummary("Create Game Build")]
         [Authorize]
         public async Task<Result<GameBuildMutationResponse>> CreateGameBuild(Guid id, [FromBody] CreateGameBuildRequest request,

@@ -32,11 +32,11 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}", Name = "Get Game By Id Admin")]
+        [HttpGet("{gameId}", Name = "Get Game By Id Admin")]
         [EndpointSummary("Get Game By Id")]
-        public async Task<GameAdminResponse> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<GameAdminResponse> GetById(Guid gameId, CancellationToken cancellationToken)
         {
-            var queryResult = await mediator.Send(new GetGameByIdQuery(id), cancellationToken);
+            var queryResult = await mediator.Send(new GetGameByIdQuery(gameId), cancellationToken);
             return await queryResult.MapAsync(r => mapper.MapToGameResponse(r, cancellationToken));
         }
 
@@ -62,7 +62,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}", Name = "Remove Game Admin")]
+        [HttpDelete("{gameId}", Name = "Remove Game Admin")]
         [EndpointSummary("Remove Game")]
         public async Task<Result> RemoveGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
@@ -71,7 +71,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPut("{id}", Name = "Update Game Admin")]
+        [HttpPut("{gameId}", Name = "Update Game Admin")]
         [EndpointSummary("Update Game")]
         public async Task<GameMutationAdminResponse> UpdateGame(Guid id, [FromBody] UpdateGameAdminRequest updateGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -88,7 +88,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/publish", Name = "Publish Game Admin")]
+        [HttpPost("{gameId}/publish", Name = "Publish Game Admin")]
         [EndpointSummary("Publish Game")]
         public async Task<Result> PublishGame(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
@@ -97,7 +97,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("{id}/genres", Name = "Update Game Genre Admins")]
+        [HttpPatch("{gameId}/genres", Name = "Update Game Genre Admins")]
         [EndpointSummary("Update Game Genres")]
         public async Task<GameGenresMutationAdminResponse> UpdateGenres(Guid id, [FromBody] UpdateGameGenresAdminRequest updateGameGenresRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -107,7 +107,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("{id}/owner", Name = "Change Game Owner Admin")]
+        [HttpPatch("{gameId}/owner", Name = "Change Game Owner Admin")]
         [EndpointSummary("Change Game Owner")]
         public async Task<GameMutationAdminResponse> ChangeOwner(Guid id, [FromBody] ChangeGameOwnerAdminRequest request, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -117,7 +117,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/store-picture", Name = "Upload Store Picture Admin")]
+        [HttpPost("{gameId}/store-picture", Name = "Upload Store Picture Admin")]
         [EndpointSummary("Upload Store Picture")]
         public async Task<Result> UpdateStorePicture(Guid id, [FromForm] UpdateGameStorePictureAdminRequest request, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -128,7 +128,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}/store-picture", Name = "Remove Store Picture Admin")]
+        [HttpDelete("{gameId}/store-picture", Name = "Remove Store Picture Admin")]
         [EndpointSummary("Remove Store Picture")]
         public async Task<Result> RemoveStorePicture(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
@@ -137,7 +137,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("{id}/artwork/{artworkId}", Name = "Update Artwork Admin")]
+        [HttpPatch("{gameId}/artwork/{artworkId}", Name = "Update Artwork Admin")]
         [EndpointSummary("Update Artwork")]
         public async Task<Result> UpdateArtwork(Guid id, Guid artworkId, [FromForm] UpdateGameArtworkAdminRequest request, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)

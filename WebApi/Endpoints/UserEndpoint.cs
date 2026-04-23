@@ -32,11 +32,11 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpGet]
-        [Route("{id}", Name = "Get User By Id")]
+        [Route("{userId}", Name = "Get User By Id")]
         [EndpointSummary("Get User By Id")]
-        public async Task<Result<UserResponse>> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<Result<UserResponse>> GetById(Guid userId, CancellationToken cancellationToken)
         {
-            var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(id), cancellationToken);
+            var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(userId), cancellationToken);
             return await userMapper.MapToUserResponse(queryResult, cancellationToken);
         }
 
@@ -110,7 +110,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("me/collections/{id}", Name = "Remove Game Collection")]
+        [HttpDelete("me/collections/{userId}", Name = "Remove Game Collection")]
         [EndpointSummary("Remove Game Collection")]
         [Authorize]
         public async Task<Result> RemoveGameCollection(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
@@ -130,7 +130,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("me/cart/{id}", Name = "Add Item To Cart")]
+        [HttpPost("me/cart/{userId}", Name = "Add Item To Cart")]
         [EndpointSummary("Add Item To Cart")]
         [Authorize]
         public async Task<Result> AddItemToCart(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
@@ -140,7 +140,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("me/cart/{id}", Name = "Remove Item From Cart")]
+        [HttpDelete("me/cart/{userId}", Name = "Remove Item From Cart")]
         [EndpointSummary("Remove Item From Cart")]
         [Authorize]
         public async Task<Result> RemoveItemFromCart(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
