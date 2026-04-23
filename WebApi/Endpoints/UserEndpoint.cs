@@ -119,7 +119,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("me/promote-to-devoloper", Name = "Promote To Developer")]
+        [HttpPost("me/promote-to-developer", Name = "Promote To Developer")]
         [EndpointSummary("Promote To Developer")]
         [Authorize]
         public async Task<Result<UpdateUserResponse>> PromoteToDeveloper(CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
