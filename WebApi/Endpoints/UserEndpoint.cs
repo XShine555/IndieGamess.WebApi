@@ -109,12 +109,32 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("me/collections/{userId}", Name = "Remove Game Collection")]
+        [HttpDelete("me/collections/{collectionId}", Name = "Remove Game Collection")]
         [EndpointSummary("Remove Game Collection")]
         [Authorize]
-        public async Task<Result> RemoveGameCollection(Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result> RemoveGameCollection(Guid collectionId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new RemoveUserGameCollectionCommand(currentUser.IdentityId, id), cancellationToken);
+            var commandResult = await mediator.Send(new RemoveUserGameCollectionCommand(currentUser.IdentityId, collectionId), cancellationToken);
+            return commandResult;
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPost("me/collections/{collectionId}/games/{gameId}", Name = "Add Game To Collection")]
+        [EndpointSummary("Add Game To Collection")]
+        [Authorize]
+        public async Task<Result> AddGameToCollection(Guid collectionId, Guid gameId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new AddGameToUserCollectionCommand(currentUser.IdentityId, collectionId, gameId), cancellationToken);
+            return commandResult;
+        }
+
+        [TranslateResultToActionResult]
+        [HttpDelete("me/collections/{collectionId}/games/{gameId}", Name = "Remove Game From Collection")]
+        [EndpointSummary("Remove Game From Collection")]
+        [Authorize]
+        public async Task<Result> RemoveGameFromCollection(Guid collectionId, Guid gameId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new RemoveGameFromUserCollectionCommand(currentUser.IdentityId, collectionId, gameId), cancellationToken);
             return commandResult;
         }
 
