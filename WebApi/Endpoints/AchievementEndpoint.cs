@@ -5,6 +5,7 @@ using Ardalis.Result.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApi.Common;
 using WebApi.DataTransferObjects.Achievements.Requests;
 using WebApi.DataTransferObjects.Achievements.Responses;
@@ -24,7 +25,9 @@ namespace WebApi.Endpoints
             [FromQuery] GetAchievementsRequest query,
             CancellationToken cancellationToken)
         {
-            var result = await mediator.Send(new GetAchievementsByGameQuery(gameId, query.PageNumber, query.PageSize), cancellationToken);
+            var userIdClaim = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = userIdClaim is not null ? Guid.Parse(userIdClaim) : (Guid?)null;
+            var result = await mediator.Send(new GetAchievementsByGameQuery(gameId, userId, query.PageNumber, query.PageSize), cancellationToken);
             return mapper.MapToAchievementPaginatedResponse(result);
         }
 

@@ -8,7 +8,7 @@ namespace WebApi.Mappers
     public class AchievementApplicationMapper : IAchievementApplicationMapper
     {
         public AchievementResponse MapToAchievementResponse(ApplicationAchievement achievement)
-            => new(achievement.Id, achievement.GameId, achievement.Name, achievement.Description, achievement.CreatedAt, achievement.UpdatedAt);
+            => new(achievement.Id, achievement.GameId, achievement.Name, achievement.Description, achievement.IsUnlocked, achievement.CreatedAt, achievement.UpdatedAt);
 
         public AchievementMutationResponse MapToAchievementMutationResponse(ApplicationAchievement achievement)
             => new(achievement.Id, achievement.GameId, achievement.Name, achievement.Description, achievement.CreatedAt);

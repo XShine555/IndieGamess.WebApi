@@ -5,6 +5,7 @@ namespace WebApi.DataTransferObjects.Achievements.Responses
         Guid GameId,
         string Name,
         string Description,
+        bool IsUnlocked,
         DateTime CreatedAt,
         DateTime UpdatedAt);
 }
