@@ -212,12 +212,11 @@ namespace WebApi.Endpoints
         [HttpGet("me/created-games", Name = "Get Created Games")]
         [EndpointSummary("Get Created Games")]
         [Authorize]
-        public async Task<PaginatedResponse<GameResponse>> GetCreatedGames( [FromQuery] GetCreatedGamesRequest request, CancellationToken cancellationToken,
+        public async Task<PaginatedResponse<DeveloperGameListItemResponse>> GetCreatedGames( [FromQuery] GetCreatedGamesRequest request, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
-            var queryResult = await mediator.Send(new GetCreatedGamesByIdentityIdQuery(
+            var queryResult = await mediator.Send(new GetGamesByOwnerIdQuery(
                 currentUser.IdentityId,
-                request.Title,
                 request.PageNumber,
                 request.PageSize), cancellationToken);
             return await gameMapper.MapToGamePaginatedResponseAsync(queryResult, cancellationToken);

@@ -10,8 +10,8 @@ namespace WebApi.Common
             PaginatedApplicationResponse<ApplicationGameListItem> listItem,
             CancellationToken cancellationToken);
 
-        Task<PaginatedResponse<GameResponse>> MapToGamePaginatedResponseAsync(
-            PaginatedApplicationResponse<ApplicationGame> listItem,
+        Task<PaginatedResponse<DeveloperGameListItemResponse>> MapToGamePaginatedResponseAsync(
+            PaginatedApplicationResponse<ApplicationGameListItem> listItem,
             CancellationToken cancellationToken);
 
         Task<GameListItemResponse> MapToGameListItem(ApplicationGameListItem gameListItem, CancellationToken cancellationToken);

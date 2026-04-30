@@ -21,13 +21,13 @@ namespace WebApi.Mappers
                 cancellationToken);
         }
 
-        public async Task<PaginatedResponse<GameResponse>> MapToGamePaginatedResponseAsync(
-            PaginatedApplicationResponse<ApplicationGame> listItem,
+        public async Task<PaginatedResponse<DeveloperGameListItemResponse>> MapToGamePaginatedResponseAsync(
+            PaginatedApplicationResponse<ApplicationGameListItem> listItem,
             CancellationToken cancellationToken)
         {
-            return await PaginatedResponse<GameResponse>.FromApplicationResponseAsync(
+            return await PaginatedResponse<DeveloperGameListItemResponse>.FromApplicationResponseAsync(
                 listItem,
-                item => MapToGameResponse(item, cancellationToken),
+                item => MapToDeveloperGameListItem(item, cancellationToken),
                 cancellationToken);
         }
 
@@ -125,6 +125,16 @@ namespace WebApi.Mappers
             }
 
             return result;
+        }
+
+        async Task<DeveloperGameListItemResponse> MapToDeveloperGameListItem(ApplicationGameListItem gameListItem, CancellationToken cancellationToken)
+        {
+            return new DeveloperGameListItemResponse(
+                gameListItem.Id,
+                gameListItem.Title,
+                gameListItem.Description,
+                gameListItem.GameStatus.ToString(),
+                await MapArtworkSummary(gameListItem.Artworks, cancellationToken));
         }
     }
 }
