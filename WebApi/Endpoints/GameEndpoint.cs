@@ -204,8 +204,8 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("developer/{gameId}")]
-        [EndpointSummary("Get Game As Developer")]
+        [HttpGet("developer/{gameId}", Name = "Get Game By Id As Developer")]
+        [EndpointSummary("Get Game By Id As Developer")]
         [Authorize]
         public async Task<Result<DeveloperGameResponse>> GetGameAsDeveloper(Guid gameId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {

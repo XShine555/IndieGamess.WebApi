@@ -8,6 +8,8 @@ namespace WebApi.DataTransferObjects.Games.Responses
         string Description,
         decimal Price,
         decimal Discount,
+        bool IsPublic,
+        bool IsReleased,
         DeveloperGameReleaseBuildSummary? ReleaseBuild,
         IReadOnlyList<GenreSummary> Genres,
         IReadOnlyList<DeveloperGameArtworkSummary> Artworks,

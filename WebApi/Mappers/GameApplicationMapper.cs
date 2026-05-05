@@ -150,6 +150,8 @@ namespace WebApi.Mappers
                 applicationGame.Description,
                 applicationGame.Price,
                 applicationGame.Discount,
+                applicationGame.IsPublic,
+                applicationGame.IsPublished,
                 releaseBuildSummary,
                 MapGenreSummary(applicationGame),
                 artworkSummary,
