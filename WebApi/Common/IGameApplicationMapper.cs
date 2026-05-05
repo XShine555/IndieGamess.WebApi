@@ -21,5 +21,7 @@ namespace WebApi.Common
         GameGenresMutationResponse MapToGameGenresMutationResponse(ApplicationGameGenresMutation applicationGame);
 
         Task<GameResponse> MapToGameResponse(ApplicationGame applicationGame, CancellationToken cancellationToken);
+        
+        Task<DeveloperGameResponse> MapToDeveloperGameResponse(ApplicationGame applicationGame, CancellationToken cancellationToken);
     }
 }

@@ -192,7 +192,7 @@ namespace WebApi.Mappers
 
         async Task<GameArtworkSummary> MapToGameArtworkSummaryResponse(ApplicationGameArtwork applicationGameArtwork, CancellationToken cancellationToken)
         {
-            var urls = await CreateSignedUrlsAsync(
+            var urls = await CreatePictureSignedUrlsAsync(
                 applicationGameArtwork.SmallArtworkKey,
                 applicationGameArtwork.MediumArtworkKey,
                 applicationGameArtwork.LargeArtworkKey,
@@ -206,7 +206,7 @@ namespace WebApi.Mappers
 
         async Task<GameStorePictureSummary> MapToGameStorePictureSummaryResponse(ApplicationGamePicture gameStorePicture, CancellationToken cancellationToken)
         {
-            var urls = await CreateSignedUrlsAsync(
+            var urls = await CreatePictureSignedUrlsAsync(
                 gameStorePicture.SmallPictureKey,
                 gameStorePicture.MediumPictureKey,
                 gameStorePicture.LargePictureKey,
@@ -233,7 +233,7 @@ namespace WebApi.Mappers
 
         async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUserPicture applicationUserPicture, CancellationToken cancellationToken)
         {
-            var urls = await CreateSignedUrlsAsync(
+            var urls = await CreatePictureSignedUrlsAsync(
                 applicationUserPicture.SmallPictureKey,
                 applicationUserPicture.MediumPictureKey,
                 applicationUserPicture.LargePictureKey,
@@ -247,7 +247,7 @@ namespace WebApi.Mappers
 
         async Task<UserProfilePictureResponse> MapToUserProfilePictureResponse(ApplicationUserListItem applicationUser, CancellationToken cancellationToken)
         {
-            var urls = await CreateSignedUrlsAsync(
+            var urls = await CreatePictureSignedUrlsAsync(
                 applicationUser.ProfilePicture.SmallPictureKey,
                 applicationUser.ProfilePicture.MediumPictureKey,
                 applicationUser.ProfilePicture.LargePictureKey,

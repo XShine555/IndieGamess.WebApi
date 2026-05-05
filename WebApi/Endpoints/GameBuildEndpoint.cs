@@ -22,11 +22,22 @@ namespace WebApi.Endpoints
         [HttpGet("{buildId}", Name = "Get Game Build By Id As User")]
         [EndpointSummary("Get Game Build By Id As User")]
         [Authorize]
-        public async Task<Result<GameBuildResponse>> GetGameBuild(Guid buildId, CancellationToken cancellationToken,
+        public async Task<Result<GameBuildUserResponse>> GetGameBuildAsUser(Guid buildId, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var queryResult = await mediator.Send(new GetGameBuildByIdQuery(currentUser.IdentityId, buildId), cancellationToken);
-            return queryResult.Map(mapper.MapToGameBuildResponse);
+            return await queryResult.MapAsync(r => mapper.MapToGameBuildUserResponse(r, cancellationToken));
+        }
+
+        [TranslateResultToActionResult]
+        [HttpGet("developer/{buildId}", Name = "Get Game Build By Id As Developer")]
+        [EndpointSummary("Get Game Build By Id As Developer")]
+        [Authorize]
+        public async Task<Result<GameBuildDeveloperResponse>> GetGameBuildAsDeveloper(Guid buildId, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(new GetGameBuildByIdAsDeveloperQuery(buildId, currentUser.IdentityId), cancellationToken);
+            return await queryResult.MapAsync(r => mapper.MapToGameBuildDeveloperResponse(r, cancellationToken));
         }
 
         [TranslateResultToActionResult]

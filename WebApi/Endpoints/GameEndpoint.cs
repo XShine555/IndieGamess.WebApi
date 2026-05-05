@@ -27,7 +27,7 @@ namespace WebApi.Endpoints
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Store Games")]
         [EndpointSummary("Get Store Games")]
-        public async Task<PaginatedResponse<GameListItemResponse>> Get( [FromQuery] GetGamesRequest query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<GameListItemResponse>> Get([FromQuery] GetGamesRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGamesQuery(query.Title, query.Genres, query.PageNumber, query.PageSize), cancellationToken);
             return await mapper.MapToGameListPaginatedResponseAsync(queryResult, cancellationToken);
@@ -48,7 +48,7 @@ namespace WebApi.Endpoints
         [Consumes("multipart/form-data")]
         [EndpointSummary("Create Game")]
         [Authorize]
-        public async Task<Result<GameMutationResponse>> CreateGame( [FromForm] CreateGameRequest createGameRequest, CancellationToken cancellationToken,
+        public async Task<Result<GameMutationResponse>> CreateGame([FromForm] CreateGameRequest createGameRequest, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
         {
             var capsulePicture = FileData.FromFormFile(createGameRequest.CapsulePicture);
@@ -91,6 +91,17 @@ namespace WebApi.Endpoints
                 updateGameRequest.Price,
                 updateGameRequest.Discount,
                 updateGameRequest.IsPublic), cancellationToken);
+            return commandResult.Map(mapper.MapToGameMutationResponse);
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPatch("{gameId}/release-build", Name = "Update Release Build")]
+        [EndpointSummary("Update Release Build")]
+        [Authorize]
+        public async Task<Result<GameMutationResponse>> UpdateReleaseBuild(Guid id, [FromBody] UpdateGameReleaseBuildRequest request, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new UpdateGameReleaseBuildCommand(currentUser.IdentityId, id, request.BuildId), cancellationToken);
             return commandResult.Map(mapper.MapToGameMutationResponse);
         }
 
@@ -155,22 +166,51 @@ namespace WebApi.Endpoints
         [HttpGet("{gameId}/builds", Name = "Get Game Builds As User")]
         [EndpointSummary("Get Game Builds As User")]
         [Authorize]
-        public async Task<Result<IReadOnlyCollection<GameBuildResponse>>> GetGameBuilds(Guid id, CancellationToken cancellationToken,
-            [FromServices] ICurrentUser currentUser)
+        public async Task<Result<PaginatedResponse<GameBuildAsUserListItemResponse> >> GetGameBuildsAsUser( [FromQuery] GetGameBuildsRequest request,
+            Guid id, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var queryResult = await mediator.Send(new GetGameBuildsQuery(currentUser.IdentityId, id), cancellationToken);
-            return queryResult.Map(builds => (IReadOnlyCollection<GameBuildResponse>)builds.Select(gameBuildMapper.MapToGameBuildResponse).ToArray());
+            var queryResult = await mediator.Send(new GetGameBuildsAsUserQuery(id, currentUser.IdentityId, request.Title, request.PageNumber, request.PageSize),
+                cancellationToken);
+            return queryResult.Map(builds => PaginatedResponse<GameBuildAsUserListItemResponse>.FromApplicationResponse(
+                builds,
+                gameBuildMapper.MapToGameBuildAsUserListItemResponse
+            ));
+        }
+
+        [TranslateResultToActionResult]
+        [HttpGet("developer/{gameId}/builds", Name = "Get Game Builds As Developer")]
+        [EndpointSummary("Get Game Builds As Developer")]
+        [Authorize]
+        public async Task<Result<PaginatedResponse<GameBuildAsDeveloperListItemResponse>> > GetGameBuildsAsDeveloper(Guid gameId,
+            [FromQuery] GetGameBuildsRequest request, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(new GetGameBuildsAsDeveloperQuery(gameId, currentUser.IdentityId, request.Title, request.PageNumber, request.PageSize),
+                cancellationToken);
+            return queryResult.Map(builds => PaginatedResponse<GameBuildAsDeveloperListItemResponse>.FromApplicationResponse(
+                builds,
+                gameBuildMapper.MapToGameBuildAsDeveloperListItemResponse
+            ));
         }
 
         [TranslateResultToActionResult]
         [HttpPost("{gameId}/builds", Name = "Create Game Build")]
         [EndpointSummary("Create Game Build")]
         [Authorize]
-        public async Task<Result<GameBuildMutationResponse>> CreateGameBuild(Guid id, [FromBody] CreateGameBuildRequest request,
+        public async Task<Result<GameBuildMutationResponse>> CreateGameBuild(Guid gameId, [FromBody] CreateGameBuildRequest request,
             CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new CreateGameBuildCommand(currentUser.IdentityId, id, request.VersionName), cancellationToken);
+            var commandResult = await mediator.Send(new CreateGameBuildCommand(currentUser.IdentityId, gameId, request.VersionName), cancellationToken);
             return commandResult.Map(gameBuildMapper.MapToGameBuildMutationResponse);
+        }
+
+        [TranslateResultToActionResult]
+        [HttpGet("developer/{gameId}")]
+        [EndpointSummary("Get Game As Developer")]
+        [Authorize]
+        public async Task<Result<DeveloperGameResponse>> GetGameAsDeveloper(Guid gameId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(new GetGameByIdQuery(gameId, GameCatalogQueryMode.Developer), cancellationToken);
+            return await queryResult.MapAsync(r => mapper.MapToDeveloperGameResponse(r, cancellationToken));
         }
     }
 }

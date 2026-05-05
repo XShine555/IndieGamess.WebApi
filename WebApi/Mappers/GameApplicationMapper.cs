@@ -92,7 +92,7 @@ namespace WebApi.Mappers
             var result = new List<GameArtworkSummary>(applicationGameArtwork.Count);
             foreach (var artwork in applicationGameArtwork)
             {
-                var urls = await CreateSignedUrlsAsync(
+                var urls = await CreatePictureSignedUrlsAsync(
                     artwork.SmallArtworkKey,
                     artwork.MediumArtworkKey,
                     artwork.LargeArtworkKey,
@@ -112,7 +112,7 @@ namespace WebApi.Mappers
             var result = new List<GameStorePictureSummary>(storePictures.Count);
             foreach (var storePicture in storePictures)
             {
-                var urls = await CreateSignedUrlsAsync(
+                var urls = await CreatePictureSignedUrlsAsync(
                     storePicture.SmallPictureKey,
                     storePicture.MediumPictureKey,
                     storePicture.LargePictureKey,
@@ -134,7 +134,84 @@ namespace WebApi.Mappers
                 gameListItem.Title,
                 gameListItem.Description,
                 gameListItem.GameStatus.ToString(),
+                gameListItem.IsPublic,
                 await MapArtworkSummary(gameListItem.Artworks, cancellationToken));
+        }
+
+        public async Task<DeveloperGameResponse> MapToDeveloperGameResponse(ApplicationGame applicationGame, CancellationToken cancellationToken)
+        {
+            var releaseBuildSummary = await MapReleaseBuildSummary(applicationGame);
+            var artworkSummary = await MapToDeveloperGameArtworkSummary(applicationGame.Artworks, cancellationToken);
+            var storePictureSummary = await MapToDeveloperGameStorePictureSummary(applicationGame.Pictures, cancellationToken);
+
+            return new DeveloperGameResponse(
+                applicationGame.Id,
+                applicationGame.Title,
+                applicationGame.Description,
+                applicationGame.Price,
+                applicationGame.Discount,
+                releaseBuildSummary,
+                MapGenreSummary(applicationGame),
+                artworkSummary,
+                storePictureSummary,
+                applicationGame.GameStatus.ToString());
+        }
+
+        async Task<DeveloperGameReleaseBuildSummary?> MapReleaseBuildSummary(ApplicationGame applicationGame)
+        {
+            if (applicationGame.ReleaseBuild is null)
+                return null;
+
+            return new DeveloperGameReleaseBuildSummary(
+                    applicationGame.ReleaseBuild.BuildId,
+                    applicationGame.ReleaseBuild.VersionName,
+                    await CreateSignedUrlAsync(applicationGame.ReleaseBuild.ManifestS3Path, CancellationToken.None));
+        }
+
+        async Task<IReadOnlyList<DeveloperGameStorePictureSummary>> MapToDeveloperGameStorePictureSummary(IReadOnlyCollection<ApplicationGamePicture> storePicturess, CancellationToken cancellationToken)
+        {
+            var result = new List<DeveloperGameStorePictureSummary>(storePicturess.Count);
+
+            foreach (var storePicture in storePicturess)
+            {
+                var urls = await CreatePictureSignedUrlsAsync(
+                    storePicture.SmallPictureKey,
+                    storePicture.MediumPictureKey,
+                    storePicture.LargePictureKey,
+                    cancellationToken);
+
+                result.Add(new DeveloperGameStorePictureSummary(
+                    storePicture.PictureId,
+                    urls.SmallUrl,
+                    urls.MediumUrl,
+                    urls.LargeUrl,
+                    storePicture.ProcessingStatus.ToString()));
+            }
+
+            return result;
+        }
+
+        async Task<IReadOnlyList<DeveloperGameArtworkSummary>> MapToDeveloperGameArtworkSummary(IReadOnlyCollection<ApplicationGameArtwork> artwork, CancellationToken cancellationToken)
+        {
+            var result = new List<DeveloperGameArtworkSummary>(artwork.Count);
+
+            foreach (var art in artwork)
+            {
+                var urls = await CreatePictureSignedUrlsAsync(
+                    art.SmallArtworkKey,
+                    art.MediumArtworkKey,
+                    art.LargeArtworkKey,
+                    cancellationToken);
+
+                result.Add(new DeveloperGameArtworkSummary(
+                    art.ArtworkId,
+                    urls.SmallUrl,
+                    urls.MediumUrl,
+                    urls.LargeUrl,
+                    art.ProcessingStatus.ToString()));
+            }
+
+            return result;
         }
     }
 }

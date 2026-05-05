@@ -5,5 +5,6 @@
         string Title,
         string Description,
         string Status,
+        bool IsPublic,
         IReadOnlyCollection<GameArtworkSummary> Artworks);
 }

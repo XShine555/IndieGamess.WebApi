@@ -89,7 +89,7 @@ namespace WebApi.Mappers
             var result = new List<GameArtworkAdminSummary>(artworks.Count);
             foreach (var artwork in artworks)
             {
-                var urls = await CreateSignedUrlsAsync(
+                var urls = await CreatePictureSignedUrlsAsync(
                     artwork.SmallArtworkKey,
                     artwork.MediumArtworkKey,
                     artwork.LargeArtworkKey,
@@ -118,7 +118,7 @@ namespace WebApi.Mappers
             var result = new List<GameStorePictureAdminSummary>(storePictures.Count);
             foreach (var storePicture in storePictures)
             {
-                var urls = await CreateSignedUrlsAsync(
+                var urls = await CreatePictureSignedUrlsAsync(
                     storePicture.SmallPictureKey,
                     storePicture.MediumPictureKey,
                     storePicture.LargePictureKey,

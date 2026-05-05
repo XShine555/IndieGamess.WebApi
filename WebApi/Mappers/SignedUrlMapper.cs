@@ -4,9 +4,15 @@ namespace WebApi.Mappers
 {
     public abstract class SignedUrlMapper(IS3Service s3Service)
     {
-        protected readonly record struct SignedUrls(string SmallUrl, string MediumUrl, string LargeUrl);
+        protected readonly record struct PictureSignedUrls(string SmallUrl, string MediumUrl, string LargeUrl);
 
-        protected async Task<SignedUrls> CreateSignedUrlsAsync(
+        protected Task<string> CreateSignedUrlAsync(string key, CancellationToken cancellationToken)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
+            return s3Service.GetSignedUrlAsync(key, TimeSpan.FromHours(1), cancellationToken);
+        }
+
+        protected async Task<PictureSignedUrls> CreatePictureSignedUrlsAsync(
             string smallKey,
             string mediumKey,
             string largeKey,
@@ -20,7 +26,7 @@ namespace WebApi.Mappers
             var mediumImageUrl = await s3Service.GetSignedUrlAsync(mediumKey, TimeSpan.FromHours(1), cancellationToken);
             var largeImageUrl = await s3Service.GetSignedUrlAsync(largeKey, TimeSpan.FromHours(1), cancellationToken);
 
-            return new SignedUrls(smallImageUrl, mediumImageUrl, largeImageUrl);
+            return new PictureSignedUrls(smallImageUrl, mediumImageUrl, largeImageUrl);
         }
     }
 }
