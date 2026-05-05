@@ -2,8 +2,8 @@
 {
     public record DeveloperGameArtworkSummary(
         Guid Id,
-        string SmallPictureUrl,
-        string MediumPictureUrl,
-        string LargePictureUrl,
+        string? SmallPictureUrl,
+        string? MediumPictureUrl,
+        string? LargePictureUrl,
         string ProcessingStatus);
 }

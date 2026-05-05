@@ -93,9 +93,9 @@ namespace WebApi.Mappers
             foreach (var artwork in applicationGameArtwork)
             {
                 var urls = await CreatePictureSignedUrlsAsync(
-                    artwork.SmallArtworkKey,
-                    artwork.MediumArtworkKey,
-                    artwork.LargeArtworkKey,
+                    artwork.SmallArtworkKey!,
+                    artwork.MediumArtworkKey!,
+                    artwork.LargeArtworkKey!,
                     cancellationToken);
 
                 result.Add(new GameArtworkSummary(
@@ -113,9 +113,9 @@ namespace WebApi.Mappers
             foreach (var storePicture in storePictures)
             {
                 var urls = await CreatePictureSignedUrlsAsync(
-                    storePicture.SmallPictureKey,
-                    storePicture.MediumPictureKey,
-                    storePicture.LargePictureKey,
+                    storePicture.SmallPictureKey!,
+                    storePicture.MediumPictureKey!,
+                    storePicture.LargePictureKey!,
                     cancellationToken);
 
                 result.Add(new GameStorePictureSummary(
@@ -174,17 +174,23 @@ namespace WebApi.Mappers
 
             foreach (var storePicture in storePicturess)
             {
-                var urls = await CreatePictureSignedUrlsAsync(
-                    storePicture.SmallPictureKey,
-                    storePicture.MediumPictureKey,
-                    storePicture.LargePictureKey,
-                    cancellationToken);
+                string? smallPictureKey = null;
+                if (!string.IsNullOrEmpty(storePicture.SmallPictureKey))
+                    smallPictureKey = await CreateSignedUrlAsync(storePicture.SmallPictureKey, cancellationToken);
+
+                string? mediumPictureKey = null;
+                if (!string.IsNullOrEmpty(storePicture.MediumPictureKey))
+                    mediumPictureKey = await CreateSignedUrlAsync(storePicture.MediumPictureKey, cancellationToken);
+
+                string largePictureKey = null;
+                if (!string.IsNullOrEmpty(storePicture.LargePictureKey))
+                    largePictureKey = await CreateSignedUrlAsync(storePicture.LargePictureKey, cancellationToken);
 
                 result.Add(new DeveloperGameStorePictureSummary(
                     storePicture.PictureId,
-                    urls.SmallUrl,
-                    urls.MediumUrl,
-                    urls.LargeUrl,
+                    smallPictureKey,
+                    mediumPictureKey,
+                    largePictureKey,
                     storePicture.ProcessingStatus.ToString()));
             }
 
@@ -197,17 +203,23 @@ namespace WebApi.Mappers
 
             foreach (var art in artwork)
             {
-                var urls = await CreatePictureSignedUrlsAsync(
-                    art.SmallArtworkKey,
-                    art.MediumArtworkKey,
-                    art.LargeArtworkKey,
-                    cancellationToken);
+                string smallArtworkKey = null;
+                if (!string.IsNullOrEmpty(art.SmallArtworkKey))
+                    smallArtworkKey = await CreateSignedUrlAsync(art.SmallArtworkKey, cancellationToken);
+
+                string mediumArtworkKey = null;
+                if (!string.IsNullOrEmpty(art.MediumArtworkKey))
+                    mediumArtworkKey = await CreateSignedUrlAsync(art.MediumArtworkKey, cancellationToken);
+
+                string? largePictureKey = null;
+                if (!string.IsNullOrEmpty(art.LargeArtworkKey))
+                    largePictureKey = await CreateSignedUrlAsync(art.LargeArtworkKey, cancellationToken);
 
                 result.Add(new DeveloperGameArtworkSummary(
                     art.ArtworkId,
-                    urls.SmallUrl,
-                    urls.MediumUrl,
-                    urls.LargeUrl,
+                    smallArtworkKey,
+                    mediumArtworkKey,
+                    largePictureKey,
                     art.ProcessingStatus.ToString()));
             }
 

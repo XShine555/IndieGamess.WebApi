@@ -41,6 +41,17 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
+        [HttpGet("developer/{buildId}/files", Name = "Get File List As Developer")]
+        [EndpointSummary("Get file list as developer")]
+        [Authorize]
+        public async Task<Result<IReadOnlyList<string>> > GetGameBuildFilesAsDeveloper(Guid buildId, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(new GetFileListByGameBuildIdQuery(buildId, currentUser.IdentityId), cancellationToken);
+            return queryResult;
+        }
+
+        [TranslateResultToActionResult]
         [HttpPut("{buildId}", Name = "Update Game Build")]
         [EndpointSummary("Update Game Build")]
         [Authorize]
