@@ -140,13 +140,13 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{gameId}/store-picture", Name = "Remove Store Picture")]
+        [HttpDelete("developer/store-picture/{pictureId}", Name = "Remove Store Picture")]
         [EndpointSummary("Remove Store Picture")]
         [Authorize]
-        public async Task<Result> RemoveStorePicture(Guid gameId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        public async Task<Result> RemoveStorePicture(Guid pictureId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var commandResult = await mediator.Send(new RemoveStorePictureToGameCommand(currentUser.IdentityId, gameId), cancellationToken);
-            return commandResult.ToResult();
+            var commandResult = await mediator.Send(new RemoveStorePictureToGameCommand(currentUser.IdentityId, pictureId), cancellationToken);
+            return commandResult;
         }
 
         [TranslateResultToActionResult]
