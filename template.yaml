@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: IndieGamess.WebApi - HTTP API + Lambda (container image) + Cognito JWT authorizer + VPC access to RDS.
+
+Parameters:
+  CognitoUserPoolId:
+    Type: String
+    Description: Cognito User Pool Id (e.g. eu-west-1_XXXXXXXXX)
+    Default: ""
+  CognitoAppClientId:
+    Type: String
+    Description: Cognito App Client Id used as JWT audience
+    Default: ""
+  VpcSubnetIds:
+    Type: String
+    Description: Private subnet ids (comma-separated) where Lambda should run to reach RDS (e.g. subnet-aaa,subnet-bbb). Leave empty to deploy without VPC.
+    Default: ""
+  LambdaSecurityGroupIds:
+    Type: String
+    Description: Security group ids (comma-separated) attached to the Lambda ENIs (e.g. sg-aaa). Leave empty to deploy without VPC.
+    Default: ""
+
+Conditions:
+  UseCognito: !And
+    - !Not [!Equals [!Ref CognitoUserPoolId, ""]]
+    - !Not [!Equals [!Ref CognitoAppClientId, ""]]
+  UseVpc: !And
+    - !Not [!Equals [!Ref VpcSubnetIds, ""]]
+    - !Not [!Equals [!Ref LambdaSecurityGroupIds, ""]]
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 1024
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: $default
+      CorsConfiguration:
+        AllowOrigins:
+          - '*'
+        AllowHeaders:
+          - '*'
+        AllowMethods:
+          - '*'
+      Auth: !If
+        - UseCognito
+        - Authorizers:
+            CognitoJwt:
+              JwtConfiguration:
+                issuer: !Sub https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPoolId}
+                audience:
+                  - !Ref CognitoAppClientId
+              IdentitySource: "$request.header.Authorization"
+        - !Ref AWS::NoValue
+
+  WebApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures:
+        - x86_64
+      VpcConfig: !If
+        - UseVpc
+        - SubnetIds: !Split [",", !Ref VpcSubnetIds]
+          SecurityGroupIds: !Split [",", !Ref LambdaSecurityGroupIds]
+        - !Ref AWS::NoValue
+      Policies:
+        - AWSLambdaVPCAccessExecutionRole
+      Environment:
+        Variables:
+          ASPNETCORE_ENVIRONMENT: Production
+          ASPNETCORE_URLS: http://+:8080
+          AWS_LWA_PORT: '8080'
+          AWS_LWA_READINESS_CHECK_PATH: /health
+      Events:
+        RootRoute:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /
+            Method: ANY
+            Auth: !If
+              - UseCognito
+              - Authorizer: CognitoJwt
+              - Authorizer: NONE
+        ProxyRoute:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /{proxy+}
+            Method: ANY
+            Auth: !If
+              - UseCognito
+              - Authorizer: CognitoJwt
+              - Authorizer: NONE
+        HealthRoute:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /health
+            Method: GET
+            Auth:
+              Authorizer: NONE
+    Metadata:
+      DockerContext: .
+      Dockerfile: Dockerfile
+      DockerTag: indie-gamess-webapi
+
+Outputs:
+  ApiUrl:
+    Description: API endpoint
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
