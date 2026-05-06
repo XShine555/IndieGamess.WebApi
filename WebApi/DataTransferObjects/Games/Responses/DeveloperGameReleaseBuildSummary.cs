@@ -2,6 +2,5 @@
 {
     public record DeveloperGameReleaseBuildSummary(
         Guid BuildId,
-        string VersionName,
-        string ManifestUrl);
+        string VersionName);
 }
