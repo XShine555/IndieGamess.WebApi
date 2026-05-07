@@ -4,5 +4,6 @@ namespace WebApi.DataTransferObjects.GameBuild.Responses
         Guid BuildId,
         string VersionName,
         string ManifestUrl,
+        string ExecutableFilePath,
         bool IsReleaseBuild);
 }

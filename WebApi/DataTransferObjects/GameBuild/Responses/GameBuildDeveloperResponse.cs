@@ -5,5 +5,6 @@
         string VersionName,
         string Status,
         bool IsReleaseBuild,
-        string? ManifestUrl);
+        string? ManifestUrl,
+        string? ExecutableFilePath);
 }

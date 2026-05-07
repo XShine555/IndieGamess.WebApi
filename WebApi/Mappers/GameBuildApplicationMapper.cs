@@ -18,6 +18,7 @@ namespace WebApi.Mappers
                 applicationGameBuild.BuildId,
                 applicationGameBuild.VersionName,
                 manifestUrl,
+                applicationGameBuild.ExecutableFilePath,
                 applicationGameBuild.IsReleaseBuild);
         }
 
@@ -34,7 +35,8 @@ namespace WebApi.Mappers
                 applicationGameBuild.VersionName,
                 applicationGameBuild.Status.ToString(),
                 applicationGameBuild.IsReleaseBuild,
-                manifestUrl);
+                manifestUrl,
+                applicationGameBuild.ExecutableFilePath);
         }
 
         public GameBuildMutationResponse MapToGameBuildMutationResponse(ApplicationGameBuildMutation applicationGameBuild)
@@ -42,6 +44,7 @@ namespace WebApi.Mappers
             return new GameBuildMutationResponse(
                 applicationGameBuild.BuildId,
                 applicationGameBuild.VersionName,
+                applicationGameBuild.ExecutablePath,
                 applicationGameBuild.CreatedAt);
         }
 
