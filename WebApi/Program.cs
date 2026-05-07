@@ -35,6 +35,7 @@ services.AddScoped<IUserApplicationMapper, UserApplicationMapper>();
 services.AddScoped<IAdminGameApplicationMapper, AdminGameApplicationMapper>();
 services.AddScoped<IAdminGenreApplicationMapper, AdminGenreApplicationMapper>();
 services.AddScoped<IAdminUserApplicationMapper, AdminUserApplicationMapper>();
+services.AddScoped<IAchievementApplicationMapper, AchievementApplicationMapper>();
 
 services.AddControllers();
 services.ConfigureScalar();
