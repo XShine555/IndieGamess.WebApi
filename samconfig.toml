@@ -1,0 +1,12 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "indiegamess-webapi"
+resolve_s3 = true
+capabilities = "CAPABILITY_IAM"
+region = "us-east-1"
+confirm_changeset = true
+resolve_image_repos = true
+
+# Fill these in to enable Cognito and VPC access to RDS:
+# parameter_overrides = "CognitoUserPoolId=us-east-1_XXXX CognitoAppClientId=YYYY VpcSubnetIds=subnet-a,subnet-b LambdaSecurityGroupIds=sg-zzzz"

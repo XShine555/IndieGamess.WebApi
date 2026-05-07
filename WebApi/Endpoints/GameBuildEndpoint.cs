@@ -42,7 +42,7 @@ namespace WebApi.Endpoints
 
         [TranslateResultToActionResult]
         [HttpGet("developer/{buildId}/files", Name = "Get File List As Developer")]
-        [EndpointSummary("Get file list as developer")]
+        [EndpointSummary("Get File List As Developer")]
         [Authorize]
         public async Task<Result<IReadOnlyList<string>> > GetGameBuildFilesAsDeveloper(Guid buildId, CancellationToken cancellationToken,
             [FromServices] ICurrentUser currentUser)
@@ -94,6 +94,17 @@ namespace WebApi.Endpoints
         {
             var commandResult = await mediator.Send(new CompleteGameBuildCommand(currentUser.IdentityId, buildId), cancellationToken);
             return commandResult;
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPatch("{buildId}/executible-file", Name = "Update Executable File")]
+        [EndpointSummary("Update Executable File")]
+        [Authorize]
+        public async Task<Result<GameBuildMutationResponse>> UpdateExecutableFile(Guid buildId, [FromBody] UpdateExecutableFileRequest request,
+            CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
+        {
+            var commandResult = await mediator.Send(new UpdateExecutableFileCommand(buildId, currentUser.IdentityId, request.FilePath), cancellationToken);
+            return commandResult.Map(mapper.MapToGameBuildMutationResponse);
         }
     }
 }

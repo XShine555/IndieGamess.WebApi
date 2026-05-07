@@ -2,6 +2,7 @@ using Application.Configuration;
 using Infrastructure.Messaging.Configuration;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 using Scalar.AspNetCore;
 using WebApi.Authentication;
 using WebApi.Common;
@@ -52,6 +53,16 @@ services.AddCors(options =>
 
 var app = builder.Build();
 
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+};
+
+forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+
+app.UseForwardedHeaders(forwardedHeadersOptions);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -61,6 +72,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.MapGet("/health", () => Results.Ok());
 app.MapControllers();
 
 app.Run();
