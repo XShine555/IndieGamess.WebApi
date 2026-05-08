@@ -8,5 +8,6 @@ namespace WebApi.Common
         AchievementResponse MapToAchievementResponse(ApplicationAchievement achievement);
         AchievementResponse MapToUserAchievementResponse(ApplicationUserAchievement achievement);
         AchievementMutationResponse MapToAchievementMutationResponse(ApplicationAchievement achievement);
+        Task<AchievementDeveloperResponse> MapToAchievementDeveloperResponse(ApplicationAchievement applicationAchievement, CancellationToken cancellationToken);
     }
 }

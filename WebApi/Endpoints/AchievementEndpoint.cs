@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
 using WebApi.DataTransferObjects.Achievements.Requests;
 using WebApi.DataTransferObjects.Achievements.Responses;
+using WebApi.Extensions;
 using WebApi.Services;
 
 namespace WebApi.Endpoints
@@ -19,34 +20,44 @@ namespace WebApi.Endpoints
     public class AchievementEndpoint(IMediator mediator, IAchievementApplicationMapper mapper)
         : ControllerBase
     {
-        [HttpGet("{gameId}/achievements", Name = "Get Game Achievements")]
-        [EndpointSummary("Get Game Achievements")]
-        public async Task<PaginatedResponse<AchievementResponse>> GetAchievements(
+        [HttpGet("{gameId}/achievements", Name = "Get Game Achievement as Developer")]
+        [EndpointSummary("Get Game Achievements As Developer")]
+        [Authorize]
+        public async Task<Result<AchievementDeveloperResponse[]>> GetAchievements(
             Guid gameId,
-            [FromQuery] GetAchievementsRequest request,
+            [FromServices] ICurrentUser currentUser,
             CancellationToken cancellationToken)
         {
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (Guid.TryParse(userIdString, out var userId))
-                {
-                    var userAchievements = await mediator.Send(
-                        new GetUserAchievementsByGameQuery(userId, gameId), cancellationToken);
-                    return new PaginatedResponse<AchievementResponse>(
-                        userAchievements.Select(mapper.MapToUserAchievementResponse).ToList(),
-                        1,
-                        userAchievements.Count,
-                        1,
-                        userAchievements.Count,
-                        false,
-                        false);
-                }
-            }
+            var result = await mediator.Send(new GetAchievementsByGameAsDeveloperQuery(
+                gameId,
+                currentUser.IdentityId), cancellationToken);
+            if (!result.IsSuccess)
+                return result.ToResult();
 
-            var result = await mediator.Send(
-                new GetAchievementsByGameQuery(gameId, request.PageNumber, request.PageSize), cancellationToken);
-            return PaginatedResponse<AchievementResponse>.FromApplicationResponse(result, mapper.MapToAchievementResponse);
+            var achievementResponses = new List<AchievementDeveloperResponse>();
+            foreach (var achievement in result.Value)
+            {
+                achievementResponses.Add(await mapper.MapToAchievementDeveloperResponse(achievement, cancellationToken));
+            }
+            return result.Map(_ => achievementResponses.ToArray());
+        }
+
+        [HttpGet("{gameId}/achievements/{userId}")]
+        [EndpointSummary("Get User Achievements for Game")]
+        public async Task<IReadOnlyList<AchievementResponse>> GetUserAchievementsForGame(
+            Guid gameId,
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            var result = await mediator.Send(new GetUserAchievementsByGameQuery(
+                gameId,
+                userId), cancellationToken);
+            var achievementResponses = new List<AchievementResponse>();
+            foreach (var achievement in result)
+            {
+                achievementResponses.Add(mapper.MapToUserAchievementResponse(achievement));
+            }
+            return achievementResponses;
         }
 
         [TranslateResultToActionResult]
@@ -68,7 +79,20 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("~/achievements/{achievementId}/unlock", Name = "Unlock Achievement")]
+        [HttpDelete("achievement/{achievementId}", Name = "Delete Achievement")]
+        [EndpointSummary("Delete Achievement")]
+        [Authorize]
+        public async Task<Result> DeleteAchievement(
+            Guid achievementId,
+            CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var result = await mediator.Send(new RemoveAchievementCommand(currentUser.IdentityId, achievementId), cancellationToken);
+            return result;
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPost("{achievementId}/unlock", Name = "Unlock Achievement")]
         [EndpointSummary("Unlock Achievement")]
         [Authorize]
         public async Task<Result> UnlockAchievement(
@@ -78,6 +102,19 @@ namespace WebApi.Endpoints
         {
             return await mediator.Send(
                 new UnlockAchievementCommand(currentUser.IdentityId, achievementId), cancellationToken);
+        }
+
+        [TranslateResultToActionResult]
+        [HttpPost("/achievement/{achievementId}/publish", Name = "Publish Achievement")]
+        [EndpointSummary("Publish Achievement")]
+        [Authorize]
+        public async Task<Result> PublishAchievement(
+            Guid achievementId,
+            CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            return await mediator.Send(
+                new PublishAchievementCommand(currentUser.IdentityId, achievementId), cancellationToken);
         }
     }
 }
