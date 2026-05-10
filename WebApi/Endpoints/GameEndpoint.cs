@@ -169,7 +169,7 @@ namespace WebApi.Endpoints
         public async Task<Result<PaginatedResponse<GameBuildAsUserListItemResponse> >> GetGameBuildsAsUser( [FromQuery] GetGameBuildsRequest request,
             Guid gameId, CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
         {
-            var queryResult = await mediator.Send(new GetGameBuildsAsUserQuery(gameId, currentUser.IdentityId, request.Title, request.PageNumber, request.PageSize),
+            var queryResult = await mediator.Send(new GetGameBuildsAsUserQuery(currentUser.IdentityId, gameId, request.Title, request.PageNumber, request.PageSize),
                 cancellationToken);
             return queryResult.Map(builds => PaginatedResponse<GameBuildAsUserListItemResponse>.FromApplicationResponse(
                 builds,
