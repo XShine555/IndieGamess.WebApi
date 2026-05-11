@@ -17,5 +17,7 @@ namespace WebApi.Common
         GameBuildAsUserListItemResponse MapToGameBuildAsUserListItemResponse(ApplicationGameBuildListItem applicationGameBuildListItem);
 
         GameBuildAsDeveloperListItemResponse MapToGameBuildAsDeveloperListItemResponse(ApplicationGameBuildListItem applicationGameBuildListItem);
+
+        Task<GameFileUserResponse> MapToGameFileUserResponse(ApplicationFileInfo applicationFileInfo, CancellationToken cancellationToken);
     }
 }

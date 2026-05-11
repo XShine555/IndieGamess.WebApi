@@ -30,6 +30,17 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
+        [HttpGet("files/{fileId}", Name = "Get File By Id As User")]
+        [EndpointSummary("Get File By Id As User")]
+        [Authorize]
+        public async Task<Result<GameFileUserResponse>> GetGameBuildFileAsUser(Guid fileId, CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(new GetFileInfoByFileIdQuery(fileId, currentUser.IdentityId), cancellationToken);
+            return await queryResult.MapAsync(x => mapper.MapToGameFileUserResponse(x, cancellationToken));
+        }
+
+        [TranslateResultToActionResult]
         [HttpGet("developer/{buildId}", Name = "Get Game Build By Id As Developer")]
         [EndpointSummary("Get Game Build By Id As Developer")]
         [Authorize]

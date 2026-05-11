@@ -1,5 +1,6 @@
 using Application.Abstractions.Storage;
 using Application.Games.Builds.Responses;
+using Domain.Games.Entities;
 using WebApi.Common;
 using WebApi.DataTransferObjects.GameBuild.Responses;
 using WebApi.DataTransferObjects.Games.Responses;
@@ -18,7 +19,7 @@ namespace WebApi.Mappers
                 applicationGameBuild.BuildId,
                 applicationGameBuild.VersionName,
                 manifestUrl,
-                applicationGameBuild.ExecutableFilePath,
+                applicationGameBuild.ExecutableFilePath!,
                 applicationGameBuild.IsReleaseBuild);
         }
 
@@ -71,6 +72,24 @@ namespace WebApi.Mappers
                 applicationGameBuildListItem.VersionName,
                 applicationGameBuildListItem.Status.ToString(),
                 applicationGameBuildListItem.IsReleaseBuild);
+        }
+
+        public async Task<GameFileUserResponse> MapToGameFileUserResponse(ApplicationFileInfo applicationFileInfo, CancellationToken cancellationToken)
+        {
+            string downloadUrl = await s3Service.GetSignedUrlAsync(applicationFileInfo.FilePath, TimeSpan.FromHours(1), cancellationToken);
+            var buildId = applicationFileInfo.GameBuildId.ToString();
+            var index = applicationFileInfo.FilePath.IndexOf(buildId);
+            if (index == -1)
+                throw new InvalidOperationException("File path does not contain GameBuildId.");
+            var startIndex = index + buildId.Length;
+            var relativePath = applicationFileInfo.FilePath.Substring(startIndex + 1);
+            return new GameFileUserResponse(
+                applicationFileInfo.Id,
+                relativePath,
+                downloadUrl,
+                applicationFileInfo.Size,
+                applicationFileInfo.Hash,
+                applicationFileInfo.HashAlgorithm);
         }
     }
 }
