@@ -54,16 +54,8 @@ services.AddCors(options =>
 } );
 
 services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
+services.AddProblemDetails();
 var app = builder.Build();
-
-var forwardedHeadersOptions = new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
-};
-
-forwardedHeadersOptions.KnownIPNetworks.Clear();
-forwardedHeadersOptions.KnownProxies.Clear();
-app.UseForwardedHeaders(forwardedHeadersOptions);
 
 app.UseAuthentication();
 app.UseAuthorization();

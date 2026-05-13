@@ -1,28 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>db5aec9a-fa1c-4ee5-8527-48d610ea1604</UserSecretsId>
-	  <AWSProjectType>Lambda</AWSProjectType>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>db5aec9a-fa1c-4ee5-8527-48d610ea1604</UserSecretsId>
+		<AWSProjectType>Lambda</AWSProjectType>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="2.0.0" />
-    <PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
-    <ProjectReference Include="..\..\IndieGames-AspNet\Application\Application.csproj" />
-    <ProjectReference Include="..\..\IndieGames-AspNet\Domain\Domain.csproj" />
-    <ProjectReference Include="..\..\IndieGames-AspNet\Infrastructure\Infrastructure.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.6" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.14.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="2.0.0" />
+		<PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
+		<PackageReference Include="IndieGames.Application" Version="0.1.119" />
+		<PackageReference Include="IndieGames.Domain" Version="0.1.45" />
+		<PackageReference Include="IndieGames.Infrastructure" Version="0.1.82" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6" />
+		<PackageReference Include="Scalar.AspNetCore" Version="2.14.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="global-bundle.pem">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="global-bundle.pem">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

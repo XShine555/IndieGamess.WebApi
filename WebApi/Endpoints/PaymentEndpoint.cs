@@ -40,12 +40,16 @@ namespace WebApi.Endpoints
             var payload = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync(cancellationToken);
             var signature = HttpContext.Request.Headers["Stripe-Signature"].FirstOrDefault() ?? string.Empty;
 
-            var webhookResult = stripeService.ParseCheckoutCompletedEvent(payload, signature);
-            if (webhookResult is null)
+            var outcome = stripeService.ParseCheckoutCompletedEvent(payload, signature);
+
+            if (outcome.Status == ParseWebhookStatus.InvalidSignature)
                 return BadRequest();
 
+            if (outcome.Status == ParseWebhookStatus.UnhandledEventType)
+                return Ok();
+
             var fulfillResult = await mediator.Send(
-                new FulfillCartOrderCommand(webhookResult.UserId, webhookResult.GameIds),
+                new FulfillCartOrderCommand(outcome.Result!.UserId, outcome.Result!.GameIds),
                 cancellationToken);
 
             return fulfillResult.IsSuccess ? Ok() : StatusCode(500);
