@@ -25,6 +25,7 @@ services.AddAuthorization();
 
 services.AddOpenApi();
 services.AddS3Service(configuration);
+services.AddStripeService(configuration);
 services.AddMassTransitClient(configuration);
 services.AddApplicationMediator(configuration);
 
