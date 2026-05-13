@@ -1,3 +1,4 @@
+using Amazon.Lambda.AspNetCoreServer.Hosting;
 using Application.Configuration;
 using Infrastructure.Messaging.Configuration;
 using Infrastructure.Persistence;
@@ -10,7 +11,7 @@ using WebApi.Mappers;
 using WebApi.Scalar;
 using WebApi.Services;
 
-var builder = WebApplication.CreateBuilder();
+var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
@@ -51,6 +52,7 @@ services.AddCors(options =>
     } );
 } );
 
+services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
 var app = builder.Build();
 
 var forwardedHeadersOptions = new ForwardedHeadersOptions
@@ -65,9 +67,9 @@ app.UseForwardedHeaders(forwardedHeadersOptions);
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCors("AllowAll");
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors("AllowAll");
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
