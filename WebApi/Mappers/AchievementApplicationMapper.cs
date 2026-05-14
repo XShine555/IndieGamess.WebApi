@@ -7,24 +7,54 @@ namespace WebApi.Mappers
 {
     public class AchievementApplicationMapper(IS3Service s3Service) : SignedUrlMapper(s3Service), IAchievementApplicationMapper
     {
-        public AchievementResponse MapToAchievementResponse(ApplicationAchievement achievement)
+        public async Task<AchievementResponse> MapToAchievementResponse(ApplicationAchievement achievement, CancellationToken cancellationToken)
         {
+            string? smallPictureUrl = null;
+            if (!string.IsNullOrEmpty(achievement.SmallPicturePath))
+                smallPictureUrl = await CreateSignedUrlAsync(achievement.SmallPicturePath, cancellationToken);
+
+            string? mediumPictureUrl = null;
+            if (!string.IsNullOrEmpty(achievement.MediumPicturePath))
+                mediumPictureUrl = await CreateSignedUrlAsync(achievement.MediumPicturePath, cancellationToken);
+
+            string? largePictureUrl = null;
+            if (!string.IsNullOrEmpty(achievement.LargePicturePath))
+                largePictureUrl = await CreateSignedUrlAsync(achievement.LargePicturePath, cancellationToken);
+
             return new AchievementResponse(
                 achievement.Id,
                 achievement.GameId,
                 achievement.Name,
                 achievement.Description,
+                smallPictureUrl,
+                mediumPictureUrl,
+                largePictureUrl,
                 null,
                 null);
         }
 
-        public AchievementResponse MapToUserAchievementResponse(ApplicationUserAchievement achievement)
+        public async Task<AchievementResponse> MapToUserAchievementResponseAsync(ApplicationUserAchievement achievement, CancellationToken cancellationToken)
         {
+            string? smallPictureUrl = null;
+            if (!string.IsNullOrEmpty(achievement.SmallPicturePath))
+                smallPictureUrl = await CreateSignedUrlAsync(achievement.SmallPicturePath, cancellationToken);
+
+            string? mediumPictureUrl = null;
+            if (!string.IsNullOrEmpty(achievement.MediumPicturePath))
+                mediumPictureUrl = await CreateSignedUrlAsync(achievement.MediumPicturePath, cancellationToken);
+
+            string? largePictureUrl = null;
+            if (!string.IsNullOrEmpty(achievement.LargePicturePath))
+                largePictureUrl = await CreateSignedUrlAsync(achievement.LargePicturePath, cancellationToken);
+
             return new AchievementResponse(
                 achievement.AchievementId,
                 achievement.GameId,
                 achievement.Name,
                 achievement.Description,
+                smallPictureUrl,
+                mediumPictureUrl,
+                largePictureUrl,
                 achievement.IsUnlocked,
                 achievement.UnlockedAt);
         }

@@ -5,6 +5,9 @@ namespace WebApi.DataTransferObjects.Achievements.Responses
         Guid GameId,
         string Name,
         string Description,
+        string? SmallPictureUrl,
+        string? MediumPictureUrl,
+        string? LargePictureUrl,
         bool? IsUnlocked,
         DateTime? UnlockedAt);
 }

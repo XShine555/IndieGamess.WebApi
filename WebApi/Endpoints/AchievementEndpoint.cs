@@ -54,7 +54,8 @@ namespace WebApi.Endpoints
             var achievementResponses = new List<AchievementResponse>();
             foreach (var achievement in result)
             {
-                achievementResponses.Add(mapper.MapToUserAchievementResponse(achievement));
+                var mapperResult = await mapper.MapToUserAchievementResponseAsync(achievement, cancellationToken);
+                achievementResponses.Add(mapperResult);
             }
             return achievementResponses;
         }
