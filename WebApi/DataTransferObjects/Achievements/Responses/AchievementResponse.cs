@@ -6,7 +6,5 @@ namespace WebApi.DataTransferObjects.Achievements.Responses
         string Name,
         string Description,
         bool? IsUnlocked,
-        DateTime? UnlockedAt,
-        DateTime? CreatedAt,
-        DateTime? UpdatedAt);
+        DateTime? UnlockedAt);
 }

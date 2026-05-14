@@ -50,8 +50,7 @@ namespace WebApi.Endpoints
             CancellationToken cancellationToken)
         {
             var result = await mediator.Send(new GetUserAchievementsByGameQuery(
-                gameId,
-                userId), cancellationToken);
+                userId, gameId), cancellationToken);
             var achievementResponses = new List<AchievementResponse>();
             foreach (var achievement in result)
             {

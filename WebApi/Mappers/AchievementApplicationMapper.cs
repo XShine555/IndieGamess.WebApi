@@ -15,9 +15,7 @@ namespace WebApi.Mappers
                 achievement.Name,
                 achievement.Description,
                 null,
-                null,
-                achievement.CreatedAt,
-                achievement.UpdatedAt);
+                null);
         }
 
         public AchievementResponse MapToUserAchievementResponse(ApplicationUserAchievement achievement)
@@ -28,9 +26,7 @@ namespace WebApi.Mappers
                 achievement.Name,
                 achievement.Description,
                 achievement.IsUnlocked,
-                achievement.UnlockedAt,
-                null,
-                null);
+                achievement.UnlockedAt);
         }
 
         public AchievementMutationResponse MapToAchievementMutationResponse(ApplicationAchievement achievement)
