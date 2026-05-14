@@ -1,4 +1,5 @@
 ﻿using Application.Games.Catalog.Queries;
+using Application.Games.Stats.Queries;
 using Application.Users.Commands;
 using Application.Users.Queries;
 using Ardalis.Result;
@@ -207,6 +208,25 @@ namespace WebApi.Endpoints
         {
             var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(currentUser.IdentityId), cancellationToken);
             return await userMapper.MapToUserLibraryResponse(queryResult, cancellationToken);
+        }
+
+        [TranslateResultToActionResult]
+        [HttpGet("me/developer-stats", Name = "Get Developer Stats")]
+        [EndpointSummary("Get Developer Stats")]
+        [Authorize]
+        public async Task<Result<DeveloperStatsResponse>> GetDeveloperStats(
+            CancellationToken cancellationToken,
+            [FromServices] ICurrentUser currentUser)
+        {
+            var queryResult = await mediator.Send(
+                new GetDeveloperStatsQuery(currentUser.IdentityId),
+                cancellationToken);
+
+            return queryResult.Map(r => new DeveloperStatsResponse(
+                r.GamesSold,       r.GamesSoldSubtitle,
+                r.Players,         r.PlayersSubtitle,
+                r.PublishedGames,  r.PublishedGamesSubtitle,
+                r.GamesWithIssues, r.GamesWithIssuesSubtitle));
         }
 
         [HttpGet("me/created-games", Name = "Get Created Games")]
