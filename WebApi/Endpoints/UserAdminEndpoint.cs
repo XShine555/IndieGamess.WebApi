@@ -6,8 +6,9 @@ using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
-using WebApi.DataTransferObjects.AdminUser;
-using WebApi.Mappers;
+using WebApi.DataTransferObjects.AdminUser.Requests;
+using WebApi.DataTransferObjects.AdminUser.Responses;
+using WebApi.DataTransferObjects.Users.Responses;
 using WebApi.Services;
 
 namespace WebApi.Endpoints
@@ -16,7 +17,7 @@ namespace WebApi.Endpoints
     [Route("admin/user")]
     [Tags("Admin User")]
     [Authorize]
-    public class UserAdminEndpoint(IMediator mediator, ILogger<UserAdminEndpoint> logger, AdminUserMapper mapper)
+    public class UserAdminEndpoint(IMediator mediator, IAdminUserApplicationMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]
@@ -29,18 +30,18 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}", Name = "Get User By Id Admin")]
+        [HttpGet("{userId}", Name = "Get User By Id Admin")]
         [EndpointSummary("Get User By Id")]
-        public async Task<Result<UserAdminResponse>> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<Result<UserAdminResponse>> GetById(Guid userId, CancellationToken cancellationToken)
         {
-            var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(id), cancellationToken);
+            var queryResult = await mediator.Send(new GetUserByIdentityIdQuery(userId), cancellationToken);
             return await mapper.MapToUserResponse(queryResult, cancellationToken);
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}/collections", Name = "Get User Collection Admins")]
+        [HttpGet("{userId}/collections", Name = "Get User Collection Admins")]
         [EndpointSummary("Get User Collections")]
-        public async Task<PaginatedResponse<GameCollectionListItemResponse>> GetCollections(
+        public async Task<PaginatedResponse<GameCollectionListItemAdminResponse>> GetCollections(
             Guid id,
             [FromQuery] GetUserCollectionsAdminRequest query,
             CancellationToken cancellationToken)
@@ -50,26 +51,27 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}/collections/{collectionId}", Name = "Get User Collection By Id Admin")]
+        [HttpGet("{userId}/collections/{collectionId}", Name = "Get User Collection By Id Admin")]
         [EndpointSummary("Get User Collection By Id")]
         public async Task<Result<GameCollectionDetailsAdminResponse>> GetCollectionById(Guid id, Guid collectionId, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUserCollectionByIdQuery(id, collectionId), cancellationToken);
-            return queryResult.Map(mapper.MapToGameCollectionDetailsResponse);
+            return await queryResult.MapAsync(r => mapper.MapToGameCollectionDetailsResponse(r, cancellationToken));
         }
 
         [TranslateResultToActionResult]
-        [HttpPatch("{id}/profile-picture", Name = "Update Profile Picture Admin")]
+        [HttpPatch("{userId}/profile-picture", Name = "Update Profile Picture Admin")]
         [EndpointSummary("Update Profile Picture")]
-        public async Task<Result> UpdateProfilePicture(Guid id, [FromForm] IFormFile formFile, CancellationToken cancellationToken)
+        [Consumes("multipart/form-data")]
+        public async Task<Result> UpdateProfilePicture(Guid id, [FromForm] UpdateUserProfilePictureAdminRequest request, CancellationToken cancellationToken)
         {
-            var fileData = FileData.FromFormFile(formFile);
+            var fileData = FileData.FromFormFile(request.ProfilePicture);
             var commandResult = await mediator.Send(new UpdateUserProfilePictureCommand(id, fileData), cancellationToken);
             return commandResult;
         }
 
         [TranslateResultToActionResult]
-        [HttpPut("{id}", Name = "Update User Admin")]
+        [HttpPut("{userId}", Name = "Update User Admin")]
         [EndpointSummary("Update User")]
         public async Task<Result<UpdateUserAdminResponse>> Update(Guid id, [FromBody] UpdateUserAdminRequest request, CancellationToken cancellationToken)
         {
@@ -78,7 +80,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/collections", Name = "Add Game Collection Admin")]
+        [HttpPost("{userId}/collections", Name = "Add Game Collection Admin")]
         [EndpointSummary("Add Game Collection")]
         public async Task<Result<GameCollectionAdminResponse>> AddGameCollection(Guid id, [FromBody] CreateGameCollectionAdminRequest createGameCollectionRequest,
             CancellationToken cancellationToken)
@@ -88,7 +90,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}/collections/{collectionId}", Name = "Remove Game Collection Admin")]
+        [HttpDelete("{userId}/collections/{collectionId}", Name = "Remove Game Collection Admin")]
         [EndpointSummary("Remove Game Collection")]
         public async Task<Result> RemoveGameCollection(Guid id, Guid collectionId, CancellationToken cancellationToken)
         {
@@ -97,7 +99,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("me/promote-to-devoloper", Name = "Promote To Developer")]
+        [HttpPost("me/promote-to-devoloper", Name = "Promote To Developer Admin")]
         [EndpointSummary("Promote To Developer")]
         [Authorize]
         public async Task<Result<UpdateUserAdminResponse>> PromoteToDeveloper(CancellationToken cancellationToken, [FromServices] ICurrentUser currentUser)
@@ -107,7 +109,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpPost("{id}/cart/{gameId}", Name = "Add Item To Cart")]
+        [HttpPost("{userId}/cart/{gameId}", Name = "Add Item To Cart Admin")]
         [EndpointSummary("Add Item To Cart")]
         [Authorize]
         public async Task<Result> AddItemToCart(Guid id, Guid gameId, CancellationToken cancellationToken)
@@ -117,7 +119,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}/cart/{gameId}", Name = "Remove Item From Cart")]
+        [HttpDelete("{userId}/cart/{gameId}", Name = "Remove Item From Cart Admin")]
         [EndpointSummary("Remove Item From Cart")]
         [Authorize]
         public async Task<Result> RemoveItemFromCart(Guid id, Guid gameId, CancellationToken cancellationToken)
@@ -127,10 +129,10 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}/cart", Name = "Get User Cart Admin")]
+        [HttpGet("{userId}/cart", Name = "Get User Cart Admin")]
         [EndpointSummary("Get User Cart")]
         [Authorize]
-        public async Task<Result<WebApi.DataTransferObjects.Users.GetUserCartResponse>> GetCart(Guid id, CancellationToken cancellationToken)
+        public async Task<Result<GetUserCartResponse>> GetCart(Guid id, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetUserCartItemsQuery(id), cancellationToken);
             return await queryResult.MapAsync(r => mapper.MapToGetUserCartResponse(r, cancellationToken));

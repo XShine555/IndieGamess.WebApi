@@ -6,8 +6,8 @@ using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common;
-using WebApi.DataTransferObjects.AdminGenre;
-using WebApi.Mappers;
+using WebApi.DataTransferObjects.AdminGenre.Requests;
+using WebApi.DataTransferObjects.AdminGenre.Responses;
 
 namespace WebApi.Endpoints
 {
@@ -15,38 +15,38 @@ namespace WebApi.Endpoints
     [Route("admin/genre")]
     [Tags("Admin Genre")]
     [Authorize]
-    public class GenreAdminEndpoint(IMediator mediator, AdminGenreMapper mapper)
+    public class GenreAdminEndpoint(IMediator mediator, IAdminGenreApplicationMapper mapper)
         : ControllerBase
     {
         [TranslateResultToActionResult]
         [HttpGet(Name = "Get Genres Admin")]
         [EndpointSummary("Get Genres")]
-        public async Task<PaginatedResponse<GenreListItemAdminResponse>> Get([FromQuery] GetGenresAdminRequest query, CancellationToken cancellationToken)
+        public async Task<PaginatedResponse<GenreListItemAdminResponse>> Get( [FromQuery] GetGenresAdminRequest query, CancellationToken cancellationToken)
         {
             var queryResult = await mediator.Send(new GetGenresQuery(query.Name, query.PageNumber, query.PageSize), cancellationToken);
             return mapper.MapToGenrePaginatedResponse(queryResult);
         }
 
         [TranslateResultToActionResult]
-        [HttpGet("{id}", Name = "Get Genre By Id Admin")]
+        [HttpGet("{genreId}", Name = "Get Genre By Id Admin")]
         [EndpointSummary("Get Genre By Id")]
-        public async Task<GenreAdminResponse> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<GenreAdminResponse> GetById(Guid genreId, CancellationToken cancellationToken)
         {
-            var queryResult = await mediator.Send(new GetGenreByIdQuery(id), cancellationToken);
+            var queryResult = await mediator.Send(new GetGenreByIdQuery(genreId), cancellationToken);
             return mapper.MapToGenreResponse(queryResult);
         }
 
         [TranslateResultToActionResult]
         [HttpPost(Name = "Create Genre Admin")]
         [EndpointSummary("Create Genre")]
-        public async Task<GenreAdminSummary> Create([FromBody] CreateGenreAdminRequest request, CancellationToken cancellationToken)
+        public async Task<GenreAdminSummary> Create( [FromBody] CreateGenreAdminRequest request, CancellationToken cancellationToken)
         {
             var commandResult = await mediator.Send(new CreateGenreCommand(request.Name), cancellationToken);
             return mapper.MapToGenreSummary(commandResult);
         }
 
         [TranslateResultToActionResult]
-        [HttpPut("{id}", Name = "Update Genre Admin")]
+        [HttpPut("{genreId}", Name = "Update Genre Admin")]
         [EndpointSummary("Update Genre")]
         public async Task<GenreAdminSummary> Update(Guid id, [FromBody] UpdateGenreAdminRequest request, CancellationToken cancellationToken)
         {
@@ -55,7 +55,7 @@ namespace WebApi.Endpoints
         }
 
         [TranslateResultToActionResult]
-        [HttpDelete("{id}", Name = "Remove Genre Admin")]
+        [HttpDelete("{genreId}", Name = "Remove Genre Admin")]
         [EndpointSummary("Remove Genre")]
         public async Task<Result> Remove(Guid id, CancellationToken cancellationToken)
         {
